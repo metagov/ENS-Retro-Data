@@ -1,0 +1,90 @@
+# taxonomy.yaml — Single source of truth for ENS Retro controlled vocabularies
+# All pipeline stages validate against these enumerations.
+
+sources:
+  - snapshot
+  - tally
+  - etherscan
+  - dune
+  - ens-governance-forum
+  - github
+  - interviews
+  - grants-portal
+  - token-contract
+
+governance_categories:
+  - executable
+  - social
+  - constitutional
+  - metagovernance
+  - funding
+  - election
+
+proposal_status:
+  - active
+  - closed
+  - executed
+  - defeated
+  - pending
+  - queued
+  - cancelled
+
+vote_choices:
+  - "for"
+  - against
+  - abstain
+
+stakeholder_roles:
+  - delegate
+  - steward
+  - contributor
+  - token_holder
+  - service_provider
+  - multisig_signer
+  - working_group_lead
+  - dao_officer
+
+working_groups:
+  - meta-governance
+  - ens-ecosystem
+  - public-goods
+  - providers
+
+evaluation_dimensions:
+  - governance_participation
+  - proposal_quality
+  - financial_stewardship
+  - ecosystem_growth
+  - decentralization
+  - transparency
+  - community_engagement
+
+entity_types:
+  - address
+  - proposal
+  - vote
+  - delegate
+  - transaction
+  - grant
+  - working_group
+  - forum_post
+
+data_layers:
+  - bronze   # raw ingested data, append-only
+  - silver   # cleaned, typed, deduplicated
+  - gold     # analysis-ready views and indexes
+
+bronze_domains:
+  - on-chain
+  - governance
+  - forum
+  - financial
+  - docs
+  - interviews
+  - grants
+  - github
+
+silver_domains:
+  - quantitative
+  - qualitative
+  - crosswalk

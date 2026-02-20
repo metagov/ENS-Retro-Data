@@ -1,0 +1,8 @@
+{
+  "domain": "github",
+  "description": "GitHub repository activity for ENS-related repos",
+  "sources": ["github"],
+  "expected_files": {},
+  "collection_status": "not_started",
+  "notes": "GitHub API collection for development activity metrics"
+}

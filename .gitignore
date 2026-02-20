@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Data files (raw data tracked via metadata sidecars, not committed)
+*.parquet
+*.csv
+*.tsv
+*.duckdb
+*.duckdb.wal
+
+# Dagster artifacts
+.dagster/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# uv
+uv.lock
+
+.claude
+.ruff_cache

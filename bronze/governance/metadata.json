@@ -1,0 +1,79 @@
+{
+  "domain": "governance",
+  "description": "On-chain and off-chain governance proposal and voting data from Snapshot and Tally",
+  "sources": ["snapshot", "tally"],
+  "expected_files": {
+    "snapshot_proposals.json": {
+      "description": "Snapshot governance proposals for ENS DAO",
+      "expected_records": 90,
+      "schema_hints": {
+        "id": "string",
+        "title": "string",
+        "body": "string",
+        "choices": "array<string>",
+        "start": "integer (unix timestamp)",
+        "end": "integer (unix timestamp)",
+        "state": "string",
+        "scores": "array<float>",
+        "scores_total": "float",
+        "votes": "integer",
+        "author": "string (address)"
+      }
+    },
+    "snapshot_votes.json": {
+      "description": "Individual votes cast on Snapshot proposals",
+      "expected_records": 47551,
+      "schema_hints": {
+        "id": "string",
+        "voter": "string (address)",
+        "choice": "integer or object",
+        "vp": "float (voting power)",
+        "created": "integer (unix timestamp)",
+        "proposal_id": "string"
+      }
+    },
+    "tally_proposals.json": {
+      "description": "On-chain governance proposals from Tally (Governor contract)",
+      "expected_records": 62,
+      "schema_hints": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "status": "string",
+        "proposer": "string (address)",
+        "start_block": "integer",
+        "end_block": "integer",
+        "for_votes": "string (wei)",
+        "against_votes": "string (wei)",
+        "abstain_votes": "string (wei)"
+      }
+    },
+    "tally_votes.json": {
+      "description": "Individual votes cast on Tally proposals",
+      "expected_records": 9550,
+      "schema_hints": {
+        "id": "string",
+        "voter": "string (address)",
+        "support": "integer (0=against, 1=for, 2=abstain)",
+        "weight": "string (wei)",
+        "proposal_id": "string",
+        "reason": "string (optional)"
+      }
+    },
+    "tally_delegates.json": {
+      "description": "Delegate profiles and metadata from Tally",
+      "expected_records": 37876,
+      "schema_hints": {
+        "address": "string",
+        "ens_name": "string (optional)",
+        "voting_power": "string (wei)",
+        "delegators_count": "integer",
+        "votes_count": "integer",
+        "proposals_count": "integer",
+        "statement": "string (optional)"
+      }
+    }
+  },
+  "collection_status": "awaiting_upload",
+  "notes": "Coworker will upload Snapshot and Tally data exports"
+}
