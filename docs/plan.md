@@ -564,7 +564,7 @@ Example: The `gold/qualitative_code_matrix.parquet` flattens coded JSON into a t
 
 ## 6. Draft ToDo List for two week sprints
 
-```
+
 Week 1-2: Foundation
 - [ ] Finalize taxonomy.yaml (team review)
 - [ ] Set up repo structure
@@ -583,11 +583,12 @@ Week 5-6: Silver Sprint
 - [ ] Build complexity_score for proposals (H4.1)
 - [ ] Entity resolution across sources
 - [ ] Validate: run data quality scripts
+- [ ] Data Quality Assessment Plan
 
 Week 7-8: Gold Sprint + Analysis Start
 - [ ] Choose analysis/viz tool (Quarto, Hex, Observable)
 - [ ] Materialize gold views per hypothesis cluster
 - [ ] Flatten qualitative codes into queryable Parquet
 - [ ] Begin hypothesis testing for reports
-```
+
 
