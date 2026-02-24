@@ -1,0 +1,8 @@
+ens_retro:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "../../warehouse/ens_retro.duckdb"
+      extensions:
+        - json

@@ -1,0 +1,47 @@
+{
+  "expectation_suite_name": "tally_proposals_suite",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {"min_value": 20, "max_value": 500}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "id"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "title"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "status"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "proposer"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {"column": "id"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {"column": "title"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {"column": "id"}
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "proposer",
+        "regex": "^0x[a-fA-F0-9]{40}$"
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  }
+}

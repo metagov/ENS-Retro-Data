@@ -1,11 +1,17 @@
 {
   "domain": "governance",
   "description": "On-chain and off-chain governance proposal and voting data from Snapshot and Tally",
-  "sources": ["snapshot", "tally"],
-  "expected_files": {
+  "sources": ["snapshot", "tally", "votingpower-xyz"],
+  "collection_status": "complete",
+  "last_indexed_at": "2026-02-24T09:38:25Z",
+  "notes": "All governance data indexed via Dagster pipeline. Snapshot + Tally fetched from GraphQL APIs, votingpower.xyz manually exported.",
+  "files": {
     "snapshot_proposals.json": {
+      "status": "present",
       "description": "Snapshot governance proposals for ENS DAO",
       "expected_records": 90,
+      "actual_records": 90,
+      "file_size_bytes": 455031,
       "schema_hints": {
         "id": "string",
         "title": "string",
@@ -18,23 +24,47 @@
         "scores_total": "float",
         "votes": "integer",
         "author": "string (address)"
+      },
+      "provenance": {
+        "source": "snapshot.org",
+        "api_endpoint": "https://hub.snapshot.org/graphql",
+        "query_or_method": "GraphQL paginated query (space=ens.eth, batch=100)",
+        "collected_by": "dagster_pipeline (infra.ingest.snapshot_api)",
+        "collected_at": "2026-02-24T08:28:19Z",
+        "covers_period": "all-time (ordered by created desc)",
+        "notes": "Raw API response objects, no transforms applied"
       }
     },
     "snapshot_votes.json": {
+      "status": "present",
       "description": "Individual votes cast on Snapshot proposals",
       "expected_records": 47551,
+      "actual_records": 47551,
+      "file_size_bytes": 14830950,
       "schema_hints": {
         "id": "string",
         "voter": "string (address)",
         "choice": "integer or object",
         "vp": "float (voting power)",
         "created": "integer (unix timestamp)",
-        "proposal_id": "string"
+        "proposal_id": "string (injected by pipeline)"
+      },
+      "provenance": {
+        "source": "snapshot.org",
+        "api_endpoint": "https://hub.snapshot.org/graphql",
+        "query_or_method": "GraphQL paginated query per proposal (batch=1000), proposal_id injected",
+        "collected_by": "dagster_pipeline (infra.ingest.snapshot_api)",
+        "collected_at": "2026-02-24T08:32:51Z",
+        "covers_period": "all votes across 90 proposals",
+        "notes": "proposal_id field added by pipeline (not in raw API response)"
       }
     },
     "tally_proposals.json": {
+      "status": "present",
       "description": "On-chain governance proposals from Tally (Governor contract)",
       "expected_records": 62,
+      "actual_records": 62,
+      "file_size_bytes": 133525,
       "schema_hints": {
         "id": "string",
         "title": "string",
@@ -43,37 +73,89 @@
         "proposer": "string (address)",
         "start_block": "integer",
         "end_block": "integer",
-        "for_votes": "string (wei)",
-        "against_votes": "string (wei)",
-        "abstain_votes": "string (wei)"
+        "for_votes": "string (human-readable, converted from wei)",
+        "against_votes": "string (human-readable, converted from wei)",
+        "abstain_votes": "string (human-readable, converted from wei)"
+      },
+      "provenance": {
+        "source": "tally.xyz",
+        "api_endpoint": "https://api.tally.xyz/query",
+        "query_or_method": "GraphQL paginated query (org=ens, batch=50), flattened from nested response",
+        "collected_by": "dagster_pipeline (infra.ingest.tally_api)",
+        "collected_at": "2026-02-24T08:28:45Z",
+        "covers_period": "all-time on-chain proposals",
+        "notes": "Nested API response flattened by flatten_tally_proposals(); vote counts converted from wei to human-readable"
       }
     },
     "tally_votes.json": {
+      "status": "present",
       "description": "Individual votes cast on Tally proposals",
       "expected_records": 9550,
+      "actual_records": 9550,
+      "file_size_bytes": 2105438,
       "schema_hints": {
         "id": "string",
         "voter": "string (address)",
-        "support": "integer (0=against, 1=for, 2=abstain)",
-        "weight": "string (wei)",
+        "support": "string (for/against/abstain)",
+        "weight": "string (raw wei amount)",
         "proposal_id": "string",
         "reason": "string (optional)"
+      },
+      "provenance": {
+        "source": "tally.xyz",
+        "api_endpoint": "https://api.tally.xyz/query",
+        "query_or_method": "GraphQL paginated query per proposal (batch=100), flattened from nested response",
+        "collected_by": "dagster_pipeline (infra.ingest.tally_api)",
+        "collected_at": "2026-02-24T09:38:25Z",
+        "covers_period": "all votes across 62 on-chain proposals",
+        "notes": "Nested API response flattened by flatten_tally_votes(); voter address extracted from nested voter object"
       }
     },
     "tally_delegates.json": {
+      "status": "present",
       "description": "Delegate profiles and metadata from Tally",
       "expected_records": 37876,
+      "actual_records": 37876,
+      "file_size_bytes": 8853407,
       "schema_hints": {
         "address": "string",
         "ens_name": "string (optional)",
-        "voting_power": "string (wei)",
+        "voting_power": "string (raw votesCount)",
         "delegators_count": "integer",
         "votes_count": "integer",
         "proposals_count": "integer",
-        "statement": "string (optional)"
+        "statement": "string (optional, truncated to 1000 chars)"
+      },
+      "provenance": {
+        "source": "tally.xyz",
+        "api_endpoint": "https://api.tally.xyz/query",
+        "query_or_method": "GraphQL paginated query (org=ens, batch=50, sorted by votes desc), flattened",
+        "collected_by": "dagster_pipeline (infra.ingest.tally_api)",
+        "collected_at": "2026-02-24T09:16:58Z",
+        "covers_period": "all registered delegates at time of collection",
+        "notes": "Nested API response flattened by flatten_tally_delegates(); account/statement objects extracted"
+      }
+    },
+    "votingpower-xyz/ens-delegates-2026-02-20.csv": {
+      "status": "present",
+      "description": "Delegate list with voting power exported from votingpower.xyz",
+      "expected_records": null,
+      "schema_hints": {
+        "Rank": "integer",
+        "Delegate": "string (address or ENS name)",
+        "Voting Power": "float",
+        "30 Day Change": "float",
+        "Delegations": "integer",
+        "On-chain Votes": "integer"
+      },
+      "provenance": {
+        "source": "votingpower.xyz",
+        "collected_by": "metagov",
+        "collected_at": "2026-02-20",
+        "query_or_method": "manual CSV export from votingpower.xyz/ens",
+        "covers_period": "point-in-time snapshot 2026-02-20",
+        "notes": "Delegate voting power rankings"
       }
     }
-  },
-  "collection_status": "awaiting_upload",
-  "notes": "Coworker will upload Snapshot and Tally data exports"
+  }
 }

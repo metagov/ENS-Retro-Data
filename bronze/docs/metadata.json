@@ -2,7 +2,7 @@
   "domain": "docs",
   "description": "ENS governance documentation — constitution, bylaws, working group rules",
   "sources": ["ens-governance-forum", "github"],
-  "expected_files": {},
   "collection_status": "not_started",
-  "notes": "Governance documents for qualitative analysis"
+  "notes": "No data files present; governance documents for qualitative analysis",
+  "files": {}
 }

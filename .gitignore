@@ -20,8 +20,24 @@ ENV/
 *.duckdb
 *.duckdb.wal
 
+# Exception: dbt seed CSVs are committed
+!infra/dbt/seeds/*.csv
+
 # Dagster artifacts
 .dagster/
+
+# dbt artifacts
+infra/dbt/target/
+infra/dbt/dbt_packages/
+infra/dbt/logs/
+
+# Warehouse (DuckDB)
+warehouse/*.duckdb
+warehouse/*.duckdb.wal
+
+# Great Expectations
+infra/great_expectations/uncommitted/
+infra/great_expectations/data_docs/
 
 # IDE
 .vscode/
@@ -42,3 +58,7 @@ uv.lock
 
 .claude
 .ruff_cache
+
+
+List of Data Sources.csv
+.tmp_dagster_home_*
