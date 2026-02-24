@@ -2,8 +2,11 @@
   "domain": "grants",
   "description": "ENS DAO grants program data — applications, awards, and outcomes",
   "sources": ["grants-portal"],
-  "expected_files": {
+  "collection_status": "not_started",
+  "notes": "No data files present; grants portal or forum-based collection needed",
+  "files": {
     "grants.json": {
+      "status": "planned",
       "description": "Grant applications and awards",
       "expected_records": null,
       "schema_hints": {
@@ -16,9 +19,8 @@
         "status": "string",
         "working_group": "string",
         "description": "string"
-      }
+      },
+      "provenance": null
     }
-  },
-  "collection_status": "not_started",
-  "notes": "Grants portal or forum-based collection"
+  }
 }

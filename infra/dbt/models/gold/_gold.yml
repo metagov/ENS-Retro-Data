@@ -1,0 +1,59 @@
+version: 2
+
+models:
+  - name: governance_activity
+    description: "Unified governance activity combining Snapshot and Tally proposals"
+    columns:
+      - name: proposal_id
+        tests:
+          - not_null
+          - unique
+      - name: source
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['snapshot', 'tally']
+      - name: title
+        tests:
+          - not_null
+
+  - name: delegate_scorecard
+    description: "Per-delegate scorecard with participation and influence metrics"
+    columns:
+      - name: address
+        tests:
+          - not_null
+          - unique
+      - name: voting_power
+        tests:
+          - not_null
+
+  - name: treasury_summary
+    description: "Treasury flows aggregated by month and category (placeholder until on-chain data collected)"
+    columns:
+      - name: period
+        tests:
+          - not_null:
+              severity: warn
+
+  - name: participation_index
+    description: "Composite participation metrics including Gini coefficient"
+    columns:
+      - name: metric
+        tests:
+          - not_null
+          - unique
+      - name: value
+        tests:
+          - not_null
+
+  - name: decentralization_index
+    description: "Power distribution metrics: Nakamoto, HHI, delegation concentration"
+    columns:
+      - name: metric
+        tests:
+          - not_null
+          - unique
+      - name: value
+        tests:
+          - not_null

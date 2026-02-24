@@ -1,0 +1,9 @@
+"""Dagster resources for API credentials and external services."""
+
+from dagster import ConfigurableResource
+
+
+class TallyApiConfig(ConfigurableResource):
+    """Tally API configuration, typically sourced from TALLY_API_KEY env var."""
+
+    api_key: str

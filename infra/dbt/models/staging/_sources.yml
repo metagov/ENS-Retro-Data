@@ -1,0 +1,78 @@
+version: 2
+
+sources:
+  - name: bronze_governance
+    description: "Raw governance data from Snapshot, Tally, and votingpower.xyz"
+    tables:
+      - name: snapshot_proposals
+        description: "Snapshot governance proposals for ENS DAO (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/governance/snapshot_proposals.json')"
+      - name: snapshot_votes
+        description: "Individual votes cast on Snapshot proposals (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/governance/snapshot_votes.json')"
+      - name: tally_proposals
+        description: "On-chain governance proposals from Tally (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/governance/tally_proposals.json')"
+      - name: tally_votes
+        description: "Individual votes cast on Tally proposals (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/governance/tally_votes.json')"
+      - name: tally_delegates
+        description: "Delegate profiles and metadata from Tally (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/governance/tally_delegates.json')"
+      - name: votingpower_delegates
+        description: "Delegate list with voting power from votingpower.xyz (CSV)"
+        meta:
+          external_location: "read_csv_auto('../../bronze/governance/votingpower-xyz/ens-delegates-2026-02-20.csv')"
+
+  - name: bronze_onchain
+    description: "Raw on-chain data: delegations, token distribution, treasury"
+    tables:
+      - name: delegations
+        description: "ENS token delegation events (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/on-chain/delegations.json')"
+      - name: token_distribution
+        description: "ENS token holder balances snapshot (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/on-chain/token_distribution.json')"
+      - name: treasury_flows
+        description: "ENS DAO treasury inflows and outflows (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/on-chain/treasury_flows.json')"
+
+  - name: bronze_financial
+    description: "Raw financial data: compensation records"
+    tables:
+      - name: compensation
+        description: "Steward and contributor compensation records (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/financial/compensation.json')"
+
+  - name: bronze_grants
+    description: "Raw grants program data"
+    tables:
+      - name: grants
+        description: "Grant applications and awards (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/grants/grants.json')"
+
+  - name: bronze_interviews
+    description: "Raw qualitative data from interviews"
+    tables:
+      - name: delegate_profiles
+        description: "Structured delegate profile data (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/interviews/delegate_profiles.json')"
+
+  - name: bronze_forum
+    description: "Raw forum data from ENS Governance Forum"
+    tables:
+      - name: forum_posts
+        description: "Forum discussion posts (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/forum/forum_posts.json')"

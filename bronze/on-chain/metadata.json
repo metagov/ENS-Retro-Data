@@ -2,8 +2,11 @@
   "domain": "on-chain",
   "description": "Blockchain data: token distribution, delegations, and treasury transactions",
   "sources": ["etherscan", "dune", "token-contract"],
-  "expected_files": {
+  "collection_status": "not_started",
+  "notes": "No data files present; requires Dune queries or direct RPC calls to collect",
+  "files": {
     "delegations.json": {
+      "status": "planned",
       "description": "ENS token delegation events and current delegation state",
       "expected_records": null,
       "schema_hints": {
@@ -12,9 +15,11 @@
         "block_number": "integer",
         "timestamp": "integer (unix)",
         "token_balance": "string (wei)"
-      }
+      },
+      "provenance": null
     },
     "token_distribution.json": {
+      "status": "planned",
       "description": "ENS token holder balances and distribution snapshot",
       "expected_records": null,
       "schema_hints": {
@@ -22,9 +27,11 @@
         "balance": "string (wei)",
         "percentage": "float",
         "snapshot_block": "integer"
-      }
+      },
+      "provenance": null
     },
     "treasury_flows.json": {
+      "status": "planned",
       "description": "ENS DAO treasury inflows and outflows",
       "expected_records": null,
       "schema_hints": {
@@ -36,9 +43,8 @@
         "block_number": "integer",
         "timestamp": "integer (unix)",
         "category": "string"
-      }
+      },
+      "provenance": null
     }
-  },
-  "collection_status": "not_started",
-  "notes": "Requires Dune queries or direct RPC calls to collect"
+  }
 }

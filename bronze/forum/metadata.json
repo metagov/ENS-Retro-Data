@@ -2,8 +2,11 @@
   "domain": "forum",
   "description": "ENS Governance Forum (Discourse) posts, topics, and engagement data",
   "sources": ["ens-governance-forum"],
-  "expected_files": {
+  "collection_status": "not_started",
+  "notes": "No data files present; Discourse API scrape needed",
+  "files": {
     "forum_posts.json": {
+      "status": "planned",
       "description": "Forum discussion posts related to governance proposals",
       "expected_records": null,
       "schema_hints": {
@@ -14,9 +17,8 @@
         "created_at": "string (ISO 8601)",
         "likes": "integer",
         "reply_count": "integer"
-      }
+      },
+      "provenance": null
     }
-  },
-  "collection_status": "not_started",
-  "notes": "Discourse API scrape needed"
+  }
 }

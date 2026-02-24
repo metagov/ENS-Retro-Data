@@ -2,8 +2,11 @@
   "domain": "financial",
   "description": "Financial data including compensation, budgets, and spending",
   "sources": ["etherscan", "dune", "grants-portal"],
-  "expected_files": {
+  "collection_status": "not_started",
+  "notes": "No data files present; requires manual collection from forum posts and on-chain data",
+  "files": {
     "compensation.json": {
+      "status": "planned",
       "description": "Steward and contributor compensation records",
       "expected_records": null,
       "schema_hints": {
@@ -13,9 +16,8 @@
         "period": "string",
         "working_group": "string",
         "role": "string"
-      }
+      },
+      "provenance": null
     }
-  },
-  "collection_status": "not_started",
-  "notes": "Requires manual collection from forum posts and on-chain data"
+  }
 }

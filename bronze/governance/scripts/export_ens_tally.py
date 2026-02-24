@@ -28,13 +28,6 @@ HEADERS = {
 # GraphQL helpers
 # ---------------------------------------------------------------------------
 
-def _dbg(msg, data=None, hyp="", loc=""):
-    # #region agent log
-    import pathlib; pathlib.Path("/Users/rohitmalekar/work/ens/.cursor").mkdir(parents=True, exist_ok=True)
-    with open("/Users/rohitmalekar/work/ens/.cursor/debug.log", "a") as _f:
-        _f.write(json.dumps({"timestamp": int(time.time()*1000), "location": loc, "message": msg, "data": data or {}, "hypothesisId": hyp}) + "\n")
-    # #endregion
-
 def run_query(query: str, variables: dict | None = None) -> dict:
     payload: dict = {"query": query}
     if variables:
@@ -44,16 +37,9 @@ def run_query(query: str, variables: dict | None = None) -> dict:
         print("  Rate limited – waiting 60 s …")
         time.sleep(60)
         return run_query(query, variables)
-    # #region agent log
-    if resp.status_code != 200:
-        _dbg("HTTP error response", {"status": resp.status_code, "body": resp.text[:2000], "variables": variables}, hyp="H1,H2,H3", loc="run_query:http_error")
-    # #endregion
     resp.raise_for_status()
     body = resp.json()
     if "errors" in body:
-        # #region agent log
-        _dbg("GraphQL errors in 200 response", {"errors": body["errors"], "variables": variables}, hyp="H1,H2,H3", loc="run_query:gql_errors")
-        # #endregion
         print(f"  GraphQL errors: {json.dumps(body['errors'], indent=2)}")
     return body.get("data", {})
 
@@ -177,9 +163,6 @@ def fetch_proposals(org_id: str) -> list[dict]:
         nodes = data.get("proposals", {}).get("nodes", [])
         page_info = data.get("proposals", {}).get("pageInfo", {})
 
-        # #region agent log
-        _dbg("proposals page", {"nodes_count": len(nodes), "page_info": page_info, "cursor_sent": cursor, "page_size": page_size}, hyp="H4", loc="fetch_proposals:page")
-        # #endregion
         if not nodes:
             break
         all_proposals.extend(nodes)
