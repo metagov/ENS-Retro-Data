@@ -58,3 +58,7 @@ uv.lock
 
 .claude
 .ruff_cache
+
+
+List of Data Sources.csv
+.tmp_dagster_home_*
