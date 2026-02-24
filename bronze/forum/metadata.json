@@ -4,21 +4,5 @@
   "sources": ["ens-governance-forum"],
   "collection_status": "not_started",
   "notes": "No data files present; Discourse API scrape needed",
-  "files": {
-    "forum_posts.json": {
-      "status": "planned",
-      "description": "Forum discussion posts related to governance proposals",
-      "expected_records": null,
-      "schema_hints": {
-        "id": "integer",
-        "topic_id": "integer",
-        "author": "string",
-        "body": "string",
-        "created_at": "string (ISO 8601)",
-        "likes": "integer",
-        "reply_count": "integer"
-      },
-      "provenance": null
-    }
-  }
+  "files": {}
 }

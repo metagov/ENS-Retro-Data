@@ -4,20 +4,5 @@
   "sources": ["interviews"],
   "collection_status": "not_started",
   "notes": "No data files present; qualitative data — requires IRB-equivalent review before publication",
-  "files": {
-    "delegate_profiles.json": {
-      "status": "planned",
-      "description": "Structured delegate profile data from interviews and public statements",
-      "expected_records": null,
-      "schema_hints": {
-        "address": "string",
-        "name": "string (optional)",
-        "role": "string",
-        "interview_date": "string (ISO 8601, optional)",
-        "key_themes": "array<string>",
-        "summary": "string"
-      },
-      "provenance": null
-    }
-  }
+  "files": {}
 }

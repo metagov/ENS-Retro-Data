@@ -4,47 +4,5 @@
   "sources": ["etherscan", "dune", "token-contract"],
   "collection_status": "not_started",
   "notes": "No data files present; requires Dune queries or direct RPC calls to collect",
-  "files": {
-    "delegations.json": {
-      "status": "planned",
-      "description": "ENS token delegation events and current delegation state",
-      "expected_records": null,
-      "schema_hints": {
-        "delegator": "string (address)",
-        "delegate": "string (address)",
-        "block_number": "integer",
-        "timestamp": "integer (unix)",
-        "token_balance": "string (wei)"
-      },
-      "provenance": null
-    },
-    "token_distribution.json": {
-      "status": "planned",
-      "description": "ENS token holder balances and distribution snapshot",
-      "expected_records": null,
-      "schema_hints": {
-        "address": "string",
-        "balance": "string (wei)",
-        "percentage": "float",
-        "snapshot_block": "integer"
-      },
-      "provenance": null
-    },
-    "treasury_flows.json": {
-      "status": "planned",
-      "description": "ENS DAO treasury inflows and outflows",
-      "expected_records": null,
-      "schema_hints": {
-        "tx_hash": "string",
-        "from": "string (address)",
-        "to": "string (address)",
-        "value": "string (wei or token amount)",
-        "token": "string",
-        "block_number": "integer",
-        "timestamp": "integer (unix)",
-        "category": "string"
-      },
-      "provenance": null
-    }
-  }
+  "files": {}
 }

@@ -4,23 +4,5 @@
   "sources": ["grants-portal"],
   "collection_status": "not_started",
   "notes": "No data files present; grants portal or forum-based collection needed",
-  "files": {
-    "grants.json": {
-      "status": "planned",
-      "description": "Grant applications and awards",
-      "expected_records": null,
-      "schema_hints": {
-        "id": "string",
-        "title": "string",
-        "applicant": "string",
-        "amount_requested": "float",
-        "amount_awarded": "float",
-        "token": "string",
-        "status": "string",
-        "working_group": "string",
-        "description": "string"
-      },
-      "provenance": null
-    }
-  }
+  "files": {}
 }
