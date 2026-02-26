@@ -1,0 +1,159 @@
+version: 2
+
+models:
+  - name: stg_snapshot_proposals
+    description: "Staged Snapshot governance proposals"
+    columns:
+      - name: proposal_id
+        description: "Unique Snapshot proposal identifier"
+        tests:
+          - not_null
+          - unique
+      - name: author_address
+        tests:
+          - not_null
+      - name: status
+        tests:
+          - not_null
+
+  - name: stg_snapshot_votes
+    description: "Staged Snapshot individual votes"
+    columns:
+      - name: vote_id
+        description: "Unique vote identifier"
+        tests:
+          - not_null
+          - unique
+      - name: voter
+        tests:
+          - not_null
+      - name: proposal_id
+        tests:
+          - not_null
+
+  - name: stg_tally_proposals
+    description: "Staged Tally on-chain governance proposals"
+    columns:
+      - name: proposal_id
+        description: "Unique Tally proposal identifier"
+        tests:
+          - not_null
+          - unique
+      - name: status
+        tests:
+          - not_null
+
+  - name: stg_tally_votes
+    description: "Staged Tally individual votes"
+    columns:
+      - name: vote_id
+        description: "Unique vote identifier"
+        tests:
+          - not_null
+          - unique
+      - name: voter
+        tests:
+          - not_null
+      - name: proposal_id
+        tests:
+          - not_null
+
+  - name: stg_tally_delegates
+    description: "Staged Tally delegate profiles"
+    columns:
+      - name: address
+        description: "Delegate Ethereum address"
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_votingpower_delegates
+    description: "Staged votingpower.xyz delegate export"
+    columns:
+      - name: delegate_address
+        description: "Delegate Ethereum address"
+        tests:
+          - not_null
+          - unique
+      - name: rank
+        tests:
+          - not_null
+
+  # --- Sentinel models (data not yet collected, tests set to warn) ---
+
+  - name: stg_delegations
+    description: "Staged delegation events (placeholder until on-chain data collected)"
+    columns:
+      - name: delegator
+        tests:
+          - not_null:
+              severity: warn
+      - name: delegate
+        tests:
+          - not_null:
+              severity: warn
+
+  - name: stg_token_distribution
+    description: "Staged token distribution snapshot (placeholder until on-chain data collected)"
+    columns:
+      - name: address
+        description: "Token holder address"
+        tests:
+          - not_null:
+              severity: warn
+          - unique:
+              severity: warn
+
+  - name: stg_treasury_flows
+    description: "Staged treasury transaction flows (placeholder until on-chain data collected)"
+    columns:
+      - name: tx_hash
+        description: "Transaction hash"
+        tests:
+          - not_null:
+              severity: warn
+          - unique:
+              severity: warn
+      - name: from_address
+        tests:
+          - not_null:
+              severity: warn
+
+  - name: stg_grants
+    description: "Staged grants data (placeholder until grants data collected)"
+    columns:
+      - name: grant_id
+        description: "Grant identifier"
+        tests:
+          - not_null:
+              severity: warn
+          - unique:
+              severity: warn
+
+  - name: stg_compensation
+    description: "Staged compensation records (placeholder until financial data collected)"
+    columns:
+      - name: recipient_address
+        tests:
+          - not_null:
+              severity: warn
+
+  - name: stg_delegate_profiles
+    description: "Staged delegate profile data (placeholder until interviews collected)"
+    columns:
+      - name: address
+        description: "Delegate address"
+        tests:
+          - not_null:
+              severity: warn
+
+  - name: stg_forum_posts
+    description: "Staged forum posts (placeholder until forum data collected)"
+    columns:
+      - name: post_id
+        description: "Forum post identifier"
+        tests:
+          - not_null:
+              severity: warn
+          - unique:
+              severity: warn

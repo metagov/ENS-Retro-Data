@@ -1,0 +1,163 @@
+version: 2
+
+models:
+  - name: clean_snapshot_proposals
+    description: "Cleaned Snapshot proposals with normalized columns and timestamps"
+    columns:
+      - name: proposal_id
+        tests:
+          - not_null
+          - unique
+      - name: author_address
+        tests:
+          - not_null
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['active', 'closed', 'executed', 'defeated', 'pending', 'queued', 'cancelled']
+      - name: source
+        tests:
+          - accepted_values:
+              values: ['snapshot']
+
+  - name: clean_snapshot_votes
+    description: "Cleaned Snapshot votes with normalized addresses and mapped choices"
+    columns:
+      - name: vote_id
+        tests:
+          - not_null
+          - unique
+      - name: voter
+        description: "Lowercased voter address"
+        tests:
+          - not_null
+      - name: vote_choice
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['for', 'against', 'abstain', 'unknown']
+      - name: source
+        tests:
+          - accepted_values:
+              values: ['snapshot']
+
+  - name: clean_tally_proposals
+    description: "Cleaned Tally proposals with wei-to-ether conversion"
+    columns:
+      - name: proposal_id
+        tests:
+          - not_null
+          - unique
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['active', 'closed', 'executed', 'defeated', 'pending', 'queued', 'cancelled']
+      - name: source
+        tests:
+          - accepted_values:
+              values: ['tally']
+
+  - name: clean_tally_votes
+    description: "Cleaned Tally votes with mapped support codes"
+    columns:
+      - name: vote_id
+        tests:
+          - not_null
+          - unique
+      - name: voter
+        tests:
+          - not_null
+      - name: vote_choice
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['for', 'against', 'abstain', 'unknown']
+      - name: source
+        tests:
+          - accepted_values:
+              values: ['tally']
+
+  - name: clean_tally_delegates
+    description: "Cleaned delegate profiles with lowercased addresses"
+    columns:
+      - name: address
+        tests:
+          - not_null
+          - unique
+
+  # --- Sentinel models (data not yet collected, tests set to warn) ---
+
+  - name: clean_delegations
+    description: "Cleaned delegation events (placeholder until on-chain data collected)"
+    columns:
+      - name: delegator
+        tests:
+          - not_null:
+              severity: warn
+      - name: delegate
+        tests:
+          - not_null:
+              severity: warn
+
+  - name: clean_token_distribution
+    description: "Cleaned token distribution with computed percentages (placeholder until on-chain data collected)"
+    columns:
+      - name: address
+        tests:
+          - not_null:
+              severity: warn
+          - unique:
+              severity: warn
+
+  - name: clean_treasury_flows
+    description: "Cleaned treasury flows with normalized addresses (placeholder until on-chain data collected)"
+    columns:
+      - name: tx_hash
+        tests:
+          - not_null:
+              severity: warn
+          - unique:
+              severity: warn
+
+  - name: clean_grants
+    description: "Cleaned grants data (placeholder until grants data collected)"
+    columns:
+      - name: grant_id
+        tests:
+          - not_null:
+              severity: warn
+          - unique:
+              severity: warn
+      - name: working_group
+        tests:
+          - accepted_values:
+              values: ['meta-governance', 'ens-ecosystem', 'public-goods', 'providers']
+              severity: warn
+
+  - name: clean_compensation
+    description: "Cleaned compensation records (placeholder until financial data collected)"
+    columns:
+      - name: recipient_address
+        tests:
+          - not_null:
+              severity: warn
+      - name: working_group
+        tests:
+          - accepted_values:
+              values: ['meta-governance', 'ens-ecosystem', 'public-goods', 'providers']
+              severity: warn
+      - name: role
+        tests:
+          - accepted_values:
+              values: ['delegate', 'steward', 'contributor', 'token_holder', 'service_provider', 'multisig_signer', 'working_group_lead', 'dao_officer']
+              severity: warn
+
+  - name: address_crosswalk
+    description: "Unified address lookup merging all sources"
+    columns:
+      - name: address
+        tests:
+          - not_null
+          - unique

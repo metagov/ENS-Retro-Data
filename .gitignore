@@ -23,6 +23,9 @@ ENV/
 # Exception: dbt seed CSVs are committed
 !infra/dbt/seeds/*.csv
 
+# Exception: dbt seed CSVs are committed
+!infra/dbt/seeds/*.csv
+
 # Dagster artifacts
 .dagster/
 .tmp_dagster_home_*/

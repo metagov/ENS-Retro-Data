@@ -2,20 +2,7 @@
   "domain": "interviews",
   "description": "Stakeholder interview transcripts and notes",
   "sources": ["interviews"],
-  "expected_files": {
-    "delegate_profiles.json": {
-      "description": "Structured delegate profile data from interviews and public statements",
-      "expected_records": null,
-      "schema_hints": {
-        "address": "string",
-        "name": "string (optional)",
-        "role": "string",
-        "interview_date": "string (ISO 8601, optional)",
-        "key_themes": "array<string>",
-        "summary": "string"
-      }
-    }
-  },
   "collection_status": "not_started",
-  "notes": "Qualitative data — requires IRB-equivalent review before publication"
+  "notes": "No data files present; qualitative data — requires IRB-equivalent review before publication",
+  "files": {}
 }
