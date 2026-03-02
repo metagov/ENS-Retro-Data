@@ -1,8 +1,74 @@
 {
   "domain": "on-chain",
   "description": "Blockchain data: token distribution, delegations, and treasury transactions",
-  "sources": ["etherscan", "dune", "token-contract"],
+  "sources": ["etherscan"],
   "collection_status": "not_started",
-  "notes": "No data files present; requires Dune queries or direct RPC calls to collect",
-  "files": {}
+  "notes": "Data collected via Etherscan REST API (free tier)",
+  "files": {
+    "delegations.json": {
+      "status": "missing",
+      "description": "ENS token DelegateChanged events from Etherscan",
+      "expected_records": null,
+      "schema_hints": {
+        "delegator": "string (0x address)",
+        "delegate": "string (0x address)",
+        "block_number": "integer",
+        "timestamp": "integer (unix timestamp)",
+        "token_balance": "null (not available from DelegateChanged event)"
+      },
+      "provenance": {
+        "source": "etherscan.io",
+        "api_endpoint": "https://api.etherscan.io/api",
+        "query_or_method": "getLogs (topic0=DelegateChanged, contract=ENS token)",
+        "collected_by": null,
+        "collected_at": null,
+        "covers_period": "all-time (from ENS token deployment)",
+        "notes": "token_balance is null; silver layer handles via try_cast"
+      }
+    },
+    "token_distribution.json": {
+      "status": "missing",
+      "description": "ENS token holder balances computed from Transfer events",
+      "expected_records": null,
+      "schema_hints": {
+        "address": "string (0x address)",
+        "balance": "string (wei, big integer as string)",
+        "percentage": "float (balance / total_supply * 100)",
+        "snapshot_block": "integer (latest block in dataset)"
+      },
+      "provenance": {
+        "source": "etherscan.io",
+        "api_endpoint": "https://api.etherscan.io/api",
+        "query_or_method": "getLogs (topic0=Transfer, contract=ENS token), balance computed client-side",
+        "collected_by": null,
+        "collected_at": null,
+        "covers_period": "cumulative from token deployment to latest block",
+        "notes": "Balances computed as sum(inflows) - sum(outflows) per address"
+      }
+    },
+    "treasury_flows.json": {
+      "status": "missing",
+      "description": "ENS DAO treasury transactions (ETH + ERC-20 transfers)",
+      "expected_records": null,
+      "schema_hints": {
+        "tx_hash": "string (transaction hash)",
+        "from": "string (0x address)",
+        "to": "string (0x address)",
+        "value": "string (wei amount)",
+        "token": "string (token symbol)",
+        "block_number": "integer",
+        "timestamp": "integer (unix timestamp)",
+        "category": "string (initially unknown)"
+      },
+      "provenance": {
+        "source": "etherscan.io",
+        "api_endpoint": "https://api.etherscan.io/api",
+        "query_or_method": "account/txlist + account/tokentx for DAO wallet addresses",
+        "collected_by": null,
+        "collected_at": null,
+        "covers_period": "all-time for wallet.ensdao.eth",
+        "notes": "Category set to unknown; can be enriched from SafeNotes"
+      }
+    }
+  }
 }

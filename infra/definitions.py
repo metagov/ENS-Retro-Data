@@ -6,7 +6,7 @@ from dagster_dbt import DbtCliResource
 from infra.dbt_assets import ens_dbt_assets
 from infra.dbt_project import dbt_project
 from infra.ingest import assets as ingest_assets
-from infra.resources import TallyApiConfig
+from infra.resources import EtherscanApiConfig, TallyApiConfig
 from infra.validate.checks import (
     check_ge_snapshot_proposals,
     check_ge_snapshot_votes,
@@ -43,5 +43,6 @@ defs = Definitions(
     resources={
         "dbt": DbtCliResource(project_dir=dbt_project.project_dir),
         "tally_config": TallyApiConfig(api_key=EnvVar("TALLY_API_KEY")),
+        "etherscan_config": EtherscanApiConfig(api_key=EnvVar("ETHERSCAN_API_KEY")),
     },
 )

@@ -11,6 +11,11 @@ from pathlib import Path
 
 from dagster import AssetExecutionContext, asset
 
+from infra.ingest.etherscan_api import (
+    fetch_delegation_events,
+    fetch_token_transfers,
+    fetch_treasury_transactions,
+)
 from infra.ingest.snapshot_api import fetch_snapshot_proposals, fetch_snapshot_votes
 from infra.ingest.tally_api import (
     fetch_organization,
@@ -21,7 +26,7 @@ from infra.ingest.tally_api import (
     flatten_tally_proposals,
     flatten_tally_votes,
 )
-from infra.resources import TallyApiConfig
+from infra.resources import EtherscanApiConfig, TallyApiConfig
 
 BRONZE_ROOT = Path(__file__).resolve().parent.parent.parent / "bronze"
 
@@ -177,7 +182,7 @@ def tally_votes(context: AssetExecutionContext, tally_config: TallyApiConfig) ->
     # Read proposal IDs from the flattened file
     proposals_path = BRONZE_ROOT / "governance" / "tally_proposals.json"
     with open(proposals_path) as f:
-        flat_proposals = json.load(f)
+        _flat_proposals = json.load(f)  # noqa: F841 — read to confirm file exists
     # Re-fetch raw proposals to get IDs for the votes query
     org = fetch_organization(tally_config.api_key)
     raw_proposals = fetch_tally_proposals(org["id"], tally_config.api_key)
@@ -218,22 +223,46 @@ def votingpower_delegates(context: AssetExecutionContext) -> None:
     )
 
 
-@asset(group_name="bronze", compute_kind="file")
-def delegations(context: AssetExecutionContext) -> None:
-    """Sentinel for on-chain delegation events (manually placed)."""
-    _check_file_exists("on-chain", "delegations.json", context)
+@asset(group_name="bronze", compute_kind="api")
+def delegations(
+    context: AssetExecutionContext, etherscan_config: EtherscanApiConfig,
+) -> None:
+    """Fetch DelegateChanged events from Etherscan for the ENS token."""
+    events = fetch_delegation_events(etherscan_config.api_key)
+    context.log.info(f"Fetched {len(events)} delegation events")
+    _write_json(
+        events, "on-chain", "delegations.json", context,
+        source="etherscan.io",
+        method="Event logs API (DelegateChanged on ENS token contract)",
+    )
 
 
-@asset(group_name="bronze", compute_kind="file")
-def token_distribution(context: AssetExecutionContext) -> None:
-    """Sentinel for token distribution snapshot (manually placed)."""
-    _check_file_exists("on-chain", "token_distribution.json", context)
+@asset(group_name="bronze", compute_kind="api")
+def token_distribution(
+    context: AssetExecutionContext, etherscan_config: EtherscanApiConfig,
+) -> None:
+    """Compute ENS token distribution from Transfer events via Etherscan."""
+    distribution = fetch_token_transfers(etherscan_config.api_key)
+    context.log.info(f"Computed distribution for {len(distribution)} holders")
+    _write_json(
+        distribution, "on-chain", "token_distribution.json", context,
+        source="etherscan.io",
+        method="Event logs API (Transfer events, client-side balance computation)",
+    )
 
 
-@asset(group_name="bronze", compute_kind="file")
-def treasury_flows(context: AssetExecutionContext) -> None:
-    """Sentinel for treasury flows (manually placed)."""
-    _check_file_exists("on-chain", "treasury_flows.json", context)
+@asset(group_name="bronze", compute_kind="api")
+def treasury_flows(
+    context: AssetExecutionContext, etherscan_config: EtherscanApiConfig,
+) -> None:
+    """Fetch treasury transactions (ETH + ERC-20) for ENS DAO wallets."""
+    flows = fetch_treasury_transactions(etherscan_config.api_key)
+    context.log.info(f"Fetched {len(flows)} treasury transactions")
+    _write_json(
+        flows, "on-chain", "treasury_flows.json", context,
+        source="etherscan.io",
+        method="Account txlist + tokentx APIs for ENS DAO wallets",
+    )
 
 
 @asset(group_name="bronze", compute_kind="file")
