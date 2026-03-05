@@ -1,6 +1,9 @@
 # Secrets
 .env
 
+# Etherscan ingestion checkpoints (resumable fetch state)
+bronze/on-chain/.checkpoints/
+
 # Python
 __pycache__/
 *.py[cod]
