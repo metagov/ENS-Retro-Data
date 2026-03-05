@@ -308,7 +308,6 @@ ens-retro-data/
 │   ├── forum/                     # Discourse JSON exports
 │   ├── financial/                 # enswallets, SafeNotes, Karpatkey
 │   ├── docs/                      # ENS Docs, Basics, website copy
-│   ├── interviews/                # Transcripts (markdown or text)
 │   ├── grants/                    # Grant proposals, reports
 │   └── github/                    # ensdomains repo activity
 │
@@ -330,6 +329,7 @@ ens-retro-data/
 ├── analysis/                     # Analysis notebooks or Dashboards (Quarto/Marimo/Jupyter)
 │
 └── docs/
+    ├── Phase 1                    # Phase 1 Design Docs and Results
     ├── taxonomy.md                # Human-readable taxonomy docs
     ├── data-dictionary.md         # Field definitions per table
     └── collection-log.md          # What was collected, when, by whom
