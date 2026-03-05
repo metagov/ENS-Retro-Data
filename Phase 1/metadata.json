@@ -1,0 +1,29 @@
+{
+  "domain": "Phase 1",
+  "description": "Stakeholder Mapping and Analysis — Key Informant Interviews, research design, and results reporting",
+  "sources": ["interviews", "qualitative analysis"],
+  "collection_status": "complete",
+  "notes": "Qualitative data — requires IRB-equivalent review before publication",
+  "files": {
+    "Design Docs and Results Reporting/Analysis Plan_.xlsx": {
+      "description": "Analysis plan for Phase 1 qualitative research",
+      "format": "xlsx"
+    },
+    "Design Docs and Results Reporting/Code book v2-2.xlsx": {
+      "description": "Codebook (v2.2) for qualitative interview coding",
+      "format": "xlsx"
+    },
+    "Design Docs and Results Reporting/KII Synopsis.pdf": {
+      "description": "Key Informant Interview synopsis and findings summary",
+      "format": "pdf"
+    },
+    "Overall Research Design and Kick Off Materials/ENS Kickoff -2.pptx": {
+      "description": "ENS project kickoff presentation",
+      "format": "pptx"
+    },
+    "Overall Research Design and Kick Off Materials/Full Research Design.pdf": {
+      "description": "Full research design document for the ENS retrospective evaluation",
+      "format": "pdf"
+    }
+  }
+}
