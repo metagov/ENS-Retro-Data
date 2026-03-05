@@ -34,7 +34,7 @@ ENV/
 
 # Dagster artifacts
 .dagster/
-.tmp_dagster_home_*/
+.tmp_dagster_home_*
 
 # dbt artifacts
 infra/dbt/target/
