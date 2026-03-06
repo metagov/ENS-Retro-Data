@@ -1,8 +1,11 @@
 """Tally GraphQL API client for ENS DAO governance data."""
 
+import logging
 import time
 
 import requests
+
+logger = logging.getLogger(__name__)
 
 API_URL = "https://api.tally.xyz/query"
 ORG_SLUG = "ens"
@@ -120,7 +123,7 @@ def fetch_tally_proposals(org_id: str, api_key: str) -> list[dict]:
     """Fetch all Tally proposals (raw API objects)."""
     all_proposals: list[dict] = []
     cursor: str | None = None
-    page_size = 50
+    page_size = 200
 
     while True:
         variables: dict = {"orgId": org_id, "limit": page_size}
@@ -187,13 +190,20 @@ query ListVotes($proposalId: IntID!, $limit: Int!, $afterCursor: String) {
 
 
 def fetch_tally_votes(proposals: list[dict], api_key: str) -> list[dict]:
-    """Fetch all votes for the given Tally proposals (raw API objects)."""
-    all_votes: list[dict] = []
+    """Fetch all votes for the given Tally proposals (raw API objects).
 
-    for proposal in proposals:
+    Estimated time: ~2-4 min (~9.5k votes across ~62 proposals).
+    """
+    all_votes: list[dict] = []
+    total_proposals = len(proposals)
+    start_time = time.time()
+
+    logger.info("Starting votes fetch for %d proposals (est. ~2-4 min)", total_proposals)
+
+    for i, proposal in enumerate(proposals, 1):
         prop_id = proposal["id"]
         cursor: str | None = None
-        page_size = 100
+        page_size = 500
 
         while True:
             variables: dict = {"proposalId": prop_id, "limit": page_size}
@@ -212,6 +222,15 @@ def fetch_tally_votes(proposals: list[dict], api_key: str) -> list[dict]:
             if not cursor:
                 break
             time.sleep(1)
+
+        if i % 10 == 0:
+            elapsed = time.time() - start_time
+            est_total = elapsed / i * total_proposals
+            remaining = est_total - elapsed
+            logger.info(
+                "Votes progress: proposal %d/%d, %d votes so far (~%.0fs remaining)",
+                i, total_proposals, len(all_votes), remaining,
+            )
 
         time.sleep(1)
 
@@ -274,10 +293,17 @@ query ListDelegates($orgId: IntID!, $limit: Int!, $afterCursor: String) {
 
 
 def fetch_tally_delegates(org_id: str, api_key: str) -> list[dict]:
-    """Fetch all Tally delegates (raw API objects)."""
+    """Fetch all Tally delegates (raw API objects).
+
+    Estimated time: ~2-3 min (~38k delegates, 500/page, ~76 pages).
+    """
     all_delegates: list[dict] = []
     cursor: str | None = None
-    page_size = 50
+    page_size = 500
+    page_num = 0
+    start_time = time.time()
+
+    logger.info("Starting delegate fetch (est. ~2-3 min for ~38k delegates)")
 
     while True:
         variables: dict = {"orgId": org_id, "limit": page_size}
@@ -291,6 +317,15 @@ def fetch_tally_delegates(org_id: str, api_key: str) -> list[dict]:
         if not nodes:
             break
         all_delegates.extend(nodes)
+        page_num += 1
+
+        if page_num % 10 == 0:
+            elapsed = time.time() - start_time
+            rate = len(all_delegates) / elapsed if elapsed > 0 else 0
+            logger.info(
+                "Delegates progress: %d fetched (page %d, %.0f records/sec, %.0fs elapsed)",
+                len(all_delegates), page_num, rate, elapsed,
+            )
 
         cursor = page_info.get("lastCursor")
         if not cursor:

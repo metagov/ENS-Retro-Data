@@ -46,7 +46,7 @@ DAO_WALLETS: dict[str, str] = {
 }
 
 PAGE_SIZE = 1000        # Etherscan free-tier max records per page
-REQUEST_DELAY = 0.35    # ~3 req/sec with safety margin
+REQUEST_DELAY = 0.25    # ~4 req/sec (free tier allows 5/sec)
 RATE_LIMIT_DELAY = 60   # Back-off on 429 / "Max rate limit reached"
 MAX_PAGES_PER_RANGE = 10  # Etherscan caps getLogs at 10 000 results
 
@@ -386,6 +386,11 @@ def fetch_token_transfers(api_key: str) -> list[dict]:
                 "latest_block": latest_block,
                 "balances": {a: str(b) for a, b in balances.items()},
             })
+
+    logger.info(
+        "Starting token transfer fetch (est. ~10-20 min on free tier — "
+        "replays all ENS Transfer events since deployment)"
+    )
 
     params = {
         "module": "logs",

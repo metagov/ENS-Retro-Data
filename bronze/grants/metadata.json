@@ -1,8 +1,67 @@
 {
   "domain": "grants",
-  "description": "ENS DAO grants program data — applications, awards, and outcomes",
-  "sources": ["grants-portal"],
-  "collection_status": "not_started",
-  "notes": "No data files present; grants portal or forum-based collection needed",
-  "files": {}
+  "description": "ENS DAO small grants program data from Snapshot (small-grants.eth space)",
+  "sources": [
+    "snapshot"
+  ],
+  "collection_status": "complete",
+  "notes": "Proposals and votes fetched via Snapshot GraphQL API for the small-grants.eth space",
+  "files": {
+    "smallgrants_proposals.json": {
+      "status": "present",
+      "description": "Small grants proposals from Snapshot (small-grants.eth)",
+      "expected_records": null,
+      "schema_hints": {
+        "id": "string",
+        "title": "string",
+        "body": "string",
+        "choices": "array<string>",
+        "start": "integer (unix timestamp)",
+        "end": "integer (unix timestamp)",
+        "state": "string",
+        "scores": "array<float>",
+        "scores_total": "float",
+        "votes": "integer",
+        "author": "string (address)"
+      },
+      "provenance": {
+        "source": "snapshot.org",
+        "api_endpoint": "https://hub.snapshot.org/graphql",
+        "query_or_method": "GraphQL paginated query (space=small-grants.eth)",
+        "collected_by": "snapshot.org",
+        "collected_at": "2026-03-06T04:06:14.837331+00:00",
+        "covers_period": "all-time",
+        "notes": "Raw API response objects, no transforms applied",
+        "records": 24
+      },
+      "actual_records": 24,
+      "file_size_bytes": 67605
+    },
+    "smallgrants_votes.json": {
+      "status": "present",
+      "description": "Individual votes cast on small grants proposals",
+      "expected_records": null,
+      "schema_hints": {
+        "id": "string",
+        "voter": "string (address)",
+        "choice": "integer or object",
+        "vp": "float (voting power)",
+        "created": "integer (unix timestamp)",
+        "proposal_id": "string (injected by pipeline)"
+      },
+      "provenance": {
+        "source": "snapshot.org",
+        "api_endpoint": "https://hub.snapshot.org/graphql",
+        "query_or_method": "GraphQL paginated query per proposal",
+        "collected_by": "snapshot.org",
+        "collected_at": "2026-03-06T04:07:01.705313+00:00",
+        "covers_period": "all votes across all small grants proposals",
+        "notes": "proposal_id field added by pipeline",
+        "records": 1562
+      },
+      "actual_records": 1562,
+      "file_size_bytes": 562855
+    }
+  },
+  "last_indexed_at": "2026-03-06T04:07:01.705313+00:00"
 }

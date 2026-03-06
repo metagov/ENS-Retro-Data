@@ -16,6 +16,10 @@ from infra.ingest.etherscan_api import (
     fetch_token_transfers,
     fetch_treasury_transactions,
 )
+from infra.ingest.smallgrants_api import (
+    fetch_smallgrants_proposals,
+    fetch_smallgrants_votes,
+)
 from infra.ingest.snapshot_api import fetch_snapshot_proposals, fetch_snapshot_votes
 from infra.ingest.tally_api import (
     fetch_organization,
@@ -136,7 +140,8 @@ def _check_file_exists(subdir: str, filename: str, context: AssetExecutionContex
 
 @asset(group_name="bronze", compute_kind="api")
 def snapshot_proposals(context: AssetExecutionContext) -> None:
-    """Fetch Snapshot proposals from API and write to bronze/governance/."""
+    """Fetch Snapshot proposals from API and write to bronze/governance/. (~30s)"""
+    context.log.info("Estimated time: ~30s (~90 proposals)")
     proposals = fetch_snapshot_proposals()
     context.log.info(f"Fetched {len(proposals)} snapshot proposals")
     _write_json(
@@ -147,7 +152,8 @@ def snapshot_proposals(context: AssetExecutionContext) -> None:
 
 @asset(group_name="bronze", compute_kind="api", deps=["snapshot_proposals"])
 def snapshot_votes(context: AssetExecutionContext) -> None:
-    """Fetch Snapshot votes for all proposals and write to bronze/governance/."""
+    """Fetch Snapshot votes for all proposals and write to bronze/governance/. (~3-5 min)"""
+    context.log.info("Estimated time: ~3-5 min (~47k votes across ~90 proposals)")
     # Read proposal IDs from the file written by snapshot_proposals
     proposals_path = BRONZE_ROOT / "governance" / "snapshot_proposals.json"
     with open(proposals_path) as f:
@@ -163,7 +169,8 @@ def snapshot_votes(context: AssetExecutionContext) -> None:
 
 @asset(group_name="bronze", compute_kind="api")
 def tally_proposals(context: AssetExecutionContext, tally_config: TallyApiConfig) -> None:
-    """Fetch Tally proposals from API and write to bronze/governance/."""
+    """Fetch Tally proposals from API and write to bronze/governance/. (~15s)"""
+    context.log.info("Estimated time: ~15s (~62 proposals)")
     org = fetch_organization(tally_config.api_key)
     org_id = org["id"]
     context.log.info(f"Tally org: {org['name']} (id={org_id})")
@@ -178,16 +185,15 @@ def tally_proposals(context: AssetExecutionContext, tally_config: TallyApiConfig
 
 @asset(group_name="bronze", compute_kind="api", deps=["tally_proposals"])
 def tally_votes(context: AssetExecutionContext, tally_config: TallyApiConfig) -> None:
-    """Fetch Tally votes for all proposals and write to bronze/governance/."""
-    # Read proposal IDs from the flattened file
+    """Fetch Tally votes for all proposals and write to bronze/governance/. (~2-4 min)"""
+    context.log.info("Estimated time: ~2-4 min (~9.5k votes across ~62 proposals)")
+    # Read proposals from disk — already fetched by tally_proposals asset
     proposals_path = BRONZE_ROOT / "governance" / "tally_proposals.json"
     with open(proposals_path) as f:
-        _flat_proposals = json.load(f)  # noqa: F841 — read to confirm file exists
-    # Re-fetch raw proposals to get IDs for the votes query
-    org = fetch_organization(tally_config.api_key)
-    raw_proposals = fetch_tally_proposals(org["id"], tally_config.api_key)
-    context.log.info(f"Fetching votes for {len(raw_proposals)} tally proposals")
-    raw_votes = fetch_tally_votes(raw_proposals, tally_config.api_key)
+        flat_proposals = json.load(f)
+    # Use the flat proposals directly — they have "id" which is all we need
+    context.log.info(f"Fetching votes for {len(flat_proposals)} tally proposals")
+    raw_votes = fetch_tally_votes(flat_proposals, tally_config.api_key)
     votes = flatten_tally_votes(raw_votes)
     context.log.info(f"Fetched {len(votes)} tally votes")
     _write_json(
@@ -198,7 +204,8 @@ def tally_votes(context: AssetExecutionContext, tally_config: TallyApiConfig) ->
 
 @asset(group_name="bronze", compute_kind="api")
 def tally_delegates(context: AssetExecutionContext, tally_config: TallyApiConfig) -> None:
-    """Fetch Tally delegates from API and write to bronze/governance/."""
+    """Fetch Tally delegates from API and write to bronze/governance/. (~2-3 min)"""
+    context.log.info("Estimated time: ~2-3 min (~38k delegates, 500/page)")
     org = fetch_organization(tally_config.api_key)
     org_id = org["id"]
     raw = fetch_tally_delegates(org_id, tally_config.api_key)
@@ -227,7 +234,8 @@ def votingpower_delegates(context: AssetExecutionContext) -> None:
 def delegations(
     context: AssetExecutionContext, etherscan_config: EtherscanApiConfig,
 ) -> None:
-    """Fetch DelegateChanged events from Etherscan for the ENS token."""
+    """Fetch DelegateChanged events from Etherscan for the ENS token. (~5-10 min)"""
+    context.log.info("Estimated time: ~5-10 min (all DelegateChanged events, Etherscan free tier)")
     events = fetch_delegation_events(etherscan_config.api_key)
     context.log.info(f"Fetched {len(events)} delegation events")
     _write_json(
@@ -241,7 +249,8 @@ def delegations(
 def token_distribution(
     context: AssetExecutionContext, etherscan_config: EtherscanApiConfig,
 ) -> None:
-    """Compute ENS token distribution from Transfer events via Etherscan."""
+    """Compute ENS token distribution from Transfer events via Etherscan. (~10-20 min)"""
+    context.log.info("Estimated time: ~10-20 min (replays ALL ENS Transfer events, Etherscan free tier)")
     distribution = fetch_token_transfers(etherscan_config.api_key)
     context.log.info(f"Computed distribution for {len(distribution)} holders")
     _write_json(
@@ -255,7 +264,8 @@ def token_distribution(
 def treasury_flows(
     context: AssetExecutionContext, etherscan_config: EtherscanApiConfig,
 ) -> None:
-    """Fetch treasury transactions (ETH + ERC-20) for ENS DAO wallets."""
+    """Fetch treasury transactions (ETH + ERC-20) for ENS DAO wallets. (~3-5 min)"""
+    context.log.info("Estimated time: ~3-5 min (ETH + ERC-20 txs for DAO wallets)")
     flows = fetch_treasury_transactions(etherscan_config.api_key)
     context.log.info(f"Fetched {len(flows)} treasury transactions")
     _write_json(
@@ -265,25 +275,29 @@ def treasury_flows(
     )
 
 
-@asset(group_name="bronze", compute_kind="file")
-def grants(context: AssetExecutionContext) -> None:
-    """Sentinel for grants data (manually placed)."""
-    _check_file_exists("grants", "grants.json", context)
+@asset(group_name="bronze", compute_kind="api")
+def smallgrants_proposals(context: AssetExecutionContext) -> None:
+    """Fetch ENS Small Grants proposals from Snapshot and write to bronze/grants/. (~30s)"""
+    context.log.info("Estimated time: ~30s")
+    proposals = fetch_smallgrants_proposals()
+    context.log.info(f"Fetched {len(proposals)} small grants proposals")
+    _write_json(
+        proposals, "grants", "smallgrants_proposals.json", context,
+        source="snapshot.org", method="GraphQL paginated query (space=small-grants.eth)",
+    )
 
 
-@asset(group_name="bronze", compute_kind="file")
-def compensation(context: AssetExecutionContext) -> None:
-    """Sentinel for compensation records (manually placed)."""
-    _check_file_exists("financial", "compensation.json", context)
-
-
-@asset(group_name="bronze", compute_kind="file")
-def delegate_profiles(context: AssetExecutionContext) -> None:
-    """Sentinel for delegate profiles (manually placed)."""
-    _check_file_exists("interviews", "delegate_profiles.json", context)
-
-
-@asset(group_name="bronze", compute_kind="file")
-def forum_posts(context: AssetExecutionContext) -> None:
-    """Sentinel for forum posts (manually placed)."""
-    _check_file_exists("forum", "forum_posts.json", context)
+@asset(group_name="bronze", compute_kind="api", deps=["smallgrants_proposals"])
+def smallgrants_votes(context: AssetExecutionContext) -> None:
+    """Fetch votes for all ENS Small Grants proposals and write to bronze/grants/. (~2-5 min)"""
+    context.log.info("Estimated time: ~2-5 min (votes across all small grant proposals)")
+    proposals_path = BRONZE_ROOT / "grants" / "smallgrants_proposals.json"
+    with open(proposals_path) as f:
+        proposals = json.load(f)
+    context.log.info(f"Fetching votes for {len(proposals)} small grants proposals")
+    votes = fetch_smallgrants_votes(proposals)
+    context.log.info(f"Fetched {len(votes)} small grants votes")
+    _write_json(
+        votes, "grants", "smallgrants_votes.json", context,
+        source="snapshot.org", method="GraphQL paginated query per proposal",
+    )

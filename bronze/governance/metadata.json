@@ -1,9 +1,13 @@
 {
   "domain": "governance",
   "description": "On-chain and off-chain governance proposal and voting data from Snapshot and Tally",
-  "sources": ["snapshot", "tally", "votingpower-xyz"],
+  "sources": [
+    "snapshot",
+    "tally",
+    "votingpower-xyz"
+  ],
   "collection_status": "complete",
-  "last_indexed_at": "2026-02-24T09:38:25Z",
+  "last_indexed_at": "2026-03-06T12:30:26.472966+00:00",
   "notes": "All governance data indexed via Dagster pipeline. Snapshot + Tally fetched from GraphQL APIs, votingpower.xyz manually exported.",
   "files": {
     "snapshot_proposals.json": {
@@ -28,11 +32,12 @@
       "provenance": {
         "source": "snapshot.org",
         "api_endpoint": "https://hub.snapshot.org/graphql",
-        "query_or_method": "GraphQL paginated query (space=ens.eth, batch=100)",
-        "collected_by": "dagster_pipeline (infra.ingest.snapshot_api)",
-        "collected_at": "2026-02-24T08:28:19Z",
+        "query_or_method": "GraphQL paginated query (space=ens.eth)",
+        "collected_by": "snapshot.org",
+        "collected_at": "2026-03-06T12:25:46.364537+00:00",
         "covers_period": "all-time (ordered by created desc)",
-        "notes": "Raw API response objects, no transforms applied"
+        "notes": "Raw API response objects, no transforms applied",
+        "records": 90
       }
     },
     "snapshot_votes.json": {
@@ -52,19 +57,20 @@
       "provenance": {
         "source": "snapshot.org",
         "api_endpoint": "https://hub.snapshot.org/graphql",
-        "query_or_method": "GraphQL paginated query per proposal (batch=1000), proposal_id injected",
-        "collected_by": "dagster_pipeline (infra.ingest.snapshot_api)",
-        "collected_at": "2026-02-24T08:32:51Z",
+        "query_or_method": "GraphQL paginated query per proposal",
+        "collected_by": "snapshot.org",
+        "collected_at": "2026-03-06T12:30:26.472966+00:00",
         "covers_period": "all votes across 90 proposals",
-        "notes": "proposal_id field added by pipeline (not in raw API response)"
+        "notes": "proposal_id field added by pipeline (not in raw API response)",
+        "records": 47551
       }
     },
     "tally_proposals.json": {
       "status": "present",
       "description": "On-chain governance proposals from Tally (Governor contract)",
       "expected_records": 62,
-      "actual_records": 62,
-      "file_size_bytes": 133525,
+      "actual_records": 64,
+      "file_size_bytes": 138392,
       "schema_hints": {
         "id": "string",
         "title": "string",
@@ -80,11 +86,12 @@
       "provenance": {
         "source": "tally.xyz",
         "api_endpoint": "https://api.tally.xyz/query",
-        "query_or_method": "GraphQL paginated query (org=ens, batch=50), flattened from nested response",
-        "collected_by": "dagster_pipeline (infra.ingest.tally_api)",
-        "collected_at": "2026-02-24T08:28:45Z",
+        "query_or_method": "GraphQL paginated query (org=ens), flattened",
+        "collected_by": "tally.xyz",
+        "collected_at": "2026-03-06T12:27:02.347891+00:00",
         "covers_period": "all-time on-chain proposals",
-        "notes": "Nested API response flattened by flatten_tally_proposals(); vote counts converted from wei to human-readable"
+        "notes": "Nested API response flattened by flatten_tally_proposals(); vote counts converted from wei to human-readable",
+        "records": 64
       }
     },
     "tally_votes.json": {
@@ -150,12 +157,13 @@
       },
       "provenance": {
         "source": "votingpower.xyz",
-        "collected_by": "metagov",
-        "collected_at": "2026-02-20",
-        "query_or_method": "manual CSV export from votingpower.xyz/ens",
+        "collected_by": "manual_upload",
+        "collected_at": "2026-03-06T12:25:53.956692+00:00",
+        "query_or_method": "sentinel check \u2014 file already on disk",
         "covers_period": "point-in-time snapshot 2026-02-20",
         "notes": "Delegate voting power rankings"
-      }
+      },
+      "file_size_bytes": 6171
     }
   }
 }

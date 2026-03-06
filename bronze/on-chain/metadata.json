@@ -1,12 +1,14 @@
 {
   "domain": "on-chain",
   "description": "Blockchain data: token distribution, delegations, and treasury transactions",
-  "sources": ["etherscan"],
-  "collection_status": "not_started",
+  "sources": [
+    "etherscan"
+  ],
+  "collection_status": "in_progress",
   "notes": "Data collected via Etherscan REST API (free tier)",
   "files": {
     "delegations.json": {
-      "status": "missing",
+      "status": "present",
       "description": "ENS token DelegateChanged events from Etherscan",
       "expected_records": null,
       "schema_hints": {
@@ -19,12 +21,15 @@
       "provenance": {
         "source": "etherscan.io",
         "api_endpoint": "https://api.etherscan.io/api",
-        "query_or_method": "getLogs (topic0=DelegateChanged, contract=ENS token)",
-        "collected_by": null,
-        "collected_at": null,
+        "query_or_method": "Event logs API (DelegateChanged on ENS token contract)",
+        "collected_by": "etherscan.io",
+        "collected_at": "2026-03-06T04:01:58.633827+00:00",
         "covers_period": "all-time (from ENS token deployment)",
-        "notes": "token_balance is null; silver layer handles via try_cast"
-      }
+        "notes": "token_balance is null; silver layer handles via try_cast",
+        "records": 122974
+      },
+      "actual_records": 122974,
+      "file_size_bytes": 26931308
     },
     "token_distribution.json": {
       "status": "missing",
@@ -47,7 +52,7 @@
       }
     },
     "treasury_flows.json": {
-      "status": "missing",
+      "status": "present",
       "description": "ENS DAO treasury transactions (ETH + ERC-20 transfers)",
       "expected_records": null,
       "schema_hints": {
@@ -63,12 +68,16 @@
       "provenance": {
         "source": "etherscan.io",
         "api_endpoint": "https://api.etherscan.io/api",
-        "query_or_method": "account/txlist + account/tokentx for DAO wallet addresses",
-        "collected_by": null,
-        "collected_at": null,
+        "query_or_method": "Account txlist + tokentx APIs for ENS DAO wallets",
+        "collected_by": "etherscan.io",
+        "collected_at": "2026-03-06T12:25:52.106448+00:00",
         "covers_period": "all-time for wallet.ensdao.eth",
-        "notes": "Category set to unknown; can be enriched from SafeNotes"
-      }
+        "notes": "Category set to unknown; can be enriched from SafeNotes",
+        "records": 619
+      },
+      "actual_records": 619,
+      "file_size_bytes": 214679
     }
-  }
+  },
+  "last_indexed_at": "2026-03-06T12:25:52.106448+00:00"
 }
