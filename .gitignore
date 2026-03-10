@@ -32,8 +32,9 @@ ENV/
 # Exception: dbt seed CSVs are committed
 !infra/dbt/seeds/*.csv
 
-# Dagster artifacts
-.dagster/
+# Dagster artifacts — track config + storage for run history
+.dagster/storage/**/*.db-wal
+.dagster/storage/**/*.db-shm
 .tmp_dagster_home_*
 
 # dbt artifacts
