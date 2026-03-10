@@ -18,12 +18,6 @@ build/
 venv/
 ENV/
 
-# Data files (raw data tracked via metadata sidecars, not committed)
-*.parquet
-*.csv
-*.tsv
-*.duckdb
-*.duckdb.wal
 
 # Exception: dbt seed CSVs are committed
 !infra/dbt/seeds/*.csv
