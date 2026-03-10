@@ -2,7 +2,6 @@
 .env
 
 # Etherscan ingestion checkpoints (resumable fetch state)
-bronze/on-chain/.checkpoints/
 
 # Python
 __pycache__/
@@ -33,8 +32,6 @@ ENV/
 !infra/dbt/seeds/*.csv
 
 # Dagster artifacts — track config + storage for run history
-.dagster/storage/**/*.db-wal
-.dagster/storage/**/*.db-shm
 .tmp_dagster_home_*
 
 # dbt artifacts

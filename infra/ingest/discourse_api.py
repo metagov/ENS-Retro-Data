@@ -166,27 +166,18 @@ def fetch_forum_data() -> tuple[list[dict], list[dict]]:
 
     Returns (topics, posts) where both are lists of slimmed-down dicts.
 
-    Estimated time: ~10-15 min (~2,400 topics + their posts).
-    Topics with only 1 post are skipped for post fetching (OP is captured
-    in topic metadata already).
+    Estimated time: ~15-25 min (~2,400 topics + all their posts).
     """
     raw_topics = fetch_all_topics()
     topics = [_slim_topic(t) for t in raw_topics]
 
-    # Only fetch posts for topics that have replies
-    topics_with_posts = [t for t in raw_topics if t.get("posts_count", 0) > 1]
-    skipped = len(raw_topics) - len(topics_with_posts)
-
     all_posts: list[dict] = []
-    total = len(topics_with_posts)
+    total = len(raw_topics)
     start_time = time.time()
 
-    logger.info(
-        "Starting post fetch for %d topics (%d skipped with <=1 post, est. ~10-15 min)",
-        total, skipped,
-    )
+    logger.info("Starting post fetch for %d topics (est. ~15-25 min)", total)
 
-    for i, topic in enumerate(topics_with_posts, 1):
+    for i, topic in enumerate(raw_topics, 1):
         topic_id = topic["id"]
         topic_slug = topic.get("slug", "")
         posts = fetch_topic_posts(topic_id, topic_slug)

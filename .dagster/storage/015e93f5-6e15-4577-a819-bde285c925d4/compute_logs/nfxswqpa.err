@@ -1,0 +1,3 @@
+[32m2026-03-10 17:52:13 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - 554844 - LOGS_CAPTURED - Started capturing logs in process (pid: 554844).
+[32m2026-03-10 17:52:13 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - 554844 - forum_topics - STEP_START - Started execution of step "forum_topics".
+[32m2026-03-10 17:52:13 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - forum_topics - Estimated time: ~15-25 min (~2,400 topics + all posts)
