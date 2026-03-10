@@ -1,8 +1,32 @@
 {
   "domain": "financial",
-  "description": "Financial data including compensation, budgets, and spending",
-  "sources": ["etherscan", "dune", "grants-portal"],
-  "collection_status": "not_started",
-  "notes": "No data files present; requires manual collection from forum posts and on-chain data",
-  "files": {}
+  "description": "Financial data including DAO ledger transactions, compensation, budgets, and spending",
+  "sources": ["ens-ledger-app", "0xLighthouse"],
+  "collection_status": "in_progress",
+  "notes": "Ledger CSV sourced from ens-ledger.app, annotated by 0xLighthouse (https://github.com/0xLighthouse/ens-ledger-analysis)",
+  "files": {
+    "ens_ledger_transactions.csv": {
+      "status": "present",
+      "description": "ENS DAO ledger transactions — all wallet spending with categories, amounts, and USD values",
+      "expected_records": 2315,
+      "schema_hints": {
+        "Transaction Hash": "string (0x tx hash)",
+        "Date": "string (YYYY-MM-DD)",
+        "Quarter": "string (e.g. 2022Q2)",
+        "From": "string (wallet label)",
+        "To": "string (recipient label)",
+        "Category": "string (84 unique categories)",
+        "Amount": "float (token amount)",
+        "Asset": "string (ENS, ETH, or USDC)",
+        "Value": "float (USD value at time of transaction)"
+      },
+      "provenance": {
+        "source": "ens-ledger.app",
+        "collected_by": "0xLighthouse",
+        "collected_at": "2025-11-28",
+        "covers_period": "2022-03-31 to 2025-11-28",
+        "notes": "Raw CSV downloaded from ens-ledger.app, part of 0xLighthouse/ens-ledger-analysis repo. Contains 2,315 annotated transactions across 11 wallets, 449 unique recipients, $264M total USD value. Reports and plots available in docs/references/lighthouse-ledger-analysis/"
+      }
+    }
+  }
 }

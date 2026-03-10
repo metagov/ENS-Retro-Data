@@ -231,6 +231,12 @@ def votingpower_delegates(context: AssetExecutionContext) -> None:
     )
 
 
+@asset(group_name="bronze", compute_kind="file")
+def ens_ledger_transactions(context: AssetExecutionContext) -> None:
+    """Sentinel for ENS DAO ledger CSV (sourced by 0xLighthouse from ens-ledger.app)."""
+    _check_file_exists("financial", "ens_ledger_transactions.csv", context)
+
+
 @asset(group_name="bronze", compute_kind="api")
 def delegations(
     context: AssetExecutionContext, etherscan_config: EtherscanApiConfig,
