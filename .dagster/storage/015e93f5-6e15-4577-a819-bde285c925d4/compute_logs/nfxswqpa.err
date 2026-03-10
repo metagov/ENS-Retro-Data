@@ -1,3 +1,9 @@
 [32m2026-03-10 17:52:13 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - 554844 - LOGS_CAPTURED - Started capturing logs in process (pid: 554844).
 [32m2026-03-10 17:52:13 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - 554844 - forum_topics - STEP_START - Started execution of step "forum_topics".
 [32m2026-03-10 17:52:13 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - forum_topics - Estimated time: ~15-25 min (~2,400 topics + all posts)
+[32m2026-03-10 19:16:07 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - forum_topics - Fetched 2474 topics and 21665 posts
+[32m2026-03-10 19:16:10 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - forum_topics - Wrote 2474 records to /home/torch/ENS-Retro-Data/bronze/forum/forum_topics.json (1,227,077 bytes)
+[32m2026-03-10 19:16:29 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - forum_topics - Wrote 21665 records to /home/torch/ENS-Retro-Data/bronze/forum/forum_posts.json (48,761,928 bytes)
+[32m2026-03-10 19:16:31 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - 554844 - forum_topics - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-10 19:16:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - 554844 - forum_topics - ASSET_MATERIALIZATION - Materialized value forum_topics.
+[32m2026-03-10 19:16:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 015e93f5-6e15-4577-a819-bde285c925d4 - 554844 - forum_topics - STEP_SUCCESS - Finished execution of step "forum_topics" in 1h16m.

@@ -1,12 +1,14 @@
 {
   "domain": "forum",
   "description": "ENS Governance Forum (Discourse) topics and posts from discuss.ens.domains",
-  "sources": ["discourse"],
-  "collection_status": "not_started",
+  "sources": [
+    "discourse"
+  ],
+  "collection_status": "complete",
   "notes": "Topics and posts fetched via Discourse public JSON API, no auth required",
   "files": {
     "forum_topics.json": {
-      "status": "missing",
+      "status": "present",
       "description": "All forum topics with metadata (title, category, tags, views, likes, etc.)",
       "expected_records": null,
       "schema_hints": {
@@ -24,14 +26,17 @@
         "source": "discuss.ens.domains",
         "api_endpoint": "https://discuss.ens.domains/latest.json",
         "query_or_method": "Discourse public JSON API (/latest.json paginated)",
-        "collected_by": null,
-        "collected_at": null,
+        "collected_by": "discuss.ens.domains",
+        "collected_at": "2026-03-10T13:46:10.289190+00:00",
         "covers_period": "all-time",
-        "notes": "Slimmed from raw API response, ~30 topics per page"
-      }
+        "notes": "Slimmed from raw API response, ~30 topics per page",
+        "records": 2474
+      },
+      "actual_records": 2474,
+      "file_size_bytes": 1227077
     },
     "forum_posts.json": {
-      "status": "missing",
+      "status": "present",
       "description": "All posts/replies across all forum topics",
       "expected_records": null,
       "schema_hints": {
@@ -50,11 +55,15 @@
         "source": "discuss.ens.domains",
         "api_endpoint": "https://discuss.ens.domains/t/{slug}/{id}.json",
         "query_or_method": "Discourse public JSON API (/t/{slug}/{id}.json per topic)",
-        "collected_by": null,
-        "collected_at": null,
+        "collected_by": "discuss.ens.domains",
+        "collected_at": "2026-03-10T13:46:29.257469+00:00",
         "covers_period": "all posts across all topics",
-        "notes": "Includes HTML body (cooked field). Posts fetched per-topic with batch loading for topics >20 posts."
-      }
+        "notes": "Includes HTML body (cooked field). Posts fetched per-topic with batch loading for topics >20 posts.",
+        "records": 21665
+      },
+      "actual_records": 21665,
+      "file_size_bytes": 48761928
     }
-  }
+  },
+  "last_indexed_at": "2026-03-10T13:46:29.257469+00:00"
 }
