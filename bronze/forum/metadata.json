@@ -1,8 +1,60 @@
 {
   "domain": "forum",
-  "description": "ENS Governance Forum (Discourse) posts, topics, and engagement data",
-  "sources": ["ens-governance-forum"],
+  "description": "ENS Governance Forum (Discourse) topics and posts from discuss.ens.domains",
+  "sources": ["discourse"],
   "collection_status": "not_started",
-  "notes": "No data files present; Discourse API scrape needed",
-  "files": {}
+  "notes": "Topics and posts fetched via Discourse public JSON API, no auth required",
+  "files": {
+    "forum_topics.json": {
+      "status": "missing",
+      "description": "All forum topics with metadata (title, category, tags, views, likes, etc.)",
+      "expected_records": null,
+      "schema_hints": {
+        "topic_id": "integer",
+        "title": "string",
+        "slug": "string",
+        "category_id": "integer",
+        "tags": "array<string>",
+        "created_at": "string (ISO 8601)",
+        "posts_count": "integer",
+        "views": "integer",
+        "like_count": "integer"
+      },
+      "provenance": {
+        "source": "discuss.ens.domains",
+        "api_endpoint": "https://discuss.ens.domains/latest.json",
+        "query_or_method": "Discourse public JSON API (/latest.json paginated)",
+        "collected_by": null,
+        "collected_at": null,
+        "covers_period": "all-time",
+        "notes": "Slimmed from raw API response, ~30 topics per page"
+      }
+    },
+    "forum_posts.json": {
+      "status": "missing",
+      "description": "All posts/replies across all forum topics",
+      "expected_records": null,
+      "schema_hints": {
+        "post_id": "integer",
+        "topic_id": "integer",
+        "post_number": "integer",
+        "username": "string",
+        "created_at": "string (ISO 8601)",
+        "cooked": "string (HTML body)",
+        "reply_count": "integer",
+        "reply_to_post_number": "integer or null",
+        "reads": "integer",
+        "score": "float"
+      },
+      "provenance": {
+        "source": "discuss.ens.domains",
+        "api_endpoint": "https://discuss.ens.domains/t/{slug}/{id}.json",
+        "query_or_method": "Discourse public JSON API (/t/{slug}/{id}.json per topic)",
+        "collected_by": null,
+        "collected_at": null,
+        "covers_period": "all posts across all topics",
+        "notes": "Includes HTML body (cooked field). Posts fetched per-topic with batch loading for topics >20 posts."
+      }
+    }
+  }
 }

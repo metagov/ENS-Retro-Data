@@ -11,6 +11,7 @@ from pathlib import Path
 
 from dagster import AssetExecutionContext, asset
 
+from infra.ingest.discourse_api import fetch_forum_data
 from infra.ingest.etherscan_api import (
     fetch_delegation_events,
     fetch_token_transfers,
@@ -300,4 +301,27 @@ def smallgrants_votes(context: AssetExecutionContext) -> None:
     _write_json(
         votes, "grants", "smallgrants_votes.json", context,
         source="snapshot.org", method="GraphQL paginated query per proposal",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Forum (Discourse) fetchers
+# ---------------------------------------------------------------------------
+
+
+@asset(group_name="bronze", compute_kind="api")
+def forum_topics(context: AssetExecutionContext) -> None:
+    """Fetch all ENS Governance Forum topics and posts from Discourse. (~15-25 min)"""
+    context.log.info("Estimated time: ~15-25 min (~2,400 topics + all posts)")
+    topics, posts = fetch_forum_data()
+    context.log.info(f"Fetched {len(topics)} topics and {len(posts)} posts")
+    _write_json(
+        topics, "forum", "forum_topics.json", context,
+        source="discuss.ens.domains",
+        method="Discourse public JSON API (/latest.json paginated)",
+    )
+    _write_json(
+        posts, "forum", "forum_posts.json", context,
+        source="discuss.ens.domains",
+        method="Discourse public JSON API (/t/{slug}/{id}.json per topic)",
     )

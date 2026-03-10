@@ -4,7 +4,7 @@
   "sources": [
     "etherscan"
   ],
-  "collection_status": "in_progress",
+  "collection_status": "complete",
   "notes": "Data collected via Etherscan REST API (free tier)",
   "files": {
     "delegations.json": {
@@ -32,7 +32,7 @@
       "file_size_bytes": 26931308
     },
     "token_distribution.json": {
-      "status": "missing",
+      "status": "present",
       "description": "ENS token holder balances computed from Transfer events",
       "expected_records": null,
       "schema_hints": {
@@ -44,12 +44,15 @@
       "provenance": {
         "source": "etherscan.io",
         "api_endpoint": "https://api.etherscan.io/api",
-        "query_or_method": "getLogs (topic0=Transfer, contract=ENS token), balance computed client-side",
-        "collected_by": null,
-        "collected_at": null,
+        "query_or_method": "Event logs API (Transfer events, client-side balance computation)",
+        "collected_by": "etherscan.io",
+        "collected_at": "2026-03-10T09:58:48.161658+00:00",
         "covers_period": "cumulative from token deployment to latest block",
-        "notes": "Balances computed as sum(inflows) - sum(outflows) per address"
-      }
+        "notes": "Balances computed as sum(inflows) - sum(outflows) per address",
+        "records": 67107
+      },
+      "actual_records": 67107,
+      "file_size_bytes": 10876923
     },
     "treasury_flows.json": {
       "status": "present",
@@ -79,5 +82,5 @@
       "file_size_bytes": 214679
     }
   },
-  "last_indexed_at": "2026-03-06T12:25:52.106448+00:00"
+  "last_indexed_at": "2026-03-10T09:58:48.161658+00:00"
 }
