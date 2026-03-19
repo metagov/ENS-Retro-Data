@@ -2,6 +2,7 @@
 .env
 
 # Etherscan ingestion checkpoints (resumable fetch state)
+bronze/on-chain/.checkpoints/
 
 # Python
 __pycache__/
@@ -22,16 +23,21 @@ ENV/
 # Exception: dbt seed CSVs are committed
 !infra/dbt/seeds/*.csv
 
-# Exception: dbt seed CSVs are committed
-!infra/dbt/seeds/*.csv
-
-# Dagster artifacts — track config + storage for run history
+# Dagster runtime data (NOT source code)
+.dagster/storage/*.db
+.dagster/storage/*/
+.dagster/.nux/
+.dagster/logs/
 .tmp_dagster_home_*
 
-# dbt artifacts
+# Bronze data outputs (pipeline results, not inputs)
+bronze/
+
+# dbt runtime artifacts
 infra/dbt/target/
 infra/dbt/dbt_packages/
 infra/dbt/logs/
+infra/dbt/models/silver/_silver.yml
 
 # Warehouse (DuckDB)
 warehouse/*.duckdb
