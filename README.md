@@ -70,6 +70,26 @@ echo 'TALLY_API_KEY=your_key_here' > .env
 DAGSTER_HOME=$(pwd)/.dagster uv run dagster dev
 ```
 
+## Dagster Webserver
+
+The project includes a convenience script to launch the Dagster webserver in either full or read-only mode.
+
+```bash
+# Full mode — can launch runs, toggle schedules, materialize assets
+./scripts/serve.sh
+
+# Read-only mode — view-only UI, all mutations disabled
+./scripts/serve.sh --read-only
+```
+
+Override host and port with environment variables:
+
+```bash
+PORT=8080 HOST=0.0.0.0 ./scripts/serve.sh --read-only
+```
+
+Defaults to `127.0.0.1:3000`.
+
 ## Command Reference
 
 ### Setup & Dependencies

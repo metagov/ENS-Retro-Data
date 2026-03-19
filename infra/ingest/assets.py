@@ -17,6 +17,7 @@ from infra.ingest.etherscan_api import (
     fetch_token_transfers,
     fetch_treasury_transactions,
 )
+from infra.ingest.safe_api import fetch_all_balances, fetch_all_safe_transactions
 from infra.ingest.smallgrants_api import (
     fetch_smallgrants_proposals,
     fetch_smallgrants_votes,
@@ -330,4 +331,35 @@ def forum_topics(context: AssetExecutionContext) -> None:
         posts, "forum", "forum_posts.json", context,
         source="discuss.ens.domains",
         method="Discourse public JSON API (/t/{slug}/{id}.json per topic)",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Financial — Safe wallet balances and multisig transactions
+# ---------------------------------------------------------------------------
+
+
+@asset(group_name="bronze", compute_kind="api")
+def ens_wallet_balances(context: AssetExecutionContext) -> None:
+    """Fetch fresh ETH/ENS/USDC balances for all ENS DAO wallets. (~1-2 min)"""
+    context.log.info("Fetching balances for all ENS DAO wallets via Safe TX Service")
+    balances = fetch_all_balances()
+    context.log.info(f"Fetched balances for {len(balances)} wallets")
+    _write_json(
+        balances, "financial", "ens_wallet_balances.json", context,
+        source="safe.global",
+        method="Safe Transaction Service /balances/usd/ per wallet",
+    )
+
+
+@asset(group_name="bronze", compute_kind="api")
+def ens_safe_transactions(context: AssetExecutionContext) -> None:
+    """Fetch multisig transaction history for all ENS DAO Safe wallets. (~5-10 min)"""
+    context.log.info("Fetching Safe multisig transactions for all ENS DAO wallets")
+    transactions = fetch_all_safe_transactions()
+    context.log.info(f"Fetched {len(transactions)} transaction records")
+    _write_json(
+        transactions, "financial", "ens_safe_transactions.json", context,
+        source="safe.global",
+        method="Safe Transaction Service /multisig-transactions/ per wallet",
     )
