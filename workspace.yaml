@@ -1,0 +1,4 @@
+load_from:
+  - python_module:
+      module_name: infra.definitions
+      working_directory: .

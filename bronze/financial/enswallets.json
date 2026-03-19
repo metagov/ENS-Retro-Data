@@ -1,0 +1,321 @@
+{
+  "snapshot_date": "2026-03-17",
+  "source": "https://github.com/aslobodnik/ens-dashboard",
+  "operational_contracts": [
+    {
+      "name": "Controller",
+      "ens_name": "controller.ens.eth",
+      "address": "0x253553366Da8546fC250F225fe3d25d0C782303b",
+      "description": "Collects ETH from .eth registrations",
+      "type": "contract",
+      "balances": {
+        "ETH": 3.0,
+        "ENS": 0.0,
+        "USDC": 0.0
+      }
+    },
+    {
+      "name": "ENS Wallet",
+      "ens_name": "wallet.ensdao.eth",
+      "address": "0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7",
+      "description": "Stores DAO funds",
+      "type": "contract",
+      "balances": {
+        "ETH": 4310.4,
+        "ENS": 9700000,
+        "USDC": 16400
+      }
+    },
+    {
+      "name": "Legacy Controller",
+      "ens_name": null,
+      "address": "0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5",
+      "description": "Collects ETH from .eth registrations",
+      "type": "contract",
+      "balances": {
+        "ETH": 778.8,
+        "ENS": 20.0,
+        "USDC": 2700
+      }
+    }
+  ],
+  "endowment": [
+    {
+      "name": "Endowment",
+      "ens_name": null,
+      "address": "0x4F2083f5fBede34C2714aFfb3105539775f7FE64",
+      "description": "Endowment invests DAO funds",
+      "type": "endowment",
+      "balances": null
+    }
+  ],
+  "working_group_multisigs": [
+    {
+      "name": "Ecosystem Main",
+      "ens_name": "main.eco.wg.ens.eth",
+      "address": "0x2686A8919Df194aA7673244549E68D42C1685d03",
+      "working_group": "Ecosystem",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 3,
+        "total_signers": 4,
+        "signers": [
+          "main.mg.wg.ens.eth",
+          "steward.daemon.eth",
+          "dylan.wannabet.eth",
+          "steward.slobo.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 21.7,
+        "ENS": 18200,
+        "USDC": 256600
+      }
+    },
+    {
+      "name": "Ecosystem Buildoors",
+      "ens_name": "ens-buildors.pod.ens.eth",
+      "address": "0x6a016548310076285668e2378df70bd545396b5a",
+      "working_group": "Ecosystem",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 1,
+        "total_signers": 1,
+        "signers": [
+          "main.mg.wg.ens.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 0.0
+      }
+    },
+    {
+      "name": "Ecosystem IRL",
+      "ens_name": "irl.eco.wg.ens.eth",
+      "address": "0x536013c57DAF01D78e8a70cAd1B1abAda9411819",
+      "working_group": "Ecosystem",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 2,
+        "total_signers": 3,
+        "signers": [
+          "main.eco.wg.ens.eth",
+          "steward.daemon.eth",
+          "secretary.limes.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 11100
+      }
+    },
+    {
+      "name": "Ecosystem Hackathons",
+      "ens_name": "hackathons.eco.wg.ens.eth",
+      "address": "0x9B9c249Be04dd433c7e8FbBF5E61E6741b89966D",
+      "working_group": "Ecosystem",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 2,
+        "total_signers": 3,
+        "signers": [
+          "main.eco.wg.ens.eth",
+          "ens.gregskril.eth",
+          "secretary.limes.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 9.8,
+        "ENS": 0.0,
+        "USDC": 37200
+      }
+    },
+    {
+      "name": "Ecosystem Newsletter",
+      "ens_name": "newsletter.eco.wg.ens.eth",
+      "address": "0x13aEe52C1C688d3554a15556c5353cb0c3696ea2",
+      "working_group": "Ecosystem",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 2,
+        "total_signers": 3,
+        "signers": [
+          "secretary.limes.eth",
+          "estmcmxci.eth",
+          "main.eco.wg.ens.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 11500
+      }
+    },
+    {
+      "name": "Ecosystem Grants",
+      "ens_name": "ens-grants.pod.ens.eth",
+      "address": "0xBa0c461b22d918FB1F52fEF556310230d177D1F2",
+      "working_group": "Ecosystem",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 1,
+        "total_signers": 1,
+        "signers": [
+          "main.mg.wg.ens.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 0.0
+      }
+    },
+    {
+      "name": "Ecosystem Coltron",
+      "ens_name": null,
+      "address": "0x9718ba71dC1284842fcE66dC3e34DFFC6C630074",
+      "working_group": "Ecosystem",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 2,
+        "total_signers": 2,
+        "signers": [
+          "main.eco.wg.ens.eth",
+          "steward.coltron.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 0.0
+      }
+    },
+    {
+      "name": "Metagov Main",
+      "ens_name": "main.mg.wg.ens.eth",
+      "address": "0x91c32893216dE3eA0a55ABb9851f581d4503d39b",
+      "working_group": "Metagov",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 3,
+        "total_signers": 4,
+        "signers": [
+          "steward.netto.eth",
+          "daostrat.eth",
+          "steward.5pence.eth",
+          "secretary.limes.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 23.6,
+        "ENS": 82300,
+        "USDC": 507400
+      }
+    },
+    {
+      "name": "Metagov Governance",
+      "ens_name": "ens-governance.pod.ens.eth",
+      "address": "0x4f4cAdb8AF8F1d463240c2b93952D8a16688a818",
+      "working_group": "Metagov",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 1,
+        "total_signers": 1,
+        "signers": [
+          "main.mg.wg.ens.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 0.0
+      }
+    },
+    {
+      "name": "Metagov DAO Tooling",
+      "ens_name": "ens-daotooling.pod.ens.eth",
+      "address": "0x8f730f4aC5fd234df9993E0E317f07e44fb869C1",
+      "working_group": "Metagov",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 1,
+        "total_signers": 1,
+        "signers": [
+          "main.mg.wg.ens.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 0.0
+      }
+    },
+    {
+      "name": "Metagov Stream",
+      "ens_name": "stream.mg.wg.ens.eth",
+      "address": "0xB162Bf7A7fD64eF32b787719335d06B2780e31D1",
+      "working_group": "Metagov",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 1,
+        "total_signers": 2,
+        "signers": [
+          "wallet.ensdao.eth",
+          "main.mg.wg.ens.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 731.9
+      }
+    },
+    {
+      "name": "Public Goods Main",
+      "ens_name": "main.pg.wg.ens.eth",
+      "address": "0xcD42b4c4D102cc22864e3A1341Bb0529c17fD87d",
+      "working_group": "Public Goods",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 3,
+        "total_signers": 4,
+        "signers": [
+          "simona.eth",
+          "secretary.limes.eth",
+          "0x5F834C8f70baaEAfAd00662Cd214245c9A1A9ef5",
+          "steward.coltron.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 16.6,
+        "ENS": 200.0,
+        "USDC": 157200
+      }
+    },
+    {
+      "name": "Public Goods Large Grants",
+      "ens_name": "largegrants.pg.wg.ens.eth",
+      "address": "0xebA76C907F02BA13064EDAD7876Fe51D9d856F62",
+      "working_group": "Public Goods",
+      "type": "multisig",
+      "multisig_config": {
+        "threshold": 3,
+        "total_signers": 4,
+        "signers": [
+          "secretary.limes.eth",
+          "simona.eth",
+          "steward.sovereignsignal.eth",
+          "steward.coltron.eth"
+        ]
+      },
+      "balances": {
+        "ETH": 0,
+        "ENS": 0.0,
+        "USDC": 0.0
+      }
+    }
+  ]
+}
