@@ -16,7 +16,6 @@ schedule_storage:
   config:
     base_dir: .dagster/storage
 
-# Auto-delete runs older than 7 days, keeping at least the last 10
 run_retries:
   max_retries: 0
 
@@ -27,3 +26,6 @@ retention:
     purge_after_days: 90
   auto_materialize:
     purge_after_days: 90
+
+code_servers:
+  local_startup_timeout: 360

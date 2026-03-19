@@ -11,6 +11,10 @@
     },
     {
       "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "onchain_id"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
       "kwargs": {"column": "title"}
     },
     {
@@ -19,7 +23,35 @@
     },
     {
       "expectation_type": "expect_column_to_exist",
-      "kwargs": {"column": "proposer"}
+      "kwargs": {"column": "governor_id"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "discourse_url"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "snapshot_url"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "for_votes"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "against_votes"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "for_percent"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "against_percent"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "quorum"}
     },
     {
       "expectation_type": "expect_column_values_to_not_be_null",

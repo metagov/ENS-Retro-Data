@@ -7,6 +7,10 @@
     },
     {
       "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "id"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
       "kwargs": {"column": "address"}
     },
     {
@@ -19,17 +23,36 @@
     },
     {
       "expectation_type": "expect_column_to_exist",
-      "kwargs": {"column": "votes_count"}
+      "kwargs": {"column": "twitter"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "chain_id"}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {"column": "token_symbol"}
     },
     {
       "expectation_type": "expect_column_values_to_not_be_null",
       "kwargs": {"column": "address"}
     },
     {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {"column": "id"}
+    },
+    {
       "expectation_type": "expect_column_values_to_match_regex",
       "kwargs": {
         "column": "address",
         "regex": "^0x[a-fA-F0-9]{40}$"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "twitter",
+        "regex": "^@?[a-zA-Z0-9_]{1,15}$"
       }
     }
   ],

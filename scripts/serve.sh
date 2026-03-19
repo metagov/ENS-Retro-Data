@@ -24,6 +24,17 @@ else
 fi
 
 export DAGSTER_HOME="$(pwd)/.dagster"
+set -a
+source .env
+set +a
+
+# Start the daemon in the background (dequeues and launches runs)
+uv run dagster-daemon run &
+DAEMON_PID=$!
+echo "Started dagster-daemon (PID: $DAEMON_PID)"
+
+# Ensure daemon is killed when the script exits
+trap "kill $DAEMON_PID 2>/dev/null" EXIT
 
 exec uv run dagster-webserver \
     --workspace workspace.yaml \

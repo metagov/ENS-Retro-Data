@@ -12,23 +12,31 @@ ORG_SLUG = "ens"
 ENS_TOKEN_DECIMALS = 18
 
 
-def run_query(query: str, variables: dict | None, api_key: str) -> dict:
+def run_query(query: str, variables: dict | None, api_key: str, *, _retries: int = 3) -> dict:
     """Execute a GraphQL query against Tally with rate-limit retry."""
+    logger.debug("[TALLY] Sending GraphQL request to %s", API_URL)
     headers = {"Content-Type": "application/json", "Api-Key": api_key}
     payload: dict = {"query": query}
     if variables:
         payload["variables"] = variables
+
     resp = requests.post(API_URL, json=payload, headers=headers, timeout=60)
+
     if resp.status_code == 429:
+        logger.warning("[TALLY] Rate limited (429), waiting 60s before retry...")
         time.sleep(60)
-        return run_query(query, variables, api_key)
+        return run_query(query, variables, api_key, _retries=_retries)
+
     resp.raise_for_status()
     body = resp.json()
-    return body.get("data", {})
+    data = body.get("data", {})
+    logger.debug("[TALLY] Received response with keys: %s", list(data.keys()) if data else "empty")
+    return data
 
 
 def fetch_organization(api_key: str) -> dict:
     """Fetch the ENS organization metadata from Tally."""
+    logger.info("[TALLY] Fetching organization: %s", ORG_SLUG)
     query = """
     query GetOrg($slug: String!) {
       organization(input: { slug: $slug }) {
@@ -48,6 +56,12 @@ def fetch_organization(api_key: str) -> dict:
     org = data.get("organization")
     if not org:
         raise RuntimeError(f"Organization '{ORG_SLUG}' not found on Tally.")
+    logger.info(
+        "[TALLY] ✓ Found org: %s (id=%s, delegates=%s)",
+        org.get("name"),
+        org.get("id"),
+        org.get("delegatesCount"),
+    )
     return org
 
 
@@ -121,28 +135,51 @@ query ListProposals($orgId: IntID!, $limit: Int!, $afterCursor: String) {
 
 def fetch_tally_proposals(org_id: str, api_key: str) -> list[dict]:
     """Fetch all Tally proposals (raw API objects)."""
+    logger.info("=" * 60)
+    logger.info("[TALLY] Starting: fetch_tally_proposals")
+    logger.info("[TALLY] API: %s", API_URL)
+    logger.info("[TALLY] Organization ID: %s", org_id)
+
     all_proposals: list[dict] = []
     cursor: str | None = None
     page_size = 200
+    page_num = 0
 
     while True:
+        page_num += 1
         variables: dict = {"orgId": org_id, "limit": page_size}
         if cursor:
             variables["afterCursor"] = cursor
 
+        logger.debug(
+            "[TALLY] Fetching proposals page %d (cursor=%s)",
+            page_num,
+            cursor[:20] if cursor else "none",
+        )
         data = run_query(PROPOSALS_QUERY, variables, api_key)
         nodes = data.get("proposals", {}).get("nodes", [])
         page_info = data.get("proposals", {}).get("pageInfo", {})
 
         if not nodes:
+            logger.info("[TALLY] No more proposals (empty page)")
             break
+
         all_proposals.extend(nodes)
+        logger.info(
+            "[TALLY] Page %d: got %d proposals (total: %d)",
+            page_num,
+            len(nodes),
+            len(all_proposals),
+        )
 
         cursor = page_info.get("lastCursor")
         if not cursor:
+            logger.info("[TALLY] Reached end (no more cursor)")
             break
+
         time.sleep(1)
 
+    logger.info("[TALLY] COMPLETE: Fetched %d total proposals", len(all_proposals))
     return all_proposals
 
 
@@ -194,16 +231,20 @@ def fetch_tally_votes(proposals: list[dict], api_key: str) -> list[dict]:
 
     Estimated time: ~2-4 min (~9.5k votes across ~62 proposals).
     """
+    logger.info("=" * 60)
+    logger.info("[TALLY] Starting: fetch_tally_votes")
+    logger.info("[TALLY] API: %s", API_URL)
+    logger.info("[TALLY] Total proposals to fetch votes for: %d", len(proposals))
+
     all_votes: list[dict] = []
     total_proposals = len(proposals)
     start_time = time.time()
-
-    logger.info("Starting votes fetch for %d proposals (est. ~2-4 min)", total_proposals)
 
     for i, proposal in enumerate(proposals, 1):
         prop_id = proposal["id"]
         cursor: str | None = None
         page_size = 500
+        proposal_votes = 0
 
         while True:
             variables: dict = {"proposalId": prop_id, "limit": page_size}
@@ -217,23 +258,31 @@ def fetch_tally_votes(proposals: list[dict], api_key: str) -> list[dict]:
             if not nodes:
                 break
             all_votes.extend(nodes)
+            proposal_votes += len(nodes)
 
             cursor = page_info.get("lastCursor")
             if not cursor:
                 break
             time.sleep(1)
 
-        if i % 10 == 0:
-            elapsed = time.time() - start_time
-            est_total = elapsed / i * total_proposals
-            remaining = est_total - elapsed
-            logger.info(
-                "Votes progress: proposal %d/%d, %d votes so far (~%.0fs remaining)",
-                i, total_proposals, len(all_votes), remaining,
-            )
-
         time.sleep(1)
 
+        if i % 5 == 0 or i == total_proposals:
+            elapsed = time.time() - start_time
+            rate = i / elapsed if elapsed > 0 else 0
+            eta = (total_proposals - i) / rate if rate > 0 else 0
+            logger.info(
+                "[TALLY] Progress: %d/%d proposals (%d votes) - %.0fs elapsed, ~%.0fs remaining",
+                i,
+                total_proposals,
+                len(all_votes),
+                elapsed,
+                eta,
+            )
+
+    logger.info(
+        "[TALLY] COMPLETE: Fetched %d total votes for %d proposals", len(all_votes), total_proposals
+    )
     return all_votes
 
 
@@ -297,41 +346,56 @@ def fetch_tally_delegates(org_id: str, api_key: str) -> list[dict]:
 
     Estimated time: ~2-3 min (~38k delegates, 500/page, ~76 pages).
     """
+    logger.info("=" * 60)
+    logger.info("[TALLY] Starting: fetch_tally_delegates")
+    logger.info("[TALLY] API: %s", API_URL)
+    logger.info("[TALLY] Organization ID: %s", org_id)
+    logger.info("[TALLY] Estimated: ~38k delegates (500/page, ~76 pages)")
+
     all_delegates: list[dict] = []
     cursor: str | None = None
     page_size = 500
     page_num = 0
     start_time = time.time()
 
-    logger.info("Starting delegate fetch (est. ~2-3 min for ~38k delegates)")
-
     while True:
+        page_num += 1
         variables: dict = {"orgId": org_id, "limit": page_size}
         if cursor:
             variables["afterCursor"] = cursor
 
+        logger.debug("[TALLY] Fetching delegates page %d", page_num)
         data = run_query(DELEGATES_QUERY, variables, api_key)
         nodes = data.get("delegates", {}).get("nodes", [])
         page_info = data.get("delegates", {}).get("pageInfo", {})
 
         if not nodes:
+            logger.info("[TALLY] No more delegates (empty page)")
             break
-        all_delegates.extend(nodes)
-        page_num += 1
 
-        if page_num % 10 == 0:
+        all_delegates.extend(nodes)
+
+        if page_num % 5 == 0:
             elapsed = time.time() - start_time
             rate = len(all_delegates) / elapsed if elapsed > 0 else 0
+            eta = (38000 - len(all_delegates)) / rate if rate > 0 else 0
             logger.info(
-                "Delegates progress: %d fetched (page %d, %.0f records/sec, %.0fs elapsed)",
-                len(all_delegates), page_num, rate, elapsed,
+                "[TALLY] Page %d: %d delegates fetched (%.0f/sec, ~%.0fs remaining)",
+                page_num,
+                len(all_delegates),
+                rate,
+                eta,
             )
 
         cursor = page_info.get("lastCursor")
         if not cursor:
+            logger.info("[TALLY] Reached end (no more cursor)")
             break
+
         time.sleep(1)
 
+    elapsed = time.time() - start_time
+    logger.info("[TALLY] COMPLETE: Fetched %d delegates in %.0fs", len(all_delegates), elapsed)
     return all_delegates
 
 
@@ -339,12 +403,13 @@ def fetch_tally_delegates(org_id: str, api_key: str) -> list[dict]:
 # Flatteners — convert nested API responses to flat dicts for dbt staging
 # ---------------------------------------------------------------------------
 
+
 def _raw_to_human(raw_value: str | int | None, decimals: int = ENS_TOKEN_DECIMALS) -> str:
     """Convert raw token units to human-readable float string."""
     if raw_value is None:
         return "0"
     try:
-        return f"{int(raw_value) / 10 ** decimals:.4f}"
+        return f"{int(raw_value) / 10**decimals:.4f}"
     except (ValueError, TypeError):
         return str(raw_value)
 
@@ -352,8 +417,15 @@ def _raw_to_human(raw_value: str | int | None, decimals: int = ENS_TOKEN_DECIMAL
 def flatten_tally_proposals(raw_proposals: list[dict]) -> list[dict]:
     """Flatten nested Tally proposal responses for bronze JSON.
 
-    Output fields: id, title, description, status, proposer,
-    start_block, end_block, for_votes, against_votes, abstain_votes
+    Output fields: id, onchain_id, title, description, status, eta,
+    discourse_url, snapshot_url, proposer, proposer_name, proposer_ens,
+    governor_id, governor_name, organization_id, organization_name,
+    start_block, start_timestamp, end_block, end_timestamp,
+    block_number, block_timestamp, created_block,
+    for_votes, against_votes, abstain_votes,
+    for_voters, against_voters, abstain_voters,
+    for_percent, against_percent, abstain_percent,
+    quorum
     """
     result = []
     for p in raw_proposals:
@@ -362,59 +434,120 @@ def flatten_tally_proposals(raw_proposals: list[dict]) -> list[dict]:
         vs = {s["type"]: s for s in (p.get("voteStats") or [])}
         start = p.get("start") or {}
         end = p.get("end") or {}
+        block = p.get("block") or {}
 
-        result.append({
-            "id": p.get("id"),
-            "title": meta.get("title", ""),
-            "description": (meta.get("description") or "")[:2000],
-            "status": p.get("status", ""),
-            "proposer": proposer.get("address", ""),
-            "start_block": start.get("number"),
-            "end_block": end.get("number"),
-            "for_votes": _raw_to_human(vs.get("for", {}).get("votesCount")),
-            "against_votes": _raw_to_human(vs.get("against", {}).get("votesCount")),
-            "abstain_votes": _raw_to_human(vs.get("abstain", {}).get("votesCount")),
-        })
+        def get_ts(obj):
+            return obj.get("timestamp") if isinstance(obj, dict) else None
+
+        def get_num(obj):
+            return obj.get("number") if isinstance(obj, dict) else None
+
+        result.append(
+            {
+                "id": p.get("id"),
+                "onchain_id": p.get("onchainId", ""),
+                "title": meta.get("title", ""),
+                "description": (meta.get("description") or "")[:5000],
+                "status": p.get("status", ""),
+                "eta": meta.get("eta", ""),
+                "discourse_url": meta.get("discourseURL", ""),
+                "snapshot_url": meta.get("snapshotURL", ""),
+                "proposer": proposer.get("address", ""),
+                "proposer_name": proposer.get("name", ""),
+                "proposer_ens": proposer.get("ens", ""),
+                "governor_id": p.get("governor", {}).get("id", ""),
+                "governor_name": p.get("governor", {}).get("name", ""),
+                "organization_id": p.get("organization", {}).get("id", ""),
+                "organization_name": p.get("organization", {}).get("name", ""),
+                "start_block": get_num(start),
+                "start_timestamp": get_ts(start),
+                "end_block": get_num(end),
+                "end_timestamp": get_ts(end),
+                "block_number": get_num(block),
+                "block_timestamp": get_ts(block),
+                "created_block": get_num(block),
+                "for_votes": _raw_to_human(vs.get("for", {}).get("votesCount")),
+                "against_votes": _raw_to_human(vs.get("against", {}).get("votesCount")),
+                "abstain_votes": _raw_to_human(vs.get("abstain", {}).get("votesCount")),
+                "for_voters": vs.get("for", {}).get("votersCount", 0),
+                "against_voters": vs.get("against", {}).get("votersCount", 0),
+                "abstain_voters": vs.get("abstain", {}).get("votersCount", 0),
+                "for_percent": vs.get("for", {}).get("percent"),
+                "against_percent": vs.get("against", {}).get("percent"),
+                "abstain_percent": vs.get("abstain", {}).get("percent"),
+                "quorum": p.get("quorum"),
+            }
+        )
     return result
 
 
 def flatten_tally_votes(raw_votes: list[dict]) -> list[dict]:
     """Flatten nested Tally vote responses for bronze JSON.
 
-    Output fields: id, voter, support, weight, proposal_id, reason
+    Output fields: id, voter, voter_name, voter_ens, support, weight, reason,
+    tx_hash, chain_id, proposal_id, block_timestamp, block_number
     """
     result = []
     for v in raw_votes:
         voter = v.get("voter") or {}
         proposal = v.get("proposal") or {}
-        result.append({
-            "id": v.get("id"),
-            "voter": voter.get("address", ""),
-            "support": v.get("type", ""),
-            "weight": v.get("amount", "0"),
-            "proposal_id": proposal.get("id", ""),
-            "reason": v.get("reason", ""),
-        })
+        block = v.get("block") or {}
+        support_map = {"1": "for", "2": "against", "3": "abstain"}
+        support = v.get("type", "")
+        result.append(
+            {
+                "id": v.get("id"),
+                "voter": voter.get("address", ""),
+                "voter_name": voter.get("name", ""),
+                "voter_ens": voter.get("ens", ""),
+                "support": support_map.get(support, support),
+                "weight": v.get("amount", "0"),
+                "reason": (v.get("reason") or "")[:500],
+                "tx_hash": v.get("txHash", ""),
+                "chain_id": v.get("chainId", ""),
+                "proposal_id": proposal.get("id", ""),
+                "block_timestamp": block.get("timestamp", ""),
+                "block_number": block.get("number", ""),
+            }
+        )
     return result
 
 
 def flatten_tally_delegates(raw_delegates: list[dict]) -> list[dict]:
     """Flatten nested Tally delegate responses for bronze JSON.
 
-    Output fields: address, ens_name, voting_power, delegators_count,
-    votes_count, proposals_count, statement
+    Output fields: id, address, ens_name, name, twitter, bio, picture, account_type,
+    voting_power, delegators_count, is_prioritized, chain_id,
+    token_symbol, token_name, statement, statement_summary, is_seeking_delegation,
+    organization_id, organization_name
     """
     result = []
     for d in raw_delegates:
         acct = d.get("account") or {}
         stmt = d.get("statement") or {}
-        result.append({
-            "address": acct.get("address", ""),
-            "ens_name": acct.get("ens", ""),
-            "voting_power": d.get("votesCount", "0"),
-            "delegators_count": d.get("delegatorsCount", 0),
-            "votes_count": d.get("votesCount", 0),
-            "proposals_count": 0,
-            "statement": (stmt.get("statementSummary") or "")[:1000],
-        })
+        token = d.get("token") or {}
+        org = d.get("organization") or {}
+        result.append(
+            {
+                "id": d.get("id", ""),
+                "address": acct.get("address", ""),
+                "name": acct.get("name", ""),
+                "ens_name": acct.get("ens", ""),
+                "twitter": acct.get("twitter", ""),
+                "bio": (acct.get("bio") or "")[:500],
+                "picture": acct.get("picture", ""),
+                "account_type": acct.get("type", ""),
+                "voting_power": d.get("votesCount", "0"),
+                "delegators_count": d.get("delegatorsCount", 0),
+                "is_prioritized": d.get("isPrioritized", False),
+                "chain_id": d.get("chainId", ""),
+                "token_symbol": token.get("symbol", ""),
+                "token_name": token.get("name", ""),
+                "statement": (stmt.get("statement") or "")[:2000],
+                "statement_summary": (stmt.get("statementSummary") or "")[:1000],
+                "is_seeking_delegation": stmt.get("isSeekingDelegation", False),
+                "organization_id": org.get("id", ""),
+                "organization_name": org.get("name", ""),
+            }
+        )
     return result

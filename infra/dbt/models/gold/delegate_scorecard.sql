@@ -4,10 +4,14 @@
 with delegates as (
     select
         address,
+        name,
         ens_name,
+        twitter,
         voting_power,
         delegators_count,
-        votes_count as tally_votes_available
+        is_prioritized,
+        is_seeking_delegation,
+        statement_summary
     from {{ ref('clean_tally_delegates') }}
 ),
 
@@ -41,11 +45,16 @@ crosswalk as (
 
 select
     d.address,
+    d.name,
     coalesce(d.ens_name, cw.ens_name) as ens_name,
+    d.twitter,
     d.voting_power,
     coalesce(sc.snapshot_votes_cast, 0) as snapshot_votes_cast,
     coalesce(tc.tally_votes_cast, 0) as tally_votes_cast,
     d.delegators_count,
+    d.is_prioritized,
+    d.is_seeking_delegation,
+    d.statement_summary,
     case
         when tp.snapshot_proposals + tp.tally_proposals > 0
         then round(

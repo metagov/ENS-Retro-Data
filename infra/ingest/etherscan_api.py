@@ -30,14 +30,10 @@ CHAIN_ID = 1  # Ethereum mainnet
 ENS_TOKEN_CONTRACT = "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72"
 
 # keccak256("DelegateChanged(address,address,address)")
-DELEGATE_CHANGED_TOPIC0 = (
-    "0x3134e8a2e6d97e929a7e54011ea5485d7d196dd5f0ba4d4ef95803e8e3fc257f"
-)
+DELEGATE_CHANGED_TOPIC0 = "0x3134e8a2e6d97e929a7e54011ea5485d7d196dd5f0ba4d4ef95803e8e3fc257f"
 
 # keccak256("Transfer(address,address,uint256)")
-TRANSFER_TOPIC0 = (
-    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
-)
+TRANSFER_TOPIC0 = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 
 # Known ENS DAO wallet addresses.
 # wallet.ensdao.eth is the DAO timelock / main treasury.
@@ -45,9 +41,9 @@ DAO_WALLETS: dict[str, str] = {
     "wallet.ensdao.eth": "0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7",
 }
 
-PAGE_SIZE = 1000        # Etherscan free-tier max records per page
-REQUEST_DELAY = 0.25    # ~4 req/sec (free tier allows 5/sec)
-RATE_LIMIT_DELAY = 60   # Back-off on 429 / "Max rate limit reached"
+PAGE_SIZE = 1000  # Etherscan free-tier max records per page
+REQUEST_DELAY = 0.25  # ~4 req/sec (free tier allows 5/sec)
+RATE_LIMIT_DELAY = 60  # Back-off on 429 / "Max rate limit reached"
 MAX_PAGES_PER_RANGE = 10  # Etherscan caps getLogs at 10 000 results
 
 ZERO_ADDRESS = "0x" + "0" * 40
@@ -71,7 +67,9 @@ def _load_checkpoint(name: str) -> dict | None:
         with open(path) as f:
             data = json.load(f)
         logger.info(
-            "Loaded checkpoint '%s' (resume_block=%s)", name, data.get("resume_block"),
+            "Loaded checkpoint '%s' (resume_block=%s)",
+            name,
+            data.get("resume_block"),
         )
         return data
     except (json.JSONDecodeError, KeyError):
@@ -111,17 +109,24 @@ def run_query(params: dict, api_key: str, *, _retries: int = 3) -> dict:
     network timeouts.  Treats "No records found" (status 0) as empty.
     """
     full_params = {**params, "chainid": CHAIN_ID, "apikey": api_key}
+
     try:
+        logger.debug(
+            "[ETHERSCAN] → GET %s params=%s",
+            API_URL,
+            {k: v for k, v in full_params.items() if k != "apikey"},
+        )
         resp = requests.get(API_URL, params=full_params, timeout=30)
     except (requests.ConnectionError, requests.Timeout):
         if _retries <= 0:
+            logger.error("[ETHERSCAN] Request timed out, no retries left")
             raise
-        logger.warning("Request timed out, retrying (%d left)", _retries)
+        logger.warning("[ETHERSCAN] Request timed out, retrying (%d left)", _retries)
         time.sleep(REQUEST_DELAY * 5)
         return run_query(params, api_key, _retries=_retries - 1)
 
     if resp.status_code == 429:
-        logger.warning("Rate limited (429), backing off %ds", RATE_LIMIT_DELAY)
+        logger.warning("[ETHERSCAN] Rate limited (429), backing off %ds", RATE_LIMIT_DELAY)
         time.sleep(RATE_LIMIT_DELAY)
         return run_query(params, api_key, _retries=_retries)
     resp.raise_for_status()
@@ -131,17 +136,23 @@ def run_query(params: dict, api_key: str, *, _retries: int = 3) -> dict:
     if data.get("status") == "0" and data.get("message") != "No records found":
         msg = data.get("result", "Unknown Etherscan error")
         if "Max rate limit reached" in str(msg):
-            logger.warning("Rate limited (body), backing off %ds", RATE_LIMIT_DELAY)
+            logger.warning("[ETHERSCAN] Rate limited (body), backing off %ds", RATE_LIMIT_DELAY)
             time.sleep(RATE_LIMIT_DELAY)
             return run_query(params, api_key, _retries=_retries)
-        # Transient API errors (None, empty, or unknown) — retry.
         if not msg or str(msg) == "None":
             if _retries <= 0:
                 raise RuntimeError(f"Etherscan API error after retries: {msg}")
-            logger.warning("Etherscan returned empty error, retrying (%d left)", _retries)
+            logger.warning(
+                "[ETHERSCAN] Etherscan returned empty error, retrying (%d left)", _retries
+            )
             time.sleep(REQUEST_DELAY * 5)
             return run_query(params, api_key, _retries=_retries - 1)
         raise RuntimeError(f"Etherscan API error: {msg}")
+
+    result_count = len(data.get("result", [])) if isinstance(data.get("result"), list) else "N/A"
+    logger.debug(
+        "[ETHERSCAN] ← Response: status=%s, result_count=%s", data.get("status"), result_count
+    )
 
     return data
 
@@ -178,6 +189,7 @@ def _paginate(
     """
     all_results: list[dict] = []
     current_start = start_block
+    request_count = 0
 
     while True:
         page = 1
@@ -196,16 +208,29 @@ def _paginate(
 
         while True:
             base["page"] = page
+            request_count += 1
             data = run_query(base, api_key)
             results = data.get("result", [])
 
             if not isinstance(results, list) or not results:
+                if request_count % 10 == 0:
+                    logger.debug("[ETHERSCAN] Empty page %d (request #%d)", page, request_count)
                 break
 
             all_results.extend(results)
 
             if on_page is not None:
                 on_page(results)
+
+            if request_count % 10 == 0 or len(results) == PAGE_SIZE:
+                logger.info(
+                    "[ETHERSCAN] Request #%d: got %d results (total: %d, block_range: %d-%d)",
+                    request_count,
+                    len(results),
+                    len(all_results),
+                    current_start,
+                    end_block,
+                )
 
             if len(results) < PAGE_SIZE:
                 break
@@ -231,7 +256,13 @@ def _paginate(
             break
 
         current_start = last_block + 1
+        logger.debug("[ETHERSCAN] Hit pagination cap, advancing to block %d", current_start)
 
+    logger.info(
+        "[ETHERSCAN] Pagination complete: %d total results in %d requests",
+        len(all_results),
+        request_count,
+    )
     return all_results
 
 
@@ -268,7 +299,8 @@ def fetch_delegation_events(api_key: str) -> list[dict]:
                         events.append(json.loads(line))
         logger.info(
             "Resuming delegations from block %d (%d events loaded)",
-            start_block, len(events),
+            start_block,
+            len(events),
         )
 
     CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
@@ -296,12 +328,17 @@ def fetch_delegation_events(api_key: str) -> list[dict]:
         page_count += 1
         if page_count % CHECKPOINT_EVERY == 0:
             # Meta file is tiny — just the resume block.
-            meta_path.write_text(json.dumps({
-                "resume_block": events[-1]["block_number"] + 1,
-            }))
+            meta_path.write_text(
+                json.dumps(
+                    {
+                        "resume_block": events[-1]["block_number"] + 1,
+                    }
+                )
+            )
             logger.info(
                 "Delegations progress: %d events, block %d",
-                len(events), events[-1]["block_number"],
+                len(events),
+                events[-1]["block_number"],
             )
 
     params = {
@@ -311,14 +348,20 @@ def fetch_delegation_events(api_key: str) -> list[dict]:
         "topic0": DELEGATE_CHANGED_TOPIC0,
     }
     try:
-        _paginate(params, api_key, start_block=start_block, max_pages=MAX_PAGES_PER_RANGE, on_page=on_page)
+        _paginate(
+            params, api_key, start_block=start_block, max_pages=MAX_PAGES_PER_RANGE, on_page=on_page
+        )
     finally:
         partial_file.close()
         # Always save final meta so resume works even without CHECKPOINT_EVERY hit.
         if events:
-            meta_path.write_text(json.dumps({
-                "resume_block": events[-1]["block_number"] + 1,
-            }))
+            meta_path.write_text(
+                json.dumps(
+                    {
+                        "resume_block": events[-1]["block_number"] + 1,
+                    }
+                )
+            )
 
     logger.info("Delegations complete: %d events total", len(events))
     # Clean up checkpoint files on success.
@@ -347,13 +390,15 @@ def fetch_token_transfers(api_key: str) -> list[dict]:
     ckpt = _load_checkpoint("token_transfers")
     if ckpt:
         balances: dict[str, int] = defaultdict(
-            int, {a: int(b) for a, b in ckpt["balances"].items()},
+            int,
+            {a: int(b) for a, b in ckpt["balances"].items()},
         )
         latest_block: int = ckpt["latest_block"]
         start_block: int = ckpt["resume_block"]
         logger.info(
             "Resuming token transfers from block %d (%d addresses loaded)",
-            start_block, len(balances),
+            start_block,
+            len(balances),
         )
     else:
         balances = defaultdict(int)
@@ -380,12 +425,17 @@ def fetch_token_transfers(api_key: str) -> list[dict]:
                 balances[to_addr] += value
         page_count += 1
         if page_count % CHECKPOINT_EVERY == 0:
-            logger.info("Token transfers progress: %d addresses, block %d", len(balances), latest_block)
-            _save_checkpoint("token_transfers", {
-                "resume_block": latest_block + 1,
-                "latest_block": latest_block,
-                "balances": {a: str(b) for a, b in balances.items()},
-            })
+            logger.info(
+                "Token transfers progress: %d addresses, block %d", len(balances), latest_block
+            )
+            _save_checkpoint(
+                "token_transfers",
+                {
+                    "resume_block": latest_block + 1,
+                    "latest_block": latest_block,
+                    "balances": {a: str(b) for a, b in balances.items()},
+                },
+            )
 
     logger.info(
         "Starting token transfer fetch (est. ~10-20 min on free tier — "
@@ -398,7 +448,9 @@ def fetch_token_transfers(api_key: str) -> list[dict]:
         "address": ENS_TOKEN_CONTRACT,
         "topic0": TRANSFER_TOPIC0,
     }
-    _paginate(params, api_key, start_block=start_block, max_pages=MAX_PAGES_PER_RANGE, on_page=on_page)
+    _paginate(
+        params, api_key, start_block=start_block, max_pages=MAX_PAGES_PER_RANGE, on_page=on_page
+    )
 
     # Compute final distribution from accumulated balances.
     positive = {addr: bal for addr, bal in balances.items() if bal > 0}
@@ -447,7 +499,9 @@ def fetch_treasury_transactions(
         completed: set[str] = set(ckpt.get("completed_steps", []))
         logger.info(
             "Resuming treasury flows (%d records, %d/%d steps done)",
-            len(all_flows), len(completed), len(wallets) * 2,
+            len(all_flows),
+            len(completed),
+            len(wallets) * 2,
         )
     else:
         all_flows = []
@@ -464,22 +518,27 @@ def fetch_treasury_transactions(
                 if tx_hash in seen:
                     continue
                 seen.add(tx_hash)
-                all_flows.append({
-                    "tx_hash": tx_hash,
-                    "from": tx.get("from", "").lower(),
-                    "to": tx.get("to", "").lower(),
-                    "value": tx.get("value", "0"),
-                    "token": "ETH",
-                    "block_number": int(tx.get("blockNumber", "0")),
-                    "timestamp": int(tx.get("timeStamp", "0")),
-                    "category": "unknown",
-                })
+                all_flows.append(
+                    {
+                        "tx_hash": tx_hash,
+                        "from": tx.get("from", "").lower(),
+                        "to": tx.get("to", "").lower(),
+                        "value": tx.get("value", "0"),
+                        "token": "ETH",
+                        "block_number": int(tx.get("blockNumber", "0")),
+                        "timestamp": int(tx.get("timeStamp", "0")),
+                        "category": "unknown",
+                    }
+                )
             completed.add(step)
-            _save_checkpoint("treasury_flows", {
-                "records": all_flows,
-                "seen_keys": list(seen),
-                "completed_steps": list(completed),
-            })
+            _save_checkpoint(
+                "treasury_flows",
+                {
+                    "records": all_flows,
+                    "seen_keys": list(seen),
+                    "completed_steps": list(completed),
+                },
+            )
 
         time.sleep(REQUEST_DELAY)
 
@@ -492,22 +551,27 @@ def fetch_treasury_transactions(
                 if dedup_key in seen:
                     continue
                 seen.add(dedup_key)
-                all_flows.append({
-                    "tx_hash": tx.get("hash", ""),
-                    "from": tx.get("from", "").lower(),
-                    "to": tx.get("to", "").lower(),
-                    "value": tx.get("value", "0"),
-                    "token": tx.get("tokenSymbol", "UNKNOWN"),
-                    "block_number": int(tx.get("blockNumber", "0")),
-                    "timestamp": int(tx.get("timeStamp", "0")),
-                    "category": "unknown",
-                })
+                all_flows.append(
+                    {
+                        "tx_hash": tx.get("hash", ""),
+                        "from": tx.get("from", "").lower(),
+                        "to": tx.get("to", "").lower(),
+                        "value": tx.get("value", "0"),
+                        "token": tx.get("tokenSymbol", "UNKNOWN"),
+                        "block_number": int(tx.get("blockNumber", "0")),
+                        "timestamp": int(tx.get("timeStamp", "0")),
+                        "category": "unknown",
+                    }
+                )
             completed.add(step)
-            _save_checkpoint("treasury_flows", {
-                "records": all_flows,
-                "seen_keys": list(seen),
-                "completed_steps": list(completed),
-            })
+            _save_checkpoint(
+                "treasury_flows",
+                {
+                    "records": all_flows,
+                    "seen_keys": list(seen),
+                    "completed_steps": list(completed),
+                },
+            )
 
     all_flows.sort(key=lambda r: (r["block_number"], r["timestamp"]))
     _clear_checkpoint("treasury_flows")
