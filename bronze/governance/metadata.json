@@ -7,7 +7,7 @@
     "votingpower-xyz"
   ],
   "collection_status": "complete",
-  "last_indexed_at": "2026-03-06T12:30:26.472966+00:00",
+  "last_indexed_at": "2026-03-20T01:44:24.790773+00:00",
   "notes": "All governance data indexed via Dagster pipeline. Snapshot + Tally fetched from GraphQL APIs, votingpower.xyz manually exported.",
   "files": {
     "snapshot_proposals.json": {
@@ -69,8 +69,8 @@
       "status": "present",
       "description": "On-chain governance proposals from Tally (Governor contract)",
       "expected_records": 62,
-      "actual_records": 64,
-      "file_size_bytes": 138392,
+      "actual_records": 66,
+      "file_size_bytes": 306297,
       "schema_hints": {
         "id": "string",
         "title": "string",
@@ -88,18 +88,18 @@
         "api_endpoint": "https://api.tally.xyz/query",
         "query_or_method": "GraphQL paginated query (org=ens), flattened",
         "collected_by": "tally.xyz",
-        "collected_at": "2026-03-06T12:27:02.347891+00:00",
+        "collected_at": "2026-03-19T23:55:40.761904+00:00",
         "covers_period": "all-time on-chain proposals",
         "notes": "Nested API response flattened by flatten_tally_proposals(); vote counts converted from wei to human-readable",
-        "records": 64
+        "records": 66
       }
     },
     "tally_votes.json": {
       "status": "present",
       "description": "Individual votes cast on Tally proposals",
       "expected_records": 9550,
-      "actual_records": 9550,
-      "file_size_bytes": 2105438,
+      "actual_records": 9987,
+      "file_size_bytes": 4672131,
       "schema_hints": {
         "id": "string",
         "voter": "string (address)",
@@ -111,19 +111,20 @@
       "provenance": {
         "source": "tally.xyz",
         "api_endpoint": "https://api.tally.xyz/query",
-        "query_or_method": "GraphQL paginated query per proposal (batch=100), flattened from nested response",
-        "collected_by": "dagster_pipeline (infra.ingest.tally_api)",
-        "collected_at": "2026-02-24T09:38:25Z",
+        "query_or_method": "GraphQL paginated query per proposal, flattened",
+        "collected_by": "tally.xyz",
+        "collected_at": "2026-03-20T00:38:23.621166+00:00",
         "covers_period": "all votes across 62 on-chain proposals",
-        "notes": "Nested API response flattened by flatten_tally_votes(); voter address extracted from nested voter object"
+        "notes": "Nested API response flattened by flatten_tally_votes(); voter address extracted from nested voter object",
+        "records": 9987
       }
     },
     "tally_delegates.json": {
       "status": "present",
       "description": "Delegate profiles and metadata from Tally",
       "expected_records": 37876,
-      "actual_records": 37876,
-      "file_size_bytes": 8853407,
+      "actual_records": 37891,
+      "file_size_bytes": 23217212,
       "schema_hints": {
         "address": "string",
         "ens_name": "string (optional)",
@@ -136,11 +137,12 @@
       "provenance": {
         "source": "tally.xyz",
         "api_endpoint": "https://api.tally.xyz/query",
-        "query_or_method": "GraphQL paginated query (org=ens, batch=50, sorted by votes desc), flattened",
-        "collected_by": "dagster_pipeline (infra.ingest.tally_api)",
-        "collected_at": "2026-02-24T09:16:58Z",
+        "query_or_method": "GraphQL paginated query (org=ens, sorted by votes), flattened",
+        "collected_by": "tally.xyz",
+        "collected_at": "2026-03-20T01:44:24.790773+00:00",
         "covers_period": "all registered delegates at time of collection",
-        "notes": "Nested API response flattened by flatten_tally_delegates(); account/statement objects extracted"
+        "notes": "Nested API response flattened by flatten_tally_delegates(); account/statement objects extracted",
+        "records": 37891
       }
     },
     "votingpower-xyz/ens-delegates-2026-02-20.csv": {

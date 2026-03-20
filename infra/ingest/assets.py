@@ -360,10 +360,18 @@ def tally_votes(context: AssetExecutionContext, tally_config: TallyApiConfig) ->
 
     context.log.info(f"[BRONZE] Found {len(flat_proposals)} proposals from previous asset")
     context.log.info(f"[BRONZE] Fetching on-chain votes for {len(flat_proposals)} proposals...")
-    context.log.info("[BRONZE] This may take 2-4 minutes (pagination + rate limiting)")
+    context.log.info(
+        "[BRONZE] WARNING: With Tally rate limiting (429 errors), this may take 1-4 HOURS"
+    )
+    context.log.info(
+        "[BRONZE] Rate limiting is handled with exponential backoff (60s-10min delays)"
+    )
+    context.log.info("[BRONZE] Progress will be logged every 5 proposals")
 
-    # Fetch raw votes (nested GraphQL with voter, block, proposal objects)
-    raw_votes = fetch_tally_votes(flat_proposals, tally_config.api_key)
+    # Fetch raw votes with progress callback for Dagster console
+    raw_votes = fetch_tally_votes(
+        flat_proposals, tally_config.api_key, progress_callback=context.log.info
+    )
     context.log.info(f"[BRONZE] ✓ Received {len(raw_votes)} raw vote records")
 
     # Flatten: { voter { address, name, ens }, block { timestamp, number } }
@@ -411,8 +419,14 @@ def tally_delegates(context: AssetExecutionContext, tally_config: TallyApiConfig
     # Fetch all delegates — paginates through 500 at a time
     # Sort by voting power to surface top delegates first
     context.log.info("[BRONZE] Fetching all ENS delegates (sorted by voting power)...")
-    context.log.info("[BRONZE] This may take 2-3 minutes (38k delegates, 500/page)")
-    raw = fetch_tally_delegates(org_id, tally_config.api_key)
+    context.log.info(
+        "[BRONZE] WARNING: With Tally rate limiting (429 errors), this may take 2-6 HOURS"
+    )
+    context.log.info("[BRONZE] ~38k delegates at 500/page with rate limiting delays")
+    context.log.info("[BRONZE] Progress will be logged every 5 pages")
+
+    # Fetch delegates with progress callback for Dagster console
+    raw = fetch_tally_delegates(org_id, tally_config.api_key, progress_callback=context.log.info)
     context.log.info(f"[BRONZE] ✓ Received {len(raw)} raw delegate records")
 
     # Flatten nested account/statement/token objects

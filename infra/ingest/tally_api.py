@@ -11,21 +11,55 @@ API_URL = "https://api.tally.xyz/query"
 ORG_SLUG = "ens"
 ENS_TOKEN_DECIMALS = 18
 
+RATE_LIMIT_DELAY = 60
+MAX_RETRIES = 10
+MIN_REQUEST_INTERVAL = 0.5
 
-def run_query(query: str, variables: dict | None, api_key: str, *, _retries: int = 3) -> dict:
-    """Execute a GraphQL query against Tally with rate-limit retry."""
+_last_request_time = 0.0
+
+
+def _throttle():
+    """Enforce minimum time between API requests to avoid rate limits."""
+    global _last_request_time
+    elapsed = time.time() - _last_request_time
+    if elapsed < MIN_REQUEST_INTERVAL:
+        time.sleep(MIN_REQUEST_INTERVAL - elapsed)
+    _last_request_time = time.time()
+
+
+def run_query(
+    query: str, variables: dict | None, api_key: str, *, _retries: int = MAX_RETRIES
+) -> dict:
+    """Execute a GraphQL query against Tally with rate-limit retry.
+
+    Uses exponential backoff starting at 60s, doubling each retry up to 10 minutes.
+    """
+    _throttle()
     logger.debug("[TALLY] Sending GraphQL request to %s", API_URL)
     headers = {"Content-Type": "application/json", "Api-Key": api_key}
     payload: dict = {"query": query}
     if variables:
         payload["variables"] = variables
 
-    resp = requests.post(API_URL, json=payload, headers=headers, timeout=60)
+    try:
+        resp = requests.post(API_URL, json=payload, headers=headers, timeout=120)
+    except requests.exceptions.Timeout:
+        if _retries <= 0:
+            raise RuntimeError("[TALLY] Request timed out after max retries")
+        logger.warning("[TALLY] Request timed out, retrying in 30s (%d retries left)", _retries)
+        time.sleep(30)
+        return run_query(query, variables, api_key, _retries=_retries - 1)
 
     if resp.status_code == 429:
-        logger.warning("[TALLY] Rate limited (429), waiting 60s before retry...")
-        time.sleep(60)
-        return run_query(query, variables, api_key, _retries=_retries)
+        if _retries <= 0:
+            raise RuntimeError("[TALLY] Rate limited after max retries")
+
+        delay = min(RATE_LIMIT_DELAY * (2 ** (MAX_RETRIES - _retries)), 600)
+        logger.warning(
+            "[TALLY] Rate limited (429), waiting %ds before retry (%d left)...", delay, _retries
+        )
+        time.sleep(delay)
+        return run_query(query, variables, api_key, _retries=_retries - 1)
 
     resp.raise_for_status()
     body = resp.json()
@@ -177,7 +211,7 @@ def fetch_tally_proposals(org_id: str, api_key: str) -> list[dict]:
             logger.info("[TALLY] Reached end (no more cursor)")
             break
 
-        time.sleep(1)
+        time.sleep(1.5)
 
     logger.info("[TALLY] COMPLETE: Fetched %d total proposals", len(all_proposals))
     return all_proposals
@@ -226,32 +260,53 @@ query ListVotes($proposalId: IntID!, $limit: Int!, $afterCursor: String) {
 """
 
 
-def fetch_tally_votes(proposals: list[dict], api_key: str) -> list[dict]:
+def fetch_tally_votes(proposals: list[dict], api_key: str, *, progress_callback=None) -> list[dict]:
     """Fetch all votes for the given Tally proposals (raw API objects).
 
-    Estimated time: ~2-4 min (~9.5k votes across ~62 proposals).
+    Args:
+        proposals: List of proposal dicts with 'id' field
+        api_key: Tally API key
+        progress_callback: Optional callable(log_message) for real-time progress updates
+
+    Estimated time: 1-4 HOURS due to Tally rate limiting
     """
-    logger.info("=" * 60)
-    logger.info("[TALLY] Starting: fetch_tally_votes")
-    logger.info("[TALLY] API: %s", API_URL)
-    logger.info("[TALLY] Total proposals to fetch votes for: %d", len(proposals))
+    _log = progress_callback or logger.info
+    _log("=" * 60)
+    _log("[TALLY] Starting: fetch_tally_votes")
+    _log("[TALLY] API: %s", API_URL)
+    _log("[TALLY] Total proposals to fetch votes for: %d", len(proposals))
+    _log("[TALLY] WARNING: With rate limiting, expect 1-4 HOURS runtime")
 
     all_votes: list[dict] = []
     total_proposals = len(proposals)
     start_time = time.time()
+    total_rate_limit_retries = 0
 
     for i, proposal in enumerate(proposals, 1):
         prop_id = proposal["id"]
         cursor: str | None = None
         page_size = 500
         proposal_votes = 0
+        proposal_retries = 0
 
         while True:
             variables: dict = {"proposalId": prop_id, "limit": page_size}
             if cursor:
                 variables["afterCursor"] = cursor
 
-            data = run_query(VOTES_QUERY, variables, api_key)
+            try:
+                data = run_query(VOTES_QUERY, variables, api_key)
+            except RuntimeError as e:
+                if "Rate limited" in str(e):
+                    proposal_retries += 1
+                    total_rate_limit_retries += 1
+                    _log("[TALLY] ⚠ Rate limit on proposal %d, retry %d", i, proposal_retries)
+                    if proposal_retries > 5:
+                        _log("[TALLY] ✗ Too many retries for proposal %d, skipping...", i)
+                        break
+                    continue
+                raise
+
             nodes = data.get("votes", {}).get("nodes", [])
             page_info = data.get("votes", {}).get("pageInfo", {})
 
@@ -265,23 +320,27 @@ def fetch_tally_votes(proposals: list[dict], api_key: str) -> list[dict]:
                 break
             time.sleep(1)
 
-        time.sleep(1)
+        time.sleep(2)
 
         if i % 5 == 0 or i == total_proposals:
             elapsed = time.time() - start_time
             rate = i / elapsed if elapsed > 0 else 0
             eta = (total_proposals - i) / rate if rate > 0 else 0
-            logger.info(
-                "[TALLY] Progress: %d/%d proposals (%d votes) - %.0fs elapsed, ~%.0fs remaining",
+            _log(
+                "[TALLY] Progress: %d/%d proposals (%d votes, %d rate retries) - %.0fs elapsed, ~%.0fs remaining",
                 i,
                 total_proposals,
                 len(all_votes),
+                total_rate_limit_retries,
                 elapsed,
                 eta,
             )
 
-    logger.info(
-        "[TALLY] COMPLETE: Fetched %d total votes for %d proposals", len(all_votes), total_proposals
+    _log(
+        "[TALLY] COMPLETE: Fetched %d total votes for %d proposals (total rate retries: %d)",
+        len(all_votes),
+        total_proposals,
+        total_rate_limit_retries,
     )
     return all_votes
 
@@ -341,22 +400,29 @@ query ListDelegates($orgId: IntID!, $limit: Int!, $afterCursor: String) {
 """
 
 
-def fetch_tally_delegates(org_id: str, api_key: str) -> list[dict]:
+def fetch_tally_delegates(org_id: str, api_key: str, *, progress_callback=None) -> list[dict]:
     """Fetch all Tally delegates (raw API objects).
 
-    Estimated time: ~2-3 min (~38k delegates, 500/page, ~76 pages).
+    Args:
+        org_id: Tally organization ID
+        api_key: Tally API key
+        progress_callback: Optional callable(log_message) for real-time progress updates
+
+    Estimated time: 2-6 HOURS due to Tally rate limiting (~38k delegates)
     """
-    logger.info("=" * 60)
-    logger.info("[TALLY] Starting: fetch_tally_delegates")
-    logger.info("[TALLY] API: %s", API_URL)
-    logger.info("[TALLY] Organization ID: %s", org_id)
-    logger.info("[TALLY] Estimated: ~38k delegates (500/page, ~76 pages)")
+    _log = progress_callback or logger.info
+    _log("=" * 60)
+    _log("[TALLY] Starting: fetch_tally_delegates")
+    _log("[TALLY] API: %s", API_URL)
+    _log("[TALLY] Organization ID: %s", org_id)
+    _log("[TALLY] WARNING: With rate limiting, expect 2-6 HOURS runtime (~38k delegates)")
 
     all_delegates: list[dict] = []
     cursor: str | None = None
     page_size = 500
     page_num = 0
     start_time = time.time()
+    total_rate_limit_retries = 0
 
     while True:
         page_num += 1
@@ -364,38 +430,56 @@ def fetch_tally_delegates(org_id: str, api_key: str) -> list[dict]:
         if cursor:
             variables["afterCursor"] = cursor
 
-        logger.debug("[TALLY] Fetching delegates page %d", page_num)
-        data = run_query(DELEGATES_QUERY, variables, api_key)
+        try:
+            data = run_query(DELEGATES_QUERY, variables, api_key)
+        except RuntimeError as e:
+            if "Rate limited" in str(e):
+                total_rate_limit_retries += 1
+                _log(
+                    "[TALLY] ⚠ Rate limit on page %d, retry (total: %d)",
+                    page_num,
+                    total_rate_limit_retries,
+                )
+                time.sleep(5)  # Small delay before retry
+                continue
+            raise
+
         nodes = data.get("delegates", {}).get("nodes", [])
         page_info = data.get("delegates", {}).get("pageInfo", {})
 
         if not nodes:
-            logger.info("[TALLY] No more delegates (empty page)")
+            _log("[TALLY] No more delegates (empty page)")
             break
 
         all_delegates.extend(nodes)
 
-        if page_num % 5 == 0:
+        if page_num % 5 == 0 or page_num == 1:
             elapsed = time.time() - start_time
             rate = len(all_delegates) / elapsed if elapsed > 0 else 0
             eta = (38000 - len(all_delegates)) / rate if rate > 0 else 0
-            logger.info(
-                "[TALLY] Page %d: %d delegates fetched (%.0f/sec, ~%.0fs remaining)",
+            _log(
+                "[TALLY] Page %d: %d delegates fetched (%.0f/sec, rate_retries=%d, ~%.0fs remaining)",
                 page_num,
                 len(all_delegates),
                 rate,
+                total_rate_limit_retries,
                 eta,
             )
 
         cursor = page_info.get("lastCursor")
         if not cursor:
-            logger.info("[TALLY] Reached end (no more cursor)")
+            _log("[TALLY] Reached end (no more cursor)")
             break
 
-        time.sleep(1)
+        time.sleep(1.5)
 
     elapsed = time.time() - start_time
-    logger.info("[TALLY] COMPLETE: Fetched %d delegates in %.0fs", len(all_delegates), elapsed)
+    _log(
+        "[TALLY] COMPLETE: Fetched %d delegates in %.0fs (total rate retries: %d)",
+        len(all_delegates),
+        elapsed,
+        total_rate_limit_retries,
+    )
     return all_delegates
 
 
