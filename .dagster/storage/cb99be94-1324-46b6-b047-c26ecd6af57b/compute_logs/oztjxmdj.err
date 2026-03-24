@@ -1,0 +1,9 @@
+[32m2026-03-13 18:28:43 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89889 - LOGS_CAPTURED - Started capturing logs in process (pid: 89889).
+[32m2026-03-13 18:28:43 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89889 - tally_votes - STEP_START - Started execution of step "tally_votes".
+[32m2026-03-13 18:28:43 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - tally_votes - Estimated time: ~2-4 min (~9.5k votes across ~62 proposals)
+[32m2026-03-13 18:28:43 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - tally_votes - Fetching votes for 65 tally proposals
+[32m2026-03-13 19:58:35 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - tally_votes - Fetched 9947 tally votes
+[32m2026-03-13 19:58:35 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - tally_votes - Wrote 9947 records to /Users/rohitmalekar/work/ENS-Retro-Data/bronze/governance/tally_votes.json (2,191,167 bytes)
+[32m2026-03-13 19:58:35 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89889 - tally_votes - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-13 19:58:35 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89889 - tally_votes - ASSET_MATERIALIZATION - Materialized value tally_votes.
+[32m2026-03-13 19:58:35 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89889 - tally_votes - STEP_SUCCESS - Finished execution of step "tally_votes" in 1h29m.

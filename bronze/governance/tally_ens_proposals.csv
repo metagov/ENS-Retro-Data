@@ -1,0 +1,792 @@
+proposal_id,onchain_id,title,status,proposer_address,proposer_name,proposer_ens,governor_id,governor_name,for_votes,for_voters,for_pct,against_votes,against_voters,against_pct,abstain_votes,abstain_voters,abstain_pct,quorum,start_time,end_time,created_block,created_time,discourse_url,snapshot_url,description
+2790714538897442592,69304512515872868228453463730257567312488838925636819022683533220991373699419,[EP 6.34] Register on.eth to the ENS DAO wallet and set the resolver,queued,0xAC50cE326de14dDF9b7e9611Cd2F33a1Af8aC039,clowes.eth,clowes.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1436342.8222,278,99.31744296974846,0.0211,1,1.4621853257282664e-06,9871.2146,1,0.6825555680662118,1000000.0000,2026-02-12T14:50:23Z,2026-02-19T00:10:59Z,24441402,2026-02-12T14:50:11Z,https://discuss.ens.domains/t/executable-register-on-eth-to-the-ens-dao-wallet-and-set-the-resolver/21894,,"# [EP 6.34] Register on.eth to the ENS DAO wallet and set the resolver
+# Previous Context
+
+* [\[Temp Check\] Registration of on.eth to support interoperable addressing standards](https://discuss.ens.domains/t/temp-check-registration-of-on-eth-to-support-interoperable-addressing-standards/21541)
+* [\[Temp Check\] l2.eth to Enable Chain-Specific Addresses](https://discuss.ens.domains/t/temp-check-l2-eth-to-enable-chain-specific-addresses/20862)
+* [Allowing the DAO to manually issue .eth 2LDs, including 1- and 2- character ones](https://discuss.ens.domains/t/allowing-the-dao-to-manually-issue-eth-2lds-including-1-and-2-character-ones/20851)
+
+# Description
+
+This proposal registers the \`on.eth\` ENS name to the ENS DAO wallet (`0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7`) and sets the resolver to an on-chain registry-resolver contract (`0x2a9B5787207863cf2d63d20172ed1F7bB2c9487A`).
+
+# Motivation
+
+The Chain Registry-Resolver is a smart contract that acts as a **canonical, on-chain registry*"
+2790047678174594448,7432320732701654700329828389963546575346476886035742386260284098817526767149,Enable Root and Registrar Security Controllers,queued,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1512963.6834,227,99.999996551157,0.0522,6,3.44884300005503e-06,0.0000,0,0,1000000.0000,2026-02-11T15:19:23Z,2026-02-18T00:41:11Z,24434380,2026-02-11T15:19:11Z,https://discuss.ens.domains/t/executable-enable-root-and-registrar-security-controllers/21872,,"# Enable Root and Registrar Security Controllers
+## Abstract
+
+This proposal enables two break-glass security controllers:
+
+* `RootSecurityController`, which can disable a TLD by taking ownership and clearing its resolver.
+* `RegistrarSecurityController`, which can disable a .eth registrar controller.
+
+## Motivation
+
+At present, remediating a compromise or security vulnerability in critical parts of the ENS contracts requires a DAO vote, which takes a minimum of 9 days. This provides a significant window during which an attacker could take advantage of a vulnerability with no way to stop it. This proposal introduces two security controllers, which permit the security council to disable ENS functionality in an emergency, without granting them broad powers over the ENS system.
+
+Enabling the `RootSecurityController` allows rapid deactivation of a compromised TLD by transferring its ownership to the controller and clearing its resolver. Enabling the `RegistrarSecurityController` allows the "
+2787172295146210684,107313977323541760723614084561841045035159333942448750767795024713131429640046,[EP 6.32] [Executable] Transfer $2.5M USDC from Endowment to wallet.ensdao.eth ,executed,0x1D5460F896521aD685Ea4c3F2c679Ec0b6806359,coltron.eth,coltron.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1553709.4561,199,99.99999608250549,0.0486,1,3.1258407349414788e-06,0.0123,2,7.916537721866271e-07,1000000.0000,2026-02-07T13:35:47Z,2026-02-13T23:19:11Z,24405279,2026-02-07T13:35:35Z,https://discuss.ens.domains/t/ep-6-32-executable-transfer-2-5m-usdc-from-endowment-to-wallet-ensdao-eth/21882,,"# [EP 6.32] [Executable] Transfer $2.5M USDC from Endowment to wallet.ensdao.eth 
+# Abstract
+
+Following the approval of the [\[Executable\] Collective Working Group Funding Request (Oct 2025)](https://www.tally.xyz/gov/ens/proposal/77525093718307720477107269225240955392442633055266271196124066559357053541713), the transactions included in that proposal cannot fully execute due to insufficient USDC in the ENS DAO timelock (`wallet.ensdao.eth`).
+
+This proposal enables a **one-time internal transfer of 2.5M USDC** from the ENS Endowment to the ENS DAO timelock (`wallet.ensdao.eth`) to ensure execution of already approved governance decisions. It is an operational treasury action designed to maintain execution continuity without requiring ETH sales under current market conditions.
+
+# Motivation
+
+The Working Group funding proposal was submitted on January 22, 2026, and its execution tests were performed against the block in which it was created (block 24293146). At that time, sufficient USD"
+2779038904580310743,55749099144243971799440687308450608384225109120486751685653209891316805274409,# [EP 6.28] ENS Retro: Executable Proposal,executed,0x5BFCB4BE4d7B43437d5A0c57E908c048a4418390,Fire Eyes DAO,fireeyesdao.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1278870.0261,101,69.04751515748033,573289.3332,12,30.95248392666559,0.0170,2,9.158540730803961e-07,1000000.0000,2026-01-27T08:10:59Z,2026-02-02T17:36:11Z,24324887,2026-01-27T08:10:47Z,,,"# [EP 6.28] ENS Retro: Executable Proposal
+*Proposal Text copied (with minor edits) from Eugene Leventhal's post on the forum* [*here*](https://discuss.ens.domains/t/executable-ens-stakeholder-analysis-and-retro/21792)
+
+## Summary
+
+Following on the initial post introducing the [ENS Stakeholder Analysis and Retro](https://discuss.ens.domains/t/temp-check-ens-retro-an-ens-dao-retrospective-stakeholder-analysis/21648), this post is meant to provide an update and put forth an onchain proposal. Since the first post, a snapshot vote was passed expressing interest in seeing a full proposal. After that, Eugene posted a more [thorough proposal](https://discuss.ens.domains/t/temp-check-ens-retro-an-ens-dao-retrospective-stakeholder-analysis/21648/58), reposted here.
+
+**The ultimate goal of this work is to review where the DAO has been, clearly outline the goals for where you want to head, and provide clear accountability standards going forward.**
+
+
+
+## Motivation
+
+ENS DAO is a bit of a rarity i"
+2748560757745518030,32193910699583510191805100765941306153785098144960716714178124679398515702376,[EP 6.27] [Executable] Endowment permissions to karpatkey - Update #7,executed,0x1D5460F896521aD685Ea4c3F2c679Ec0b6806359,coltron.eth,coltron.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1269608.3700,459,88.76938415130748,5.7105,18,0.000399269755466222,160618.1805,5,11.230216578937057,1000000.0000,2025-12-16T07:00:47Z,2025-12-22T16:30:47Z,24023538,2025-12-16T07:00:35Z,https://discuss.ens.domains/t/ep-6-28-executable-endowment-permissions-to-karpatkey-update-7/21641,,"# [EP 6.27] [Executable] Endowment permissions to karpatkey - Update #7
+## Abstract
+
+This proposal introduces a routine update to the permissions for the Endowment Manager. These updates continue to evolve diversification to lending markets. This update also removes a permission no longer needed.
+
+## Motivation
+
+The permissions in this update focus on in increasing the availability of lending markets, specifically Morpho Vaults curated by kpk and others on Fluid Protocol.
+
+## Specification
+
+This proposal adds and removes the following contracts and functions:
+
+### ✅ Additions
+
+#### 1. Tokens&#xA;
+
+| Token | Functions Allowed | Token Address (Mainnet)                    |
+| ----- | ----------------- | ------------------------------------------ |
+| GHO   | `approve`         | 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f |
+
+#### 2. Morpho Lending Markets
+
+| Market                                                                                                           | Functions Allowed   "
+2746027444409468820,14510804444537789574755459676993085422296887570909724875059792580501615462793,Assign Ownership of the .kred TLD to Verified Multisig Controller,executed,0x76A6D08b82034b397E7e09dAe4377C18F132BbB8,netto.eth,alextnetto.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1330760.2666,269,99.999804404451,0.0163,1,1.2284091096946702e-06,2.5866,4,0.00019436713989844662,1000000.0000,2026-01-13T10:40:47Z,2026-01-19T20:01:35Z,24225260,2026-01-13T10:40:35Z,https://discuss.ens.domains/t/draft-executable-assign-ownership-of-the-kred-tld-to-verified-multisig-controller/21720,,"# Assign Ownership of the .kred TLD to Verified Multisig Controller
+# Assign Ownership of the `.kred` TLD to Verified Multisig Controller
+
+## **Abstract**
+
+This Executable Proposal requests that the ENS DAO assign ownership of the `.kred` top-level domain (TLD) to the multisig wallet:
+
+**0xb9ef2c160D908A4F7a9DFcdba46662C4a7EC4FD9**
+
+The proposing entity already owns and operates the ICANN `.kred` TLD and has demonstrated authoritative control of the DNS registry by publishing the ENS verification TXT record:
+
+`_ens.nic.kred TXT ""a=0xb9ef2c160D908A4F7a9DFcdba46662C4a7EC4FD9""`
+
+This satisfies the ENS DNS-based proof-of-ownership mechanism and confirms legitimate authority over `.kred`.
+
+***
+
+## **Motivation**
+
+The `.kred` top-level domain is an active ICANN TLD. Establishing `.kred` within ENS via DNS-verified ownership expands ENS’s integration with traditional DNS namespaces and supports unified Web2 + Web3 identity infrastructure.
+
+Benefits include:
+
+* Cryptographic linkage between IC"
+2729564643990177078,77525093718307720477107269225240955392442633055266271196124066559357053541713,[Executable] Collective Working Group Funding Request (Oct 2025),executed,0xc02771315d0958F23a64140160E78ECB9bB8614e,daostrat.eth,daostrat.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1355362.0016,146,99.99999764381378,0.0129,1,9.496412780724153e-07,0.0191,2,1.4065449397806985e-06,1000000.0000,2026-01-22T21:55:23Z,2026-01-29T07:18:23Z,24293146,2026-01-22T21:55:11Z,,,"# [Executable] Collective Working Group Funding Request (Oct 2025)
+# \[Executable] Collective Working Group Funding Proposal (Oct 2025)
+
+## Abstract
+
+This proposal executes all three Working Group funding requests for the October 2025 funding window, as approved in social proposals [**EP 6.24.1**](https://snapshot.box/#/s:ens.eth/proposal/0xc689edd77def6b9f6be6ca7fa1729e597c85ee12ae96e134d995a8b9fd78a21f), [**EP 6.24.2**](https://snapshot.box/#/s:ens.eth/proposal/0x9b3f5463e52aadc35155e686f8416297b24e6c7e30cb527747e61cf17b42a5f6), and [**EP 6.24.3**](https://snapshot.box/#/s:ens.eth/proposal/0x7b603c5ada65cfcdbdfec9a33352edf731615fe96fbcc09daa7aa97b327e15ce). Each was ratified via Snapshot and follows the ENS DAO’s standard funding process. This executable aggregates the transfers into a single transaction set.
+
+## Proposal Components
+
+| Working Group   | Destination (Multisig)                                                                                    | Amount                  "
+2708179808130434396,12950686153984121876325788121804936905339482144562527684056466889156345680789,[EP 6.23] [Executable] Endowment permissions to karpatkey - Update #6,executed,0x352BAc8c804925Af197F76c4D8D074e4fe5c2edC,,,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1229860.5943,94,88.4613713941389,1.0509,3,7.559154836370422e-05,160418.1740,4,11.538553014312745,1000000.0000,2025-10-21T18:38:11Z,2025-10-28T04:36:35Z,23627765,2025-10-21T18:37:59Z,https://discuss.ens.domains/t/executable-endowment-permissions-to-karpatkey-update-6/21396,,"# [EP 6.23] [Executable] Endowment permissions to karpatkey - Update #6
+# Abstract
+
+This proposal introduces updated permissions for the Endowment, with a continued focus on diversification and alignment with the evolving market landscape and liquidity.
+
+# Motivation
+
+The proposed new permissions focus on strategies involving:
+
+* Airdrop claim: Claim the SPK airdrop and add permissions to swap the SPK token
+* Additional permissions on already permitted platforms for generating yield on Endowment assets, including:
+  * Balancer v3 pools: since the protocol upgrade in December 2024, liquidity and incentives have been migrating from v2 to v3 pools
+  * Curve ETH stable-pair pools
+* New platform for generating yield on permitted assets: Morpho
+  * Morpho has now established itself as one of the leading lending platforms in DeFi and presents various attractive yield opportunities that can complement and diversify the current strategies for both ETH and stablecoins. With its minimal and immut"
+2705526220803540540,89533866253315759669817396047764505253840458037760720608881002428435364696940,[EP 6.22] [Executable] ENS Contract Naming Season,executed,0x5BFCB4BE4d7B43437d5A0c57E908c048a4418390,Fire Eyes DAO,fireeyesdao.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1449667.6844,101,99.26769396805115,5198.0175,11,0.35594033963190996,5496.3016,4,0.37636569231694894,1000000.0000,2025-10-21T18:30:23Z,2025-10-28T04:28:47Z,23627726,2025-10-21T18:30:11Z,https://discuss.ens.domains/t/temp-check-ens-contract-naming-season/21402,,"# [EP 6.22] [Executable] ENS Contract Naming Season
+*After positive discussion, feedback and support on the forum, we now move this proposal to a vote.*
+
+**Execution:**
+
+* **Send 75,000 USDC to Contract Naming Pod Multisig**
+* **Send 10,000 ENS to Contract Naming Pod Multisig**
+
+## Outline
+
+**This proposal aims to launch ENS Contract Naming Season: a time-boxed program focused on the creation and empowerment of an ENS protocol integration leaderboard with the goal of driving adoption of ENS at a smart contract, protocol and DAO level.**
+
+This proposal also outlines a **‘Temporary Contract Naming Pod’** with the explicit mandate to drive the communication, adoption and onboarding of different protocols and projects to the program over the next ~6 months. This pod will be primarily led by ENScribe with support from FireEyes and any other humans interested.
+
+A budget for this temporary pod is also proposed, to be used for **two purposes;** USDC to be used by the pod to pay contributors (p"
+2697430371380757582,108835189906614532703236602621229289879643217303874617456878894788222576090451,[Executable] Set Primary Names for Core DAO Addresses,executed,0xA7860E99e3ce0752D1ac53b974E309fFf80277C6,limes.eth,limes.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1321739.9917,82,100,0.0000,0,0,0.0000,1,0,1000000.0000,2025-10-06T17:56:47Z,2025-10-13T03:39:59Z,23520356,2025-10-06T17:56:35Z,https://discuss.ens.domains/t/temp-check-set-primary-names-for-core-dao-addresses/21432?u=limes,,"# [Executable] Set Primary Names for Core DAO Addresses
+## Abstract
+
+Several ENS DAO contracts lack primary names. This proposal establishes reverse records for core DAO addresses.
+
+## Motivation
+
+By setting reverse records for core DAO addresses:
+
+* ENS DAO demonstrates best practices by using its own protocol fully, serving as an example for other DAOs
+* ENS DAO contracts become easier to identify and navigate
+* Names will resolve on sites that list the contracts like [enswallets.xyz](https://www.enswallets.xyz/)
+
+## Details
+
+Executing this proposal will set primary names for
+
+1. The [ENS DAO wallet](https://etherscan.io/address/0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7)
+2. The [ENS token](https://etherscan.io/address/0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72)
+3. The [ENS Endowment wallet](https://etherscan.io/address/0x4F2083f5fBede34C2714aFfb3105539775f7FE64)
+
+## Specification
+
+Call `setName(""wallet.ensdao.eth"")` on the Reverse Registrar (reverse.ens.eth) to set the reverse recor"
+2689519495495550443,28621945985399756809323229823216459792275185227390789031203077499124321674250,# [EP 6.20][Executable] Reimbursement for eth.limo’s Legal Fees,executed,0x983110309620D911731Ac0932219af06091b6744,brantly.eth,brantly.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1612874.6970,75,100,0.0000,0,0,0.0000,0,0,1000000.0000,2025-09-25T19:53:47Z,2025-10-02T05:41:59Z,23442264,2025-09-25T19:53:35Z,,,"# [EP 6.20][Executable] Reimbursement for eth.limo’s Legal Fees
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/temp-check-reimbursement-for-eth-limo-s-legal-fees/21435)
+
+### Summary
+
+This proposal aims to reimburse eth.limo for ongoing legal fees related to the operation of the eth.limo/eth.link gateway services.
+
+### Background
+
+eth.limo provides critical public goods infrastructure for ENS, powering countless dApps and dWebsites. The eth.limo team is on call 24/7/365 to ensure uptime and availability as well as providing technical support for builders and projects. Operating such infrastructure involves not only technical upkeep but also significant human and legal costs.
+
+Recent legal requests and compliance requirements in the U.S. have resulted in substantial and unpredictable legal fees for our small team. For a more detailed background and context, please refer to our recent post:
+[Eth.limo - Legal Update & Full Summary](https://discuss.ens.domains/t/eth-limo-legal-u"
+2672662866296833907,48262157524430528705514027771464261215955420389394621161356313649894506972547,[Executable] Adopt The SEAL Safe Harbor Agreement,executed,0x7C63AF643789E59770F98621668D0a364E072947,,,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1552423.4522,85,99.99999913920877,0.0134,2,8.607912362223924e-07,0.0000,1,0,1000000.0000,2025-09-03T12:56:11Z,2025-09-09T22:31:35Z,23282723,2025-09-03T12:55:59Z,https://discuss.ens.domains/t/temp-check-adopt-the-seal-safe-harbor-agreement/21226/1,,"# [Executable] Adopt The SEAL Safe Harbor Agreement
+# [](#p-58561-temp-check-adopt-the-seal-safe-harbor-agreement-1)**\[Executable] Adopt The SEAL Safe Harbor Agreement**
+
+**Category**: DAO-Wide
+**Authors**: [@samczsun](/u/samczsun) (SEAL), [@dickson](/u/dickson) (SEAL), [@Alexu](/u/alexu) (ENS)
+
+***
+
+## **Introduction**
+
+This proposal outlines ENS’s adoption of the SEAL ([Security Alliance](https://www.securityalliance.org/)) Whitehat Safe Harbor Agreement (“Safe Harbor Agreement”). By adopting the Safe Harbor Agreement, ENS improves the security of its on-chain assets by allowing whitehats to intervene during active exploits to save protocol funds.
+
+### **What is the Safe Harbor Agreement?**
+
+The Safe Harbor Agreement addresses a critical need in crypto: enabling whitehats to intervene during active exploits when the urgency of an attack makes traditional processes too slow to save funds.
+
+The Safe Harbor Agreement was created by SEAL, a nonprofit founded by samczsun, to secure the f"
+2669874815220844517,8152144177729545927999296682104713773450687318641051882785083122565237294645,[Executable] Reactivate SPP2 streams,executed,0x76A6D08b82034b397E7e09dAe4377C18F132BbB8,netto.eth,alextnetto.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1456477.1512,82,100,0.0000,0,0,0.0000,0,0,1000000.0000,2025-08-30T19:58:35Z,2025-09-06T05:36:11Z,23256195,2025-08-30T19:58:23Z,https://discuss.ens.domains/t/executable-reactivate-spp2-streams,,"# [Executable] Reactivate SPP2 streams
+## Abstract
+
+This proposal reactivates the Service Provider Program Season 2 (SPP2) streams that were interrupted due to a failure in Superfluid’s autowrap system. The issue has been resolved, and Superfluid has committed to covering any liquidation fees incurred by providers during the interruption. This proposal resumes the original payment streams approved in EP 6.3 and EP 6.10, including retroactive funding for the downtime.
+
+## Motivation
+
+Following the Superfluid autowrap failure ([post-mortem report](https://superfluidorg.notion.site/AutoWrap-System-Failure-August-2025-24f4b6e22ae98044bad6e55f7f200e0f)), the Timelock's USDCx balance ran out, interrupting the stream from the Timelock to the [Stream Management Pod](https://etherscan.io/address/0xB162Bf7A7fD64eF32b787719335d06B2780e31D1), which also ran out of USDCx, interrupting the streams to SPs. To maintain the continuity of ENS DAO’s commitments, this proposal restarts the streams and pro"
+2648158528950241087,51903780073989583830128732176342966426696684927524697157008519276797273489808,[Executable] Transfer .locker TLD to Orange Domains LLC,executed,0x534631Bcf33BDb069fB20A93d2fdb9e4D4dD42CF,slobo.eth,slobo.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1212271.8274,162,99.99999786254168,0.0159,1,1.3125608415479847e-06,0.0100,1,8.248974825849114e-07,1000000.0000,2025-08-04T17:07:47Z,2025-08-11T02:44:11Z,23069088,2025-08-04T17:07:35Z,https://discuss.ens.domains/t/executable-transfer-locker-tld-to-orange-domains-llc/21077,,"# [Executable] Transfer .locker TLD to Orange Domains LLC
+## Abstract
+
+Orange Domains LLC is requesting the transfer of ownership of the “locker” Top Level Domain (TLD) in the ENS ecosystem. As the ICANN-accredited registry operator of the .locker TLD and controller of the .locker namespace on the Bitcoin Naming System (BNS), Orange Domains operates a comprehensive Web2-to-Web3 bridge that launched in general availability on October 23rd, 2024.
+
+Our .locker solution enables seamless connection between traditional DNS domain names and Web3 digital identities, with Web2 domains registered through over 50 ICANN-accredited registrars (including GoDaddy and NameCheap) and corresponding Web3 identities minted on Bitcoin’s Stacks L2. Currently supporting Bitcoin, Stacks, Ethereum, and Solana address resolution, we seek ENS integration to provide .locker users with full utility across Ethereum’s vast ecosystem through native ENS resolution and reverse resolution capabilities.
+
+This proposal al"
+2636784931094660603,42524979896803285837776370636134389407867034021879791462477783237030656381157,[Executable] Enable L2 Reverse Registrars and new .eth registrar controller,executed,0x69420f05A11f617B4B74fFe2E04B2D300dFA556F,,,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1203263.5099,84,99.99998794152305,0.0653,2,5.4265139925084506e-06,0.0798,1,6.6319629673009536e-06,1000000.0000,2025-07-23T14:20:35Z,2025-07-30T00:03:11Z,22982423,2025-07-23T14:20:23Z,,,"# [Executable] Enable L2 Reverse Registrars and new .eth registrar controller
+# Abstract
+
+This proposal enables five chain-specific reverse resolvers for L2 EVM networks, and one default reverse resolver as a fallback mechanism. The five chains are Arbitrum, Base, Linea, OP Mainnet and Scroll.
+
+This proposal also enables a new .eth registrar controller and sets the reverse record of some currently un-named ENS contracts.
+
+# Motivation
+
+The current implementation of reverse resolution is limited to Ethereum Mainnet and assumes that every entity (a generic smart contract or user account) has the same address across every EVM chain. This has been falling out of line with reality given the rise in smart contract accounts, indicating that reverse resolution should be resolved via a namespace for each chain, rather than a single reverse namespace for the Ethereum ecosystem at large.
+
+This functionality defined formally in [ENSIP-19](https://docs.ens.domains/ensip/19/), combined with [ENSIP-1"
+2633422110508189170,43003012871521685709452092060115706577030630127946926655190871046443785691900,[Executable] Enable L2 Reverse Registrars and new .eth registrar controller,defeated,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,256432.6998,39,14.417108807625537,1511449.5147,37,84.97641731452464,10787.1652,3,0.6064738778498184,1000000.0000,2025-07-10T10:23:23Z,2025-07-16T19:55:35Z,22888159,2025-07-10T10:23:11Z,https://discuss.ens.domains/t/executable-enable-l2-reverse-registrars-and-new-eth-registrar-controller/20969,,"# [Executable] Enable L2 Reverse Registrars and new .eth registrar controller
+# Abstract
+
+This proposal enables five chain-specific reverse resolvers for L2 EVM networks, and one default reverse resolver as a fallback mechanism. The five chains are Arbitrum, Base, Linea, OP Mainnet and Scroll.
+
+This proposal also enables a new .eth registrar controller and sets the reverse record of some currently un-named ENS contracts.
+
+# Motivation
+
+The current implementation of reverse resolution is limited to Ethereum Mainnet and assumes that every entity (a generic smart contract or user account) has the same address across every EVM chain. This has been falling out of line with reality given the rise in smart contract accounts, indicating that reverse resolution should be resolved via a namespace for each chain, rather than a single reverse namespace for the Ethereum ecosystem at large.
+
+This functionality defined formally in [ENSIP-19](https://docs.ens.domains/ensip/19/), combined with [ENSIP-1"
+2622938301270591091,20404686300257550242704646761273386459664655640264490428281621095220078268383,[EP 6.13] [Corrected] [Executable] - SPP Season 2 Implementation,executed,0xe52C39327FF7576bAEc3DBFeF0787bd62dB6d726,5pence.eth,5pence.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1609199.8887,70,98.22168147262632,0.0917,2,5.5960139244354744e-06,29134.7178,2,1.7783129313597577,1000000.0000,2025-06-25T23:20:47Z,2025-07-02T09:02:23Z,22784697,2025-06-25T23:20:35Z,https://discuss.ens.domains/t/ep-6-13-executable-service-provider-program-season-2-implementation/20971,,"# [EP 6.13] [Corrected] [Executable] - SPP Season 2 Implementation
+## Correction
+
+The previous version of this proposal has incorrect text in the description.  This version is corrected.
+
+## Abstract
+
+This executable proposal implements the Service Provider Program Season 2 (SPP2) following the approval of [EP 6.10](https://www.tally.xyz/gov/ens/proposal/50462913323863149622798490468303951055439459905477651666479638328507088159695) for service provider selection and the budget framework established in [EP 6.3](https://www.tally.xyz/gov/ens/proposal/45863606498975303062952719073086674668061306651606831273917754523416516421073).
+
+This proposal transitions our existing streaming infrastructure from the $3.6M annual budget supporting 9 providers to the new $4.5M annual budget supporting 8 providers, including 6 continuing providers and 2 new additions.
+
+## Specification
+
+Following the selection of service providers in EP 6.10, this proposal implements the technical changes required to:
+
+1."
+2622864556984109021,6325634497264265012626716784077918930541180346289202027480596910133312093648,[EP 6.13] [Executable] - Service Provider Program Season 2 Implementation,defeated,0xe52C39327FF7576bAEc3DBFeF0787bd62dB6d726,5pence.eth,5pence.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1.9224,2,0.0003553059239023734,413311.8055,12,76.39065475851714,127736.4919,2,23.60898993555896,1000000.0000,2025-06-25T20:43:47Z,2025-07-02T06:25:11Z,22783915,2025-06-25T20:43:35Z,,,"# [EP 6.13] [Executable] - Service Provider Program Season 2 Implementation
+## Abstract
+
+This executable proposal implements the Service Provider Program Season 2 (SPP2) following the approval of [EP 6.10](https://www.tally.xyz/gov/ens/proposal/50462913323863149622798490468303951055439459905477651666479638328507088159695) for service provider selection and the budget framework established in [EP 6.3](https://www.tally.xyz/gov/ens/proposal/45863606498975303062952719073086674668061306651606831273917754523416516421073).
+
+This proposal transitions our existing streaming infrastructure from the $3.6M annual budget supporting 9 providers to the new $4.5M annual budget supporting 8 providers, including 6 continuing providers and 2 new additions.
+
+## Specification
+
+Following the selection of service providers in EP 6.10, this proposal implements the technical changes required to:
+
+1. **Adjust Streaming Infrastructure** - Update the master flow rate from ENS DAO to the Stream Management Pod to "
+2597324630620374576,18742211083269328003498907723174230327570776601682376043962489402709315500668,[EP 6.11] [Executable] Collective Working Group Funding Request (April 2025),executed,0xe52C39327FF7576bAEc3DBFeF0787bd62dB6d726,5pence.eth,5pence.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1753147.5953,100,99.99998318056849,0.2463,3,1.4049325787149816e-05,0.0486,2,2.7701057190081815e-06,1000000.0000,2025-05-21T15:22:23Z,2025-05-28T01:18:23Z,22532129,2025-05-21T15:22:11Z,https://discuss.ens.domains/t/ep-6-11-executable-collective-working-group-funding-request-april-2025/20788/1,,"# [EP 6.11] [Executable] Collective Working Group Funding Request (April 2025)
+| Status     | Draft                                            |
+| ---------- | ------------------------------------------------ |
+| **Author** | [5pence.eth](https://app.ens.domains/5pence.eth) |
+
+## Abstract
+
+This proposal executes funding requests for the Meta-Governance and Public Goods Working Groups for the April 2025 funding window as passed in [EP 6.6.1](https://discuss.ens.domains/t/6-6-1-social-april-funding-request-ens-meta-governance-working-group-term-6/20536) and [EP 6.6.2](https://discuss.ens.domains/t/6-6-2-social-april-funding-request-ens-public-goods-working-group-term-6/20532). This bundled executable proposal follows the requirements set out in Rule 10.1 of the Working Group Rules ([EP 1.8](https://docs.ens.domains/dao/proposals/1.8/)).
+
+## Proposal Components
+
+***
+
+### 1) [Meta-governance Funding Request \[EP 6.6.1\]](https://discuss.ens.domains/t/6-6-1-social-april-funding-request-ens-"
+2597261424044541194,75480516867756766284972947192514005324792532674550120092693062891336419998702,[EP6.12] [Executable] Set resolver for .ceo TLD,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1805012.2750,93,99.99997436207678,0.3759,6,2.0827696825362984e-05,0.0868,2,4.810226393955741e-06,1000000.0000,2025-05-21T12:55:11Z,2025-05-27T22:51:11Z,22531399,2025-05-21T12:54:59Z,https://discuss.ens.domains/t/executable-set-resolver-for-ceo-tld/20820/1,,"# [EP6.12] [Executable] Set resolver for .ceo TLD
+# \[EP6.12] \[Executable] Set resolver for .ceo TLD
+
+| **Status** | Temp check                                                                        |
+| ---------- | --------------------------------------------------------------------------------- |
+| Discussion | [Link](https://discuss.ens.domains/t/executable-set-resolver-for-ceo-tld/20820/1) |
+
+## Abstract
+
+[EP6.7](https://discuss.ens.domains/t/ep-6-7-executable-transfer-ceo-tld-to-the-dnssec-registrar/20594) reconfigured the .ceo TLD, setting the owner record to the DNSSEC registrar contract. This allowed onchain claiming of .ceo 2LDs to resume, reclaiming control from a custom registrar that had been set by a previous owner of .ceo.
+
+Unfortunately, this neglected to consider the necessary infrastructure for offchain claiming, which requires also setting the resolver record. As a result, a follow-up executable EP is required to set the resolver also.
+
+To prove ownership of .ceo and"
+2577519828545831958,83558494563463316177076768398348085020294312678713085260352382286714788322618,[EP6.7] [Executable] Revoke root controller role from legacy ENS multisig,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1634439.5606,222,99.99997014463193,0.3673,5,2.2472024274149545e-05,0.1207,3,7.383343796822093e-06,1000000.0000,2025-04-24T07:11:59Z,2025-04-30T16:41:47Z,22337300,2025-04-24T07:11:47Z,https://discuss.ens.domains/t/ep-6-8-executable-revoke-root-controller-role-from-legacy-ens-multisig/20644,,"# [EP6.7] [Executable] Revoke root controller role from legacy ENS multisig
+# 
+
+| **Status**            | Active                                      |
+| --------------------- | -------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/ep-6-8-executable-revoke-root-controller-role-from-legacy-ens-multisig/20644) |
+
+## Abstract
+
+We have identified that the legacy ENS multisig, which originally controlled ENS before the DAO was created, still has the 'controller' role on the ENS root. This means that a majority of multisig keyholders could create or replace any ENS TLD other than .eth. .eth is locked and cannot be modified by the DAO or anyone else.
+
+In order to correct this oversight, this proposal revokes the legacy multisig's controller role from the root contract.
+
+## Specification
+
+Call `setController` on the ENS `Root` contract at `0xaB528d626EC275E3faD363fF1393A41F581c5897`, passing in the address of the legacy multisig, `0xCF60"
+2577070112469157163,7404040509873168432228479064563591804702835162347907107082011204120525681390,[EP 6.8] [Executable] Endowment permissions to karpatkey - Update #5,executed,0x352BAc8c804925Af197F76c4D8D074e4fe5c2edC,,,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1449452.7055,135,84.08098298243978,113731.4651,10,6.5974235257550795,160692.8038,9,9.321593491805135,1000000.0000,2025-04-24T15:19:59Z,2025-05-01T00:48:23Z,22339715,2025-04-24T15:19:47Z,,,"# [EP 6.8] [Executable] Endowment permissions to karpatkey - Update #5
+# Abstract
+
+This proposal aims to introduce new permissions for deploying Endowment funds, with a continued focus on diversification and alignment with the evolving market landscape and liquidity.
+
+# Motivation
+
+The proposal seeks to request new permissions from the ENS DAO to karpatkey, such that the permissions are aligned with evolving market conditions and protocol updates.
+
+The proposed new permissions focus on strategies involving:
+
+* **Protocol update**: MakerDAO migration to Sky Protocol
+* Continuous diversification of **Ethereum LST providers**: Origin Protocol
+* Continuous diversification to **Stablecoin offerings**: USDT, Real-World Assets (Mountain Protocol)
+  * **Why USDT?** While USDC is a reliable and widely-used stablecoin, adding USDT enhances the diversification of counterparty and operational risks within the endowment. By holding both, the endowment mitigates potential risks associated with relia"
+2577051386554353176,51329136884099251878034959419745117799040381230875971532699817044496491926852,[6.7] [Executable] Transfer .ceo TLD to the DNSSEC registrar,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1779138.2945,182,99.99996152612889,0.4691,4,2.636608397314422e-05,0.2154,3,1.2107787146970383e-05,1000000.0000,2025-04-23T15:41:23Z,2025-04-30T01:06:47Z,22332663,2025-04-23T15:41:11Z,https://discuss.ens.domains/t/temp-check-executable-transfer-ceo-tld-to-the-dnssec-registrar/20594,,"# [6.7] [Executable] Transfer .ceo TLD to the DNSSEC registrar
+| **Status**            | Pending                                                                                                     |
+| --------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Discussion Thread** | [Forum](https://discuss.ens.domains/t/temp-check-executable-transfer-ceo-tld-to-the-dnssec-registrar/20594) |
+
+## Abstract
+
+The .ceo TLD, formerly owned by Kred Pty, has since been acquired by XYZ. Prior to the formation of the DAO, the previous owner asked for .ceo to be delegated to a custom address so they can manage a bespoke DNS integration. The new owner has requested that this change be undone, and that ownership of .ceo be reverted to the DNSSEC registrar so owners of .ceo TLDs can use the standard integration to claim their names on ENS.
+
+To prove ownership of .ceo and their intention that we action this request, they have"
+2515518299983316940,31309365093913580207991288430108338667724061355449265288906484597789511363394,# [EP6.2] Endowment expansion (3rd tranche),executed,0xe52C39327FF7576bAEc3DBFeF0787bd62dB6d726,5pence.eth,5pence.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1009456.6264,69,66.4591953450365,289524.0795,3,19.06128193585883,219931.1936,5,14.479522719104663,1000000.0000,2025-01-28T18:04:11Z,2025-02-04T03:38:11Z,21724691,2025-01-28T18:03:59Z,,,"# [EP6.2] Endowment expansion (3rd tranche)
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/temp-check-endowment-expansion-3rd-tranche/19851)
+
+# Author - karpatkey
+Temp Check: [https://discuss.ens.domains/t/temp-check-endowment-expansion-3rd-tranche/19851](https://discuss.ens.domains/t/temp-check-endowment-expansion-3rd-tranche/19851)
+
+# Summary
+
+This proposal aims to expand the Endowment by funding a third tranche, comprising 5,000 ETH, from the ENS DAO to the ENS Endowment. 
+
+Alongside the third tranche transfer, an update to the Allowance Module on the ENS Endowment is proposed; *resetTime* for ETH allowance (for fee payment) is to be changed from the current parameter of 43,200 seconds (30 days) to 36,000 seconds (25 days). The motivation for this is that there has been an accumulation of payment delays, such that current fee payments are delayed.
+
+
+# Motivation
+
+Since the establishment of the Endowment on March 7th, 2023, ENS has been setting the gold standard for DAO t"
+2515447293360997938,33808096277765934415068056906696425640427679116963285327644834080891069190379,"# [EP6.1] [Executable] Convert 6,000 ETH to USDC for DAO Operating Expenses",executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1510862.0908,80,98.99713496929138,5305.4001,2,0.3476289534335504,10000.0000,1,0.6552360772750754,1000000.0000,2025-01-28T15:43:11Z,2025-02-04T01:17:35Z,21723989,2025-01-28T15:42:59Z,,,"# [EP6.1] [Executable] Convert 6,000 ETH to USDC for DAO Operating Expenses
+
+# Abstract
+
+We propose to convert 6,000 ETH into USDC to replenish the USDC reserves in the [DAO’s treasury](https://etherscan.io/address/0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7).
+
+
+# Motivation
+
+In February 2023, the DAO executed a swap of 10,000 ETH into USDC via [EP 3.3](https://www.tally.xyz/gov/ens/proposal/45461903078948131870051132081249892009497709518413744958551889217805827301425), generating approximately $16.2M in USDC. The rationale at the time was to secure 18–24 months of operational runway.
+
+Over the past 21 months, the USDC reserves have been effectively utilised to fund ENS DAO’s operations. However, these reserves have now been fully depleted. To ensure financial stability and effective liquidity management, it is prudent to secure a 12-month runway in the DAO’s wallet to cover operating expenses.
+
+We propose ENS convert 6,000 ETH (~$20.4M at $3,200/ETH) to replenish the USDC reserves. The"
+2485131686526846075,13214174724111749338017943143826453367599509196993220699255450633508989705578,# [EP 5.29] Funding request for Unruggable to build and operate a network of gateways supporting the rollout of ENSIP-19: EVM-chain Reverse Resolution ,defeated,0x983110309620D911731Ac0932219af06091b6744,brantly.eth,brantly.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,949616.2374,40,41.03045641294281,1289941.1660,50,55.73501452959943,74860.5203,1,3.234529057457756,1000000.0000,2024-12-17T19:51:35Z,2024-12-24T05:35:35Z,21424461,2024-12-17T19:51:23Z,,,"# [EP 5.29] Funding request for Unruggable to build and operate a network of gateways supporting the rollout of ENSIP-19: EVM-chain Reverse Resolution 
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/temp-check-ep-x-x-funding-request-for-unruggable-to-build-and-operate-a-network-of-gateways-supporting-the-rollout-of-ensip-19-evm-chain-reverse-resolution/19902)
+
+
+ ## Description 
+# Summary
+
+We are requesting funding from the ENS DAO to build a production network of gateways. These gateways will support the rollout of reverse resolution for **Arbitrum, Base, Linea, Optimism, and Scroll.** We also plan to continue our research and development on the ENS protocol and actively contribute to the ENS ecosystem with a focus on resolving names from L2s. Our funding request focuses on infrastructure, talent acquisition and retention, and ongoing development to sustain this critical ENS infrastructure.
+
+# **Request**
+
+We are requesting **$1,200,000 USDC annually and 24,000 ENS tokens ("
+2485129129754625620,15212507956777005315602309329914215169878587763966450377165643673108805753590,# [EP 5.28] [Executable] Reimbursement of eth.limo’s ongoing legal fees,executed,0x983110309620D911731Ac0932219af06091b6744,brantly.eth,brantly.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1769437.7668,62,99.99010754157753,0.0000,0,0,175.0582,2,0.009892458422470014,1000000.0000,2024-12-17T19:45:59Z,2024-12-24T05:29:47Z,21424433,2024-12-17T19:45:47Z,,,"# [EP 5.28] [Executable] Reimbursement of eth.limo’s ongoing legal fees
+
+
+
+ ## Description 
+### Summary
+
+This proposal aims to reimburse eth.limo for ongoing legal fees related to the operation of the eth.limo/eth.link gateway services.
+
+### Background
+
+### The Human Costs of Public Goods
+
+At eth.limo we continuously strive to deliver a high quality ENS gateway experience. We understand the critical utility that our service provides and we have dedicated countless hours to developing and maintaining the gateway infrastructure that powers thousands of dApps and dWebsites alike.
+
+Speaking beyond purely technical requirements, one aspect of operating eth.limo that is often overlooked is the human cost. We are a small team with limited resources who are dedicated 24/7 to ensure that we respond to support requests in a timely fashion, work with other cutting edge ecosystem projects for integrations, and provide on-call availability for any server-side issues that might arise. In addition, w"
+2480500565067433574,40272043175867710511047990376059633000673751036364092383567949469124429500507,[EP 5.27][Executable] Revoke the DAO's ability to upgrade the name wrapper,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1431240.2847,53,100,0.0000,0,0,0.0000,0,0,1000000.0000,2024-12-11T10:32:11Z,2024-12-17T20:00:23Z,21378687,2024-12-11T10:31:59Z,https://discuss.ens.domains/t/temp-check-executable-revoke-the-daos-ability-to-upgrade-the-name-wrapper/19920,,"# [EP 5.27][Executable] Revoke the DAO's ability to upgrade the name wrapper
+## Abstract
+
+The Name Wrapper’s upgrade mechanism contains a vulnerability whereby a malicious DAO could use the upgrade mechanism to seize control of wrapped names without the owner’s consent, documented [here](https://discuss.ens.domains/t/security-advisory-a-malicious-dao-update-could-reduce-the-registration-duration-of-registered-eth-2lds/17576/1).
+
+Since the v2 migration plan makes the upgrade mechanism obsolete, we now know the mechanism will never be required. This EP proposes to remove the DAO’s ability to upgrade the name wrapper.
+
+## Specification
+
+Admin control over the name wrapper gives the DAO two functions: it can set the upgrade contract, and it can specify the address of the metadata contract. Since we want to remove the former ability while preserving the latter, we propose the following sequence of actions:
+
+1. Deploy a new metadata contract, identical to the current one but using a proxy. T"
+2465430835612878792,50152158826647742094695349340830523178083147237337111134725087674188893435887,# [EP 5.26] [Executable] Implementation of [EP 5.19]’s ENS Governance Distribution Pilot Program,executed,0xe52C39327FF7576bAEc3DBFeF0787bd62dB6d726,5pence.eth,5pence.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1315897.2865,49,100,0.0000,0,0,0.0000,0,0,1000000.0000,2024-11-20T15:29:23Z,2024-11-27T01:00:23Z,21229849,2024-11-20T15:29:11Z,,,"# [EP 5.26] [Executable] Implementation of [EP 5.19]’s ENS Governance Distribution Pilot Program
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/ep-5-26-executable-implementation-of-ep-5-19-s-ens-governance-distribution-pilot-program/19878)
+
+
+ ## Description 
+
+## Abstract
+
+This executable proposal implements the Governance Distribution Pilot Program approved in [EP5.19](https://snapshot.org/#/ens.eth/proposal/0xfa54ff2b55f0495c96ec2d8645241bcff48ca6afe1f4925fb51f29c4667252df). Following the community's selection of the 30k ENS distribution option, this proposal authorizes the transfer of ENS tokens from the treasury to implement the program.
+
+## Specification
+
+This proposal authorizes:
+1. The transfer of 30,000 ENS tokens from the DAO treasury to the Meta-governance working group's main wallet (main.mg.wg.ens.eth) for distribution to eligible recipients
+2. The Meta-governance working group will then distribute these tokens through 2-year linear vesting contracts according to"
+2465415640488346987,14573906698181916980991958251655570598275649222336388998984945658874299918898,# [EP 5.25] [Executable] Collective Working Group Funding Request (Oct 2024) - Resubmission,executed,0xe52C39327FF7576bAEc3DBFeF0787bd62dB6d726,5pence.eth,5pence.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1315898.5154,44,100,0.0000,1,0,0.0000,0,0,1000000.0000,2024-11-20T14:58:47Z,2024-11-27T00:29:23Z,21229696,2024-11-20T14:58:35Z,,,"# [EP 5.25] [Executable] Collective Working Group Funding Request (Oct 2024) - Resubmission
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/ep-5-25-executable-collective-working-group-funding-request-oct-2024-resubmission/19847)
+
+
+ ## Description 
+
+## Description
+This is a resubmission of [EP 5.24], with no changes to the funding amounts or technical specifications.
+
+## Abstract
+This proposal executes all three Working Group funding requests for the October 2024 funding window as passed in [EP 5.17.1](https://discuss.ens.domains/t/5-17-1-social-funding-request-ens-meta-governance-working-group-term-5-oct-window/19677), [EP 5.17.2](https://discuss.ens.domains/t/5-17-2-social-funding-request-ens-ecosystem-working-group/19678), and [EP 5.17.3](https://discuss.ens.domains/t/5-17-3-social-funding-request-ens-public-goods-working-group/19679). For more detail, view the ENS Governance docs at https://basics.ensdao.org/funding-requests 
+
+## Proposal Components
+
+---
+
+### 1) [Meta-gov"
+2451224834969962271,46071186312489687574960948336391811341595411932836110873328798657006776570015,[EP 5.23] [Executable] blockful's governance security bounty,executed,0x76A6D08b82034b397E7e09dAe4377C18F132BbB8,netto.eth,alextnetto.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1144582.9641,64,90.28274292676451,0.2790,2,2.200704192320256e-05,123192.7759,4,9.717235066193567,1000000.0000,2024-11-01T01:06:35Z,2024-11-07T10:36:23Z,21089400,2024-11-01T01:06:23Z,https://discuss.ens.domains/t/temp-check-governance-security-compensating-blockful-for-preventing-a-potential-attack-on-the-ens-dao/19710,https://snapshot.org/#/ens.eth/proposal/0x5067725bef9cde0de0024adedb653a7a1752aefa726adf628b77048d85821a6d,"# [EP 5.23] [Executable] blockful's governance security bounty
+## Summary
+
+
+
+This proposal aims to compensate the blockful team for their work in identifying, analyzing, reporting and mitigating a severe vulnerability in ENS DAO's governance structure.
+
+
+
+## Background
+
+
+
+In March 2024, blockful uncovered a critical vulnerability that could have led to a [~$150M](https://dune.com/steakhouse/ens-steakhouse) theft and protocol capture. Their subsequent work led to the implementation of the Security Council, significantly enhancing ENS DAO's resilience against attacks.
+
+
+
+## Contribution Details
+
+
+
+The team involved is a [different](https://discuss.ens.domains/t/blockful-service-provider-reports/19553#p-54163-other-contributions-not-related-to-service-provider-scope-14) squad than the one working on the scope of the [ENS service provider](https://discuss.ens.domains/t/blockful-service-provider-reports/19553). It was developed by 2 researchers, 1 smart contract engineer and 4 different aud"
+2450964493505659931,6949396467348678571876890705367894936837088742488849089767544172635343148173,"# [EP 5.24] [Executable] Term 5 Q4, Collective Working Group Funding Proposal",defeated,0x809FA673fe2ab515FaA168259cB14E2BeDeBF68e,avsa.eth,avsa.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,135.1659,5,0.010887863398024451,1125375.5977,40,90.651087004419,115925.6437,5,9.338025132182977,1000000.0000,2024-10-31T16:27:23Z,2024-11-07T01:56:11Z,21086810,2024-10-31T16:27:11Z,,,"# [EP 5.24] [Executable] Term 5 Q4, Collective Working Group Funding Proposal
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/ep-5-24-executable-term-5-q4-collective-working-group-funding-proposal/19801)
+
+
+ ## Description 
+This proposal executes all three Working Group funding requests for the October 2024 funding window as passed in [EP 5.17.1](https://discuss.ens.domains/t/5-17-1-social-funding-request-ens-meta-governance-working-group-term-5-oct-window/19677), [EP 5.17.2](https://discuss.ens.domains/t/5-17-2-social-funding-request-ens-ecosystem-working-group/19678), and [EP 5.17.3](https://discuss.ens.domains/t/5-17-3-social-funding-request-ens-public-goods-working-group/19679) as well as [EP 5.21](https://snapshot.org/#/ens.eth/proposal/0x5067725bef9cde0de0024adedb653a7a1752aefa726adf628b77048d85821a6d) and [EP 5.19](https://snapshot.org/#/ens.eth/proposal/0xfa54ff2b55f0495c96ec2d8645241bcff48ca6afe1f4925fb51f29c4667252df). For more detail, view the [ENS Governance docs]"
+2450963767329031650,33504840096777976512510989921427323867039135570342563123194157971712476988820,# [5.22] [EXECUTABLE PROPOSAL] ENSv2 Development Funding ,executed,0xE3919F3f971C4589089DaA930aaFa81B8A27b406,katherine.eth,katherine.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1014297.1002,49,74.06617088996632,123330.0113,1,9.005824513418375,231820.0842,5,16.92800459661531,1000000.0000,2024-10-31T16:25:47Z,2024-11-07T01:54:35Z,21086802,2024-10-31T16:25:35Z,,,"# [5.22] [EXECUTABLE PROPOSAL] ENSv2 Development Funding 
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/temp-check-ep-5-22-ensv2-development-funding-request/19762?u=katherine.eth)
+
+
+ ## Description 
+## **Summary**
+
+This executable proposal seeks to implement the revised budget stream to ENS Labs develop, maintain and audit [ENSv2](https://discuss.ens.domains/t/ens-labs-development-proposal-ensv2-and-native-l2-support/19232). The motivation, justification, budget breakdown, and development plan was previously detailed in a [Temp Check](https://discuss.ens.domains/t/temp-check-ensv2-development-funding-request/19762) request. 
+
+## **Background**
+
+With over 3 million .eth names and 20 million more ENS names registered by the likes of Coinbase, Uniswap, and Linea – ENS has become the standard for web3 identity. As Ethereum's roadmap evolves towards being rollup-centric, it's essential for ENS to adapt in parallel, ensuring it meets the needs of both the Ethereum ecosystem and "
+2424859285725906509,33657496545373741813637578444724485346468737982573562831880427564621945332995,# [EP 5.16] [Executable] Reimbursement of ENS Labs’ legal fees in eth.link litigation,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1071794.2861,43,89.18538954465947,0.0000,0,0,129965.6564,3,10.814610455340526,1000000.0000,2024-09-25T16:01:23Z,2024-10-02T01:22:23Z,20828677,2024-09-25T16:01:11Z,,,"# [EP 5.16] [Executable] Reimbursement of ENS Labs’ legal fees in eth.link litigation
+
+[Temp Check Discourse link](https://discuss.ens.domains/t/ep-5-x-executable-reimbursement-of-ens-labs-legal-fees-in-eth-link-litigation/19613)
+
+
+ ## Description 
+## Summary
+This executable proposal seeks to implement the reimbursement payment to ENS Labs for the legal fees incurred while pursuing litigation to protect the eth.link domain. The reimbursement was approved in the previously passed social proposal [EP 5.3](https://docs.ens.domains/dao/proposals/5.3).
+
+## Background
+The lawsuit that ENS filed in federal district court in Arizona to maintain ownership and control over eth.link has been resolved, and on 26 August 2024, the Court officially closed this case.  
+ENS Labs has maintained full ownership and control over the eth.link domain and, therefore, ENS Labs has achieved the initial objective they had when first filing the complaint and obtaining injunctive relief.  To reach this outcome, EN"
+2401604476453521344,62537345451524095629071359388092434511638926463658570104856324869910407296726,[EP 5.14] [Executable] Endowment permissions to karpatkey - Update #4 ,executed,0xA9423BF037Da4eC207e7362fa74ae714f64fB989,,,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1142205.5399,144,83.1800288430536,6780.6504,3,0.49379439431946215,224186.6203,4,16.326176762626933,1000000.0000,2024-08-24T15:20:23Z,2024-08-31T00:59:47Z,20599311,2024-08-24T15:20:11Z,https://discuss.ens.domains/t/ep-5-x-executable-endowment-permissions-to-karpatkey-update-4/19503,,"# [EP 5.14] [Executable] Endowment permissions to karpatkey - Update #4 
+# Abstract
+
+This proposal aims to introduce new permissions for deploying Endowment funds, focusing on improved diversification and alignment with the evolving market landscape and liquidity. We are also introducing an independent audit report together with the Permissions Update; this will be the standard practice for Permissions Updates going forward.
+
+# Motivation
+
+Effective treasury management strategies must be adapted to market conditions and protocol updates; for existing Permissions, there might be migrations and introductions of new pools; for new Permissions, protocols and pools that were previously considered immature and unsuitable for the Endowment’s risk appetite may become viable options as they become more time- and battle-tested. This proposal seeks to request new permissions from the ENS DAO for karpatkey, enabling the introduction of new yield-generation strategies for the Endowment.
+
+The new pe"
+2375149154558018636,42329103797433777309488042029679811802172320979541414683300183273376839219133,[EP5.13][Executable] Security Council,executed,0x76A6D08b82034b397E7e09dAe4377C18F132BbB8,netto.eth,alextnetto.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1429825.8497,119,99.98980904982604,144.0597,25,0.010074304498876427,1.6680,22,0.00011664567508596459,1000000.0000,2024-07-19T01:57:47Z,2024-07-25T11:26:47Z,20337436,2024-07-19T01:57:35Z,https://discuss.ens.domains/t/temp-check-enable-cancel-role-on-the-dao/19090/19,https://snapshot.org/#/ens.eth/proposal/0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54,"# [EP5.13][Executable] Security Council
+\## Abstract
+
+The primary mission of ENS DAO is to govern the protocol and allocate resources from the treasury in line with the DAO's constitution and broader objectives. However, due to changing economic dynamics, the DAO is increasingly vulnerable to attacks aimed at draining its treasury.
+
+
+
+To safeguard the DAO's integrity and longevity, a Security Council with the authority to cancel malicious proposals is needed. To avoid perpetuating centralized power, the Security Council's authority will have a built-in expiration date. After two years, anyone will be able to call a \[function]\(https://github.com/blockful-io/security-council-ens/blob/main/src/SecurityCouncil.sol#L59) that revokes the council's power to veto proposals, ensuring a time-limited mechanism to counter malicious attacks while promoting more delegation and governance distribution.
+
+
+
+!\[security-council-diagram]\(https://hackmd.io/\_uploads/BJb0bHP\_A.png)
+
+
+
+\## Motivation
+
+A"
+2362654011020018823,107992041043258996427224563090014372885335179099580585497266204203463156791290,[EP 5.12] Roles Modifier V2 Migration & Updates to Endowment Permissions,executed,0x07cD090220f96EA84F4d22aA68be4877EA286a9E,karpatkey signer,,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,666376.3516,80,48.410023401227285,643.2031,5,0.046726562210518435,709506.0175,12,51.54325003656219,1000000.0000,2024-07-01T23:03:35Z,2024-07-08T08:37:47Z,20214830,2024-07-01T23:03:23Z,,,"# [EP 5.12] Roles Modifier V2 Migration & Updates to Endowment Permissions
+# Abstract
+
+This proposal aims to roll out an updated version of the Zodiac Roles Modifier module. The new version improves usability and transparency of treasury management operations. Upon approval, the Roles Modifier v2 module will be activated.
+
+Furthermore, this proposal requests authorization from the DAO to revise the permissions policy. A notable change includes enabling swapping actions on CoW Swap while the other permissions primarily focus on eliminating obsolete actions and protocols, and refining parameters within the existing permissions.
+
+# Roles v2 Migration
+
+## Motivation
+
+As [previously stated](https://discuss.ens.domains/t/endowment-initiation/15952#a-list-of-zodiac-roles-modifier-permissions-for-the-manager-role-9), the Zodiac Roles Modifier facilitates karpatkey’s proxy management of the Endowment by ensuring that only pre-approved transactions, defined by the permissions policy voted on by "
+2362490434430699416,76312276134880424811339391717815330375652916610982980144903695563372140531115,# [EP5.11] [Executable] Proposal: Fund the Meta-Governance Working Group (Term 5),executed,0x809FA673fe2ab515FaA168259cB14E2BeDeBF68e,avsa.eth,avsa.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1324619.7594,75,89.76721320067726,150996.6847,6,10.232786799322742,0.0000,0,0,1000000.0000,2024-07-01T14:45:23Z,2024-07-08T00:18:59Z,20212348,2024-07-01T14:45:11Z,,,"# [EP5.11] [Executable] Proposal: Fund the Meta-Governance Working Group (Term 5)
+
+Funds the metagovernance working group with 374k USDC and 150k ENS
+
+
+ ## Abstract 
+Meta-Governance is seeking funding to support DAO-wide operations, including Working Groups, treasury management, and governance initiatives. This request aligns with Rule 10.1.1 of the [Working Group Rules](https://docs.ens.domains/dao/wg/rules) and amendments introduced in [EP 4.8](https://docs.ens.domains/dao/proposals/4.8).  This proposal will execute the funding specification according to [EP 5.9](https://snapshot.org/#/ens.eth/proposal/0x66d355555c24ed0d2fed0aee89e4fe009e2925c84144c4edc707d33e7c19e554), as amended by [EP 5.8](https://snapshot.org/#/ens.eth/proposal/0x1f328fd1fda5f3cabfdace3e521403def7ad41b0b0582e27334c135cd23c511d).
+
+## Motivation
+
+### [EP 5.9 — Funding Request: ENS Meta-Governance Working Group Term 5 ](https://discuss.ens.domains/t/4-4-2-social-funding-request-ens-meta-goverance-working-group/17994"
+2298764182973056879,48839151689001950442481252711111182244814765601408465024742109276815020082612,[EP 5.5] Funding Request: ENS Public Goods Working Group Term 5 (Q1/Q2),executed,0x1D5460F896521aD685Ea4c3F2c679Ec0b6806359,coltron.eth,coltron.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1147743.2228,89,91.94737897620062,0.0000,0,0,100517.7234,1,8.052621023799373,0,2024-04-04T16:32:47Z,2024-04-11T02:32:23Z,19583608,2024-04-04T16:32:35Z,,,"# [EP 5.5] Funding Request: ENS Public Goods Working Group Term 5 (Q1/Q2)
+# Abstract
+
+The ENS Public Goods Working Group requests funding of the below to **support operations until the September 2024 funding window**.
+
+The Public Goods working group funds projects and builders improving the Web3 ecosystems. This funding stream is authorized in [Article III](https://docs.ens.domains/dao/constitution#iii-income-funds-ens-and-other-public-goods) of the ENS DAO Constitution. This funding supports initiatives related to open-source software, tooling, research and any practical implementations that broadly benefit a wide range of users of Ethereum and Web3.
+
+This social proposal is submitted to satisfy the requirements set out in Rule 10.1.1 of the Working Group Rules ([EP 1.8](https://docs.ens.domains/v/governance/governance-proposals/term-1/ep12-working-group-rules)) and further required by [this snapshot proposal in Nov. 2023 modifying steward rules.](https://snapshot.org/#/ens.eth/propos"
+2298721906653661035,45720656345448826187222659689199787286494046921153399380076959662321080408931,# [EP 5.6] [Executable] Enable Self-Funding for the Endowment,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1383319.1504,90,90.1925937217835,8820.7816,2,0.5751161429235296,141599.2513,1,9.232290135292978,0,2024-04-04T15:08:59Z,2024-04-11T01:09:35Z,19583194,2024-04-04T15:08:47Z,,,"# [EP 5.6] [Executable] Enable Self-Funding for the Endowment
+
+Authorises metagov to withdraw 30 ETH from the endowment each month for fees, and reimburses metagov for 43.54 ETH in fees already incurred.
+
+
+ ## Abstract 
+This proposal outlines a strategic shift allowing the Endowment to autonomously finance its operations. Specifically, it grants the Metagov stewards the authority to withdraw up to 30 ETH monthly from the Endowment, designated for payments to karpatkey and [@steakhouse](https://discuss.ens.domains/u/steakhouse) for their services in managing the Endowment. This initiative provides the stewards with a direct allowance for these expenses, eliminating the need for these costs to be continually factored into their requests for DAO budget allocations.
+
+Additionally, this proposal seeks to reimburse the [Metagov Safe](https://etherscan.io/address/0x91c32893216dE3eA0a55ABb9851f581d4503d39b) for the payments made to karpatkey and Steakhouse Financial during 2024, covering the s"
+2242849835524818437,63865530602418424570813160277709124551851041237648860550576561576702951975816,# [EP5.2] [Executable] Commence Streams for Service Providers ,executed,0x809FA673fe2ab515FaA168259cB14E2BeDeBF68e,avsa.eth,avsa.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1491617.2831,168,99.99998211650481,0.2668,5,1.7883495189895048e-05,0.0000,0,0,0,2024-01-18T13:01:11Z,2024-01-24T23:19:35Z,19033910,2024-01-18T13:00:59Z,,,"# [EP5.2] [Executable] Commence Streams for Service Providers 
+
+This EP will initiate the Streams for Service Providers as selected on EP4.9
+[Draft Discourse link](https://discuss.ens.domains/t/ep5-2-executable-commence-streams-for-service-providers-first-draft/18615?u=avsa)
+
+
+ ## Abstract 
+EP 4.7 proposed the concept of Streams for service providers and set its budget at $3.6M per annum. EP4.9 selected the following Service providers and their annual budget:
+
+|Service Provider Name| Annual Stream |
+|---|---|
+|ETH.LIMO|$500,000.00|
+|NameHash Labs|$600,000.00|
+|Resolverworks.eth|$700,000.00|
+|Blockful|$300,000.00|
+|Unruggable|$400,000.00|
+|Wildcard Labs|$200,000.00|
+|Ethereum Follow Protocol|$500,000.00|
+|Namespace|$200,000.00|
+|UNICORN.ETH|$200,000.00|
+
+The Metagov Working Group has decided this will be implemented in the following manner:
+
+1. Superfluid has been selected as the stream platform (details of which can be found on [this RFP](https://discuss.ens.domains/t/rfp-stream-platfo"
+2242768263199065598,4208408830555077285685632645423534041634535116286721240943655761928631543220,# [EP5.1] [Executable] Upgrade DNSSEC support,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1526373.6303,188,99.99999721142989,0.0426,2,2.7885701095165315e-06,0.0000,0,0,0,2024-01-18T10:19:11Z,2024-01-24T20:37:47Z,19033106,2024-01-18T10:18:59Z,,,"# [EP5.1] [Executable] Upgrade DNSSEC support
+
+Deploy a new version of the DNSSEC oracle and DNS registrar that enables ‘gasless DNSSEC’ functionality.
+[Draft Discourse link](https://discuss.ens.domains/t/ep5-1-executable-upgrade-dnssec-support/18535)
+
+
+ ## Abstract 
+The ENS labs team has been working on a new version of the DNSSEC oracle and the DNS registrar that, combined with wildcard resolution (ENSIP 10) and CCIP-Read, allow for ‘gasless DNSSEC’ - enabling the use of DNS names inside ENS with no onchain transactions required. This proposal replaces the existing DNSSEC registrar with the new one.
+
+Existing DNS names will continue to function as before, and names can still be imported using the ‘legacy’ method. The new registrar also allows configuring a name by setting a TXT record on _ens.name.tld, containing the address of a special resolver contract to use, followed by any resolver-specific data. Resolvers designed for the purpose can be configured to parse this extra data, mak"
+2187947042205074931,15706104363492914432572227540113855373051896881975394006732444538096386655538,# [EP 4.5] [Executable] Endowment permissions to karpatkey - Update #3,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1159696.5723,152,86.71802671726904,177622.3407,50,13.281973282730963,0.0000,0,0,0,2023-11-03T18:59:11Z,2023-11-10T04:55:23Z,18493474,2023-11-03T18:58:59Z,,,"# [EP 4.5] [Executable] Endowment permissions to karpatkey - Update #3
+
+This proposal introduces new actions and strategies to the Endowment with the aim of enhancing diversification and adapting to current market conditions. Notable additions include ETH-neutral strategies involving Liquid Staking Protocols and established Money Markets.
+[Draft Discourse link](https://discuss.ens.domains/t/ep-4-5-executable-endowment-permissions-to-karpatkey-update-3/18036)
+
+
+ ## Abstract 
+Following the successful approval of [E.P. 4.2](https://www.tally.xyz/gov/ens/proposal/10686228418271748393758532071249002330319730525037728746406757788787068261444),  the second tranche of the Endowment was funded with 16,000 ETH. Community feedback during the E.P. 4.2 voting window indicated a desire to reduce exposure to Lido due to concerns about centralization risks in the network. While diversifying ETH-neutral holdings was already underway, the need for further diversification and divestment from Lido became "
+2187812374973515248,97815480450036429026998617227498389389237567897899533433380564585906006968770,# [EP 4.6] [Executable] October 2023 Working Group Funding,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1189481.2142,166,99.97478528014946,300.0000,1,0.025214719850539635,0.0000,0,0,0,2023-11-03T14:31:23Z,2023-11-10T00:27:35Z,18492143,2023-11-03T14:31:11Z,,,"# [EP 4.6] [Executable] October 2023 Working Group Funding
+
+This proposal executes all three Working Group funding requests for the October 2023 funding window as passed in EP 4.4.1, EP 4.4.2, and EP 4.4.3. For more detail, view the ENS Governance docs at https://basics.ensdao.org 1
+[Draft Discourse link](https://discuss.ens.domains/t/ep-4-6-executable-october-2023-working-group-funding/18064)
+
+
+ ## Abstract 
+### [EP 4.4.1 — ENS Ecosystem Working Group](https://discuss.ens.domains/t/4-4-1-social-funding-request-ens-ecosystem-working-group/17995)
+
+The ENS Ecosystem Working Group requests funding of **409,000 USDC** from the ENS DAO treasury.
+
+The ENS Ecosystem Working Group is responsible for growing and improving the ENS Ecosystem by funding people and projects that are ENS-specific or ENS-centric. In line with Article III of the ENS DAO Constitution, the requested funds will be used to support projects and builders contributing to the development and improvement of the ENS protocol an"
+2161707373167642160,87741894125754523615596264728611635516467361279764827076788536604061840625452,[EP4.3] [Executable] Refund Invalid .eth Names,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1805014.4049,247,99.97789998656684,398.8162,5,0.02209001865543483,0.1804,1,9.994777724491485e-06,0,2023-09-28T14:05:23Z,2023-10-04T23:47:11Z,18234710,2023-09-28T14:05:11Z,,,"# [EP4.3] [Executable] Refund Invalid .eth Names
+## Abstract
+
+This proposal initiates a transfer of 117 ETH to the Meta-Governance Working Group to facilitate the refunding of .eth names invalidated by ENSIP-15, the latest ENS name normalization standard.
+
+## Specification
+
+ENSIP-15 introduced a new ENS name normalization standard, resulting in the invalidation of a set of .eth names. In order to address the impact on owners of these invalidated names, refund amounts have been determined based on the following factors:
+
+1. Remaining registration fee or renewal fee
+2. Gas fees paid to register the name
+3. Any premium protocol fee paid to acquire the names
+
+These factors together have been used to calculate the refund amounts. A total of 2,973 unique addresses will be refunded a total of approximately 115 ETH.
+
+Note: The data is from June 18, 2023 when ENSIP-15 passed. The [distributions](https://docs.google.com/spreadsheets/d/1JoLq8obUwFu_xGaXRMslAyX6nwR3njXqIc7I9sizTLU/edit?usp=sharing"
+2161706354966791727,10686228418271748393758532071249002330319730525037728746406757788787068261444,[EP4.2][Executable] Fund the Endowment (second tranche),executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1290655.6034,218,71.52049546915082,513453.0114,24,28.452527290121964,486.8301,4,0.026977240727216207,0,2023-09-28T14:03:23Z,2023-10-04T23:45:11Z,18234700,2023-09-28T14:03:11Z,,,"# [EP4.2][Executable] Fund the Endowment (second tranche)
+# Abstract
+
+This proposal outlines the allocation of the second tranche, comprising 16,000 ETH, from the [ENS DAO](https://etherscan.io/address/0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7) to the [ENS Endowment](https://etherscan.io/address/0x4F2083f5fBede34C2714aFfb3105539775f7FE64). Additionally, it introduces minor adjustments to the existing permissions preset for maintenance purposes.
+
+# Motivation
+
+In March 2023, the ENS Endowment was formally established following the [joint proposal](https://discuss.ens.domains/t/updated-endaoment-proposal-karpatkey-steakhouse-financial/14799) by karpatkey and @steakhouse, after the successful execution of [E.P 3.4 - Fund the Endowment (first tranche)](https://www.tally.xyz/gov/ens/proposal/90786656233306599444783442367171420493182391933134906270328139870999449830964). The community had expressed a preference for a phased funding approach, leading to the decision to allocate the funds in "
+2116013502593238174,55447465396737793905646186593156244424717001140618132725073945884287085787959,[EP4.1] [Executable] Approve further actions and strategies for the Endowment,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1492437.7916,310,95.28961138496337,73355.0087,5,4.683592381094844,419.6860,2,0.026796233941788823,0,2023-07-27T12:59:59Z,2023-08-02T22:43:35Z,17784555,2023-07-27T12:59:47Z,,,"# [EP4.1] [Executable] Approve further actions and strategies for the Endowment
+ * [Discussion Thread](https://discuss.ens.domains/t/ep-4-1-executable-approve-further-actions-and-strategies-for-the-endowment/17406)
+ * **Authors**: [Karpatkey](https://twitter.com/karpatkey)
+
+## Abstract
+
+This proposal introduces additional actions and strategies to the [ENS Endowment](https://discuss.ens.domains/t/ep3-4-executable-fund-the-endowment-first-tranche/16277?u=alisha.eth), which enhance the Endowment’s performance, adaptability, and diversification.
+
+## Motivation
+
+Permissions granted to Karpatkey to manage the Endowment are not static, and require regular updates to effectively respond to evolving market conditions and to capitalize on emerging opportunities.
+
+Any changes to the permissions related to Endowment funds ([endowment.ensdao.eth](https://etherscan.io/address/0x4F2083f5fBede34C2714aFfb3105539775f7FE64)) must be executed by the DAO. To streamline the process for delegates, Karpatkey"
+2028948412304459482,42973781582803845389836855775840822719678533376883030929209752909248937768242,[EP3.5] [Executable] Activate new .eth Controller and Reverse Registrar,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2609106.7401,210,99.99903097225928,5.1000,3,0.0001954673030881083,20.1832,4,0.0007735604376316858,0,2023-03-29T09:57:11Z,2023-04-04T20:58:47Z,16932204,2023-03-29T09:56:59Z,,,"# [EP3.5] [Executable] Activate new .eth Controller and Reverse Registrar
+## Abstract
+
+With the new Name Wrapper, we will add a new .eth controller that allows registering wrapped names directly as well as registering with multiple records and adding a reverse record in 1 transaction. This will reduce the transactions required from 4 to 2 (for adding records + reverse). This will be added as a controller to the NameWrapper, and the NameWrapper will be added as the new controller of the existing .eth Base Registrar.
+
+We will also replace the current reverse registrar with a new reverse registrar which allows the new controller to set the reverse on registration, as well as adds support for the owner of contract to retrospectively claim their reverse node.
+
+## Specification
+
+New instances of the Name Wrapper, Reverse Registrar, and .eth registrar controller have been deployed to mainnet at these addresses:
+
+* NameWrapper: `0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401`
+* ReverseRegistrar: `"
+2006768162174928894,90786656233306599444783442367171420493182391933134906270328139870999449830964,[EP3.4] Fund the Endowment (first tranche),executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1403304.5770,377,79.53917587088584,360987.9411,8,20.46076368763609,1.0664,4,6.044147807476048e-05,0,2023-02-26T19:29:11Z,2023-03-05T06:04:47Z,16714488,2023-02-26T19:28:59Z,,,"# [EP3.4] Fund the Endowment (first tranche)
+# Abstract
+
+First tranche to fund the Endowment with 16,000 ETH sent from [ENS DAO](https://etherscan.io/address/0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7) to the [ENS Endowment](https://etherscan.io/address/0x4F2083f5fBede34C2714aFfb3105539775f7FE64) and an additional 150 ETH sent to the [Meta-Gov Pod](https://etherscan.io/address/0x91c32893216dE3eA0a55ABb9851f581d4503d39b) to account for karpatkey and Steakhouse monthly fees.
+
+            
+# Motivation
+
+[Approximately one year ago](https://discuss.ens.domains/t/an-ens-endaoment/11756), the ENS DAO initiated a process to ensure the sustainability of ENS as a self-funded public good for the long term. The [RFP process](https://discuss.ens.domains/t/ep2-2-4-social-rfp-ens-endowment/14069) (EP2.2.4), on which [karpatkey, together with Steakhouse, made a proposal](https://discuss.ens.domains/t/updated-endaoment-proposal-karpatkey-steakhouse-financial/14799), resulted in the [selection of  karp"
+1988041036953290299,105292919185331921858643224173178583901390266903267892669205105842869373522526,[EP3.2] [Executable] Q1/Q2 2023 Working Group Funding,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1827990.6266,216,82.9161757647388,375943.4888,13,17.052492470546117,690.7479,2,0.0313317647150878,0,2023-01-31T23:21:47Z,2023-02-07T09:00:59Z,16530055,2023-01-31T23:21:35Z,,,"# [EP3.2] [Executable] Q1/Q2 2023 Working Group Funding
+## Abstract
+
+This proposal executes all three Working Group funding requests for Q1/Q2 2023 as passed in EP 3.1.1, EP 3.1.2, and EP 3.1.3. For more detail, view the [ENS Governance docs](https://docs.ens.domains/v/governance/governance-proposals/term-3) or view the links below.
+
+## Motivation
+
+[**EP 3.1.1 — ENS Ecosystem Working Group**](https://docs.ens.domains/v/governance/governance-proposals/term-3/ep3.1.1-social-q1-q2-2023-funding-request-ens-ecosystem-working-group)
+
+The ENS Ecosystem Working Group requests funding of 935,000 USDC and 254 ETH from the ENS DAO for Q1/Q2 2023.
+
+The ENS Ecosystem Working Group is responsible for growing and improving the ENS Ecosystem by funding people and projects that are ENS-specific or ENS-centric. In line with Article III of the ENS DAO Constitution, the requested funds will be used to support projects and builders contributing to the development and improvement of the ENS protocol and the"
+1988035057008248378,45461903078948131870051132081249892009497709518413744958551889217805827301425,[EP3.3] [Executable] Sell ETH to USDC,executed,0x5BFCB4BE4d7B43437d5A0c57E908c048a4418390,Fire Eyes DAO,fireeyesdao.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2090201.2172,167,89.50577627640388,229931.9218,20,9.84605452497667,15136.4985,2,0.6481691986194463,0,2023-01-31T23:09:47Z,2023-02-07T08:48:59Z,16529995,2023-01-31T23:09:35Z,,,"# [EP3.3] [Executable] Sell ETH to USDC
+## Abstract
+
+This proposal executes a swap of 10,000 ETH into USDC, to ensure ENS DAO has enough to cover operating expenses for 18 - 24 months.
+
+## Motivation
+
+The DAO currently keeps almost 100% of its spendable treasury in ETH. While ENS generates protocol revenue in ETH, having so much exposure to a single volatile asset places the DAO in a vulnerable position.
+
+This is a proposal to convert 10,000 ETH into USDC through a Cowswap swap.
+
+10,000 ETH is approximately 25% of the total amount of ETH held by the ENS DAO (wallet.ensdao.eth) and register controller (controller.ens.eth) as of January 18, 2023.
+
+It is hoped that this sale will generate in excess of $13m in USDC. The goal is to ensure that the DAO has enough USDC to cover operations for the next 18 - 24 months.
+
+## Specification
+
+1. Call `withdraw()` on controller.ens.eth (0x283af0b28c62c092c9727f1ee09c02ca627eb7f5)
+2. Call `deposit()` on WETH9 (0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc"
+1856884641718338730,21861129347596183989807248258922558214743224135371288783165185538477576992486,Execute EP16,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2266202.9088,103,99.97927910812815,469.6748,1,0.020720891871842496,0.0000,0,0,0,2022-08-04T00:17:48Z,2022-08-11T03:54:14Z,15272638,2022-08-04T00:17:39Z,,,"# Execute EP16
+This proposal executes:
+
+ - [\[EP16.1\] Q3 & Q4 2022 Meta-Governance WG Budget](https://github.com/ensdomains/governance-docs/blob/4b86d7821c7c6ae602c52bf60d2cbdf3a8305955/governance-proposals/ep16.1-executable-q3-and-q4-2022-meta-governance-wg-budget.md),
+ - [\[EP16.2\] Q3 & Q4 2022 Ecosystem WG Budget](https://github.com/ensdomains/governance-docs/blob/4b86d7821c7c6ae602c52bf60d2cbdf3a8305955/governance-proposals/ep16.2-executable-q3-and-q4-2022-ens-ecosystem-wg-budget.md), and
+ - [\[EP16.3\] Q3 & Q4 2022 Public Goods WG Budget](https://github.com/ensdomains/governance-docs/blob/4b86d7821c7c6ae602c52bf60d2cbdf3a8305955/governance-proposals/ep16.3-executable-q3-and-q4-2022-public-goods-wg-budget.md)"
+1856835861685994664,43203199770691383238593940280239053946984014979449022275641313046078578194694,# Dissolve the community WG multisig per EP15,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,1990284.9162,154,100,0.0000,0,0,0.0000,0,0,0,2022-08-03T22:40:18Z,2022-08-11T02:12:13Z,15272204,2022-08-03T22:40:16Z,,,"# Dissolve the community WG multisig per EP15
+This proposal reassigns ownership of the ENS community pod, making it a sub-pod of ENS ecosystem. This enacts EP15 (formerly numbered EP14), the vote to dissolve the ENS community working group, as described [here](https://github.com/ensdomains/governance-docs/blob/main/governance-proposals/ep15-dissolution-of-the-community-working-group.md) and [passed on Snapshot](https://snapshot.org/#/ens.eth/proposal/0xa64ec8b446e509cb4b75092c4a714897790b70e2711fc3d6afa969c250e7eb92)."
+1836295481643239098,112764562576314516994943312429834673309292069549953740415731020720942627228986,# [EP14][Executable] Funding True Names Ltd,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2612255.1252,281,99.98600356257089,365.6738,6,0.01399643742911054,0.0000,0,0,0,2022-07-06T14:29:57Z,2022-07-13T16:25:28Z,15089482,2022-07-06T14:29:54Z,,,"# [EP14][Executable] Funding True Names Ltd
+**Discussion Thread**: [Discuss](https://discuss.ens.domains/t/ep-executable-funding-true-names-ltd/13391)
+
+# Abstract
+
+  True Names Ltd (“TNL”) developed the Ethereum Name Service (“ENS”) protocol, continues to manage the development of the ENS Protocol and solely focuses on this project. Incubated at the Ethereum Foundation in 2017, TNL spun out in 2018 with the charge of designing and deploying THE next generation naming service. TNL is now a growing team of web3 enthusiasts from across the globe working together to support the ENS Ecosystem that now has a passionate community that has registered over 1 million ENS names and uses more than 500 integrations. 
+
+In 2021, TNL initiated the creation of the ENS DAO with the goal of 1) furthering the development of the ENS Protocol and 2) funding public goods projects.
+
+ 
+In consideration of the work completed thus far this calendar year and the work in the months and years to come, per Article I"
+1815835368071628216,8759198094868535520038506706231539487662297008587733129541987545743856603253,"# [EP13] [Executable] Fund the Protocol Guild pilot with 200,000 $ENS",executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2031221.8744,91,99.95772395566493,859.0834,1,0.04227604433507043,0.0000,1,0,0,2022-06-08T08:58:54Z,2022-06-16T05:36:14Z,14925844,2022-06-08T08:58:45Z,,,"# [EP13] [Executable] Fund the Protocol Guild pilot with 200,000 $ENS
+# Abstract
+We propose that 200k ENS (~3.7% of the [unclaimed airdrop](https://twitter.com/ensdomains/status/1522066354387718144)) be allocated in recognition of past and ongoing work of these core contributors.
+
+ENS is one of the most successful projects built on Ethereum, and yet core protocol contributors do not benefit in any way from the success of projects being built on Ethereum. The Protocol Guild provides a vehicle for the ENS community to distribute governance tokens to those individuals who build and maintain the foundational infrastructure that ENS relies on.
+
+ENS sponsorship of the Guild allows members to engage with ENS in a way that is values- and incentive-aligned. Simultaneously, it will allow them to continue the important work of scaling our shared infrastructure and making it as resilient as possible for the applications on top of it.
+
+# Specification
+## Useful links
+
+* [Protocol Guild Docs](https:"
+1784336180297336675,99882233577221676057992280816078245519848378270443751235073826886360950537295,# Execute EP11,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2507862.7695,346,100,0.0000,0,0,0.0000,0,0,0,2022-04-25T21:55:17Z,2022-05-03T02:50:43Z,14656298,2022-04-25T21:55:13Z,,,"# Execute EP11
+Executes [EP11](https://github.com/ensdomains/governance-docs/blob/1e381d6fd97c5d877b9c90d5941e471b6ae1bc8e/governance-proposals/ep11-executable-end-airdrop.md), ""End the $ENS and EP2 airdrops""."
+1779288509043967754,107166664722174233740232174220463354481004128961821575530758100250899337476509,# Execute EP9,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2312582.1196,576,99.99978353356569,5.0060,1,0.00021646643430337046,0.0000,1,0,0,2022-04-18T22:47:19Z,2022-04-26T03:07:40Z,14611887,2022-04-18T22:47:18Z,,,"# Execute EP9
+Executes [EP9](<https://docs.ens.domains/v/governance/governance-proposals/ep9-executable-change-to-exponential-premium-price-oracle>), performing two actions:
+
+- Sets the price oracle for the .eth registrar to 0xcf7fe2e614f568989869f4aade060f4eb8a105be.
+
+- Sets the text record 'oracle' to 'exponential' on .eth, to allow the ENS dapp to recognise when the change is active.
+
+
+<!-- -->
+
+"
+1759708562222745026,82659277767818009782194204088226418907972756681918239480374274857360772298879,# Execute EP8 and EP10,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2188062.1289,105,100,0.0000,0,0,0.0000,0,0,0,2022-03-22T22:26:05Z,2022-03-30T01:25:58Z,14438794,2022-03-22T22:25:34Z,,,"# Execute EP8 and EP10
+Executes EP8 and EP10 as passed on Snapshot:
+
+- [EP8] [Executable] Reimburse True Names for expenses and tax obligations incurred on behalf of the DAO: [https://snapshot.org/#/ens.eth/proposal/0xdf7e59e58ab0cf5ee0a591bd65369db3ee5091ae3b7ca696a0d31c2eac9959f5](<https://snapshot.org/#/ens.eth/proposal/0xdf7e59e58ab0cf5ee0a591bd65369db3ee5091ae3b7ca696a0d31c2eac9959f5>)
+
+- [EP10] [Executable] Fund a DAO-Governed Identity Server: [https://snapshot.org/#/ens.eth/proposal/0x104eb11d42813fadc2b408856e8fa2c10e34dbb4a87abaa2f089ece124263f16](<https://snapshot.org/#/ens.eth/proposal/0x104eb11d42813fadc2b408856e8fa2c10e34dbb4a87abaa2f089ece124263f16>)
+
+
+<!-- -->
+
+"
+1758991408003286454,27850654116740852236526757351596115114486670304472932313768517382407193376455,"# Execute EP8, EP9 and EP10",defeated,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,530094.3902,32,18.751840838119183,2296798.1520,45,81.24815916188082,0.0000,0,0,1000000.0000,2022-03-21T22:41:30Z,2022-03-29T01:52:07Z,14432444,2022-03-21T22:40:58Z,,,"# Execute EP8, EP9 and EP10
+Executes EP8, EP9 and EP10 as passed on Snapshot:
+
+- [EP8] [Executable] Reimburse True Names for expenses and tax obligations incurred on behalf of the DAO: [https://snapshot.org/#/ens.eth/proposal/0xdf7e59e58ab0cf5ee0a591bd65369db3ee5091ae3b7ca696a0d31c2eac9959f5](<https://snapshot.org/#/ens.eth/proposal/0xdf7e59e58ab0cf5ee0a591bd65369db3ee5091ae3b7ca696a0d31c2eac9959f5>)
+
+- [EP9] [Executable] Change to Exponential Premium Price Oracle: [https://snapshot.org/#/ens.eth/proposal/0xe040bdae812af4bd5b3b6e3f46ed1ff4701986c338b827ac8f05807c2b9b9d73](<https://snapshot.org/#/ens.eth/proposal/0xe040bdae812af4bd5b3b6e3f46ed1ff4701986c338b827ac8f05807c2b9b9d73>)
+
+- [EP10] [Executable] Fund a DAO-Governed Identity Server: [https://snapshot.org/#/ens.eth/proposal/0x104eb11d42813fadc2b408856e8fa2c10e34dbb4a87abaa2f089ece124263f16](<https://snapshot.org/#/ens.eth/proposal/0x104eb11d42813fadc2b408856e8fa2c10e34dbb4a87abaa2f089ece124263f16>)
+
+
+<!-- -->
+
+"
+1758981539653223861,115615865324623814833258987703837575663427750121726187103053182962864855260310,# Execute EP7,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,2387598.9202,104,100,0.0000,0,0,0.0000,0,0,0,2022-03-21T22:20:53Z,2022-03-29T01:31:46Z,14432354,2022-03-21T22:20:32Z,,,"# Execute EP7
+Executes all four EP7 sub-proposals as passed on Snapshot:
+
+
+
+- Q1 & Q2 2022 Meta-Governance WG Budget: [https://snapshot.org/#/ens.eth/proposal/0x90a5f884d59a647a5a78aad8023cf0c00d9efb8499bced7009c60ad90b5e2041](<https://snapshot.org/#/ens.eth/proposal/0x90a5f884d59a647a5a78aad8023cf0c00d9efb8499bced7009c60ad90b5e2041>)
+
+- Q1 & Q2 2022 ENS Ecosystem WG Budget: [https://snapshot.org/#/ens.eth/proposal/0x8b68ebc34b590488000bd5a73c7fe1e66e7d405ab26eda7c0c8191230363d4d0](<https://snapshot.org/#/ens.eth/proposal/0x8b68ebc34b590488000bd5a73c7fe1e66e7d405ab26eda7c0c8191230363d4d0>)
+
+- Q1 & Q2 2022 Community WG Budget: [https://snapshot.org/#/ens.eth/proposal/0x29040b3196c4d7109fdb7b55b8bfd5e85dd074d3cb22266e0d94cc42cfad1eb2](<https://snapshot.org/#/ens.eth/proposal/0x29040b3196c4d7109fdb7b55b8bfd5e85dd074d3cb22266e0d94cc42cfad1eb2>)
+
+- Q1 & Q2 2022 Public Goods WG Budget: [https://snapshot.org/#/ens.eth/proposal/0x8c05add423e7ab5900113b203326286763d402f88300ebbe65c278ed2488b8d1"
+1746481831051527275,65967822514040846992464797266243157509206510058326665394616765053720727454968,# Execute EP5,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,3122920.1321,53,99.28588009674691,0.0000,0,0,22461.7984,2,0.7141199032530856,0,2022-01-19T00:42:19Z,2022-01-26T02:37:49Z,14032815,2022-01-19T00:41:39Z,,,"# Execute EP5
+```
+Set the temporary premium start price to $100,000 as described in [EP5](https://docs.ens.domains/v/governance/governance-proposals/ep5-executable-set-the-temporary-premium-start-price-to-usd100-000).
+```
+
+"
+1746481799980123240,90476529665364161211265365238121921179703522228680648046371476645353679539653,[EP2] Retrospective Airdrop ,executed,0xb8c2C29ee19D8307cb7255e1Cd9CbDE883A267d5,nick.eth,nick.eth,eip155:1:0x323A76393544d5ecca80cd6ef2A560C6a395b7E3,uni,3289365.9056,72,97.51170697035893,82774.5869,4,2.453813742153046,1163.0910,1,0.034479287488021454,0,2022-01-05T01:32:09Z,2022-01-12T03:38:26Z,13942537,2022-01-05T01:32:05Z,,,"[EP2] Retrospective Airdrop 
+Enacts EP2 as approved by Snapshot vote, and described in full here: https://github.com/ensdomains/governance-docs/blob/main/governance-proposals/ep2-executable-retrospective-airdrop-for-accounts-that-owned-another-accounts-primary-ens-1.md"

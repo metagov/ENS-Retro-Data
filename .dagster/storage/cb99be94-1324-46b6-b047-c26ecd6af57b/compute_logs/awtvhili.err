@@ -1,0 +1,8 @@
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89766 - LOGS_CAPTURED - Started capturing logs in process (pid: 89766).
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89766 - delegations - STEP_START - Started execution of step "delegations".
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - delegations - Estimated time: ~5-10 min (all DelegateChanged events, Etherscan free tier)
+[32m2026-03-13 18:33:06 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - delegations - Fetched 122991 delegation events
+[32m2026-03-13 18:33:07 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - delegations - Wrote 122991 records to /Users/rohitmalekar/work/ENS-Retro-Data/bronze/on-chain/delegations.json (26,935,031 bytes)
+[32m2026-03-13 18:33:07 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89766 - delegations - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-13 18:33:07 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89766 - delegations - ASSET_MATERIALIZATION - Materialized value delegations.
+[32m2026-03-13 18:33:07 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89766 - delegations - STEP_SUCCESS - Finished execution of step "delegations" in 5m33s.

@@ -1,0 +1,9 @@
+[32m2026-03-13 18:27:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89848 - LOGS_CAPTURED - Started capturing logs in process (pid: 89848).
+[32m2026-03-13 18:27:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89848 - snapshot_votes - STEP_START - Started execution of step "snapshot_votes".
+[32m2026-03-13 18:27:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - snapshot_votes - Estimated time: ~3-5 min (~47k votes across ~90 proposals)
+[32m2026-03-13 18:27:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - snapshot_votes - Fetching votes for 90 proposals
+[32m2026-03-13 18:31:41 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - snapshot_votes - Fetched 47551 snapshot votes
+[32m2026-03-13 18:31:41 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - snapshot_votes - Wrote 47551 records to /Users/rohitmalekar/work/ENS-Retro-Data/bronze/governance/snapshot_votes.json (14,830,950 bytes)
+[32m2026-03-13 18:31:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89848 - snapshot_votes - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-13 18:31:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89848 - snapshot_votes - ASSET_MATERIALIZATION - Materialized value snapshot_votes.
+[32m2026-03-13 18:31:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89848 - snapshot_votes - STEP_SUCCESS - Finished execution of step "snapshot_votes" in 4m2s.

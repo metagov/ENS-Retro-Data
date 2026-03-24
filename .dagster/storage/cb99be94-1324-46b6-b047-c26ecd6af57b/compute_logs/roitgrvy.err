@@ -1,0 +1,6 @@
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89767 - LOGS_CAPTURED - Started capturing logs in process (pid: 89767).
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89767 - ens_ledger_transactions - STEP_START - Started execution of step "ens_ledger_transactions".
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - ens_ledger_transactions - Found /Users/rohitmalekar/work/ENS-Retro-Data/bronze/financial/ens_ledger_transactions.csv (317,677 bytes)
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89767 - ens_ledger_transactions - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89767 - ens_ledger_transactions - ASSET_MATERIALIZATION - Materialized value ens_ledger_transactions.
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89767 - ens_ledger_transactions - STEP_SUCCESS - Finished execution of step "ens_ledger_transactions" in 203ms.

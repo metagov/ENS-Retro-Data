@@ -1,0 +1,6 @@
+[32m2026-03-13 18:27:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89825 - LOGS_CAPTURED - Started capturing logs in process (pid: 89825).
+[32m2026-03-13 18:27:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89825 - votingpower_delegates - STEP_START - Started execution of step "votingpower_delegates".
+[32m2026-03-13 18:27:36 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - votingpower_delegates - Found /Users/rohitmalekar/work/ENS-Retro-Data/bronze/governance/votingpower-xyz/ens-delegates-2026-02-20.csv (6,171 bytes)
+[32m2026-03-13 18:27:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89825 - votingpower_delegates - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-13 18:27:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89825 - votingpower_delegates - ASSET_MATERIALIZATION - Materialized value votingpower_delegates.
+[32m2026-03-13 18:27:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89825 - votingpower_delegates - STEP_SUCCESS - Finished execution of step "votingpower_delegates" in 58ms.

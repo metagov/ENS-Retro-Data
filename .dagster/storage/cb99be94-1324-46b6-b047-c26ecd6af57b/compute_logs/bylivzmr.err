@@ -1,0 +1,8 @@
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89775 - LOGS_CAPTURED - Started capturing logs in process (pid: 89775).
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89775 - tally_delegates - STEP_START - Started execution of step "tally_delegates".
+[32m2026-03-13 18:27:33 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - tally_delegates - Estimated time: ~2-3 min (~38k delegates, 500/page)
+[32m2026-03-13 20:31:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - tally_delegates - Fetched 37884 tally delegates
+[32m2026-03-13 20:31:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - tally_delegates - Wrote 37884 records to /Users/rohitmalekar/work/ENS-Retro-Data/bronze/governance/tally_delegates.json (8,848,537 bytes)
+[32m2026-03-13 20:31:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89775 - tally_delegates - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-13 20:31:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89775 - tally_delegates - ASSET_MATERIALIZATION - Materialized value tally_delegates.
+[32m2026-03-13 20:31:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89775 - tally_delegates - STEP_SUCCESS - Finished execution of step "tally_delegates" in 2h4m.

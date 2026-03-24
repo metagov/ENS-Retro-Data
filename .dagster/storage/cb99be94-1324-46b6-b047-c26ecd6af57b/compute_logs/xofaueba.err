@@ -1,0 +1,8 @@
+[32m2026-03-13 18:27:34 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89777 - LOGS_CAPTURED - Started capturing logs in process (pid: 89777).
+[32m2026-03-13 18:27:34 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89777 - token_distribution - STEP_START - Started execution of step "token_distribution".
+[32m2026-03-13 18:27:34 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - token_distribution - Estimated time: ~10-20 min (replays ALL ENS Transfer events, Etherscan free tier)
+[32m2026-03-13 19:41:15 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - token_distribution - Computed distribution for 67120 holders
+[32m2026-03-13 19:41:16 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - token_distribution - Wrote 67120 records to /Users/rohitmalekar/work/ENS-Retro-Data/bronze/on-chain/token_distribution.json (10,879,151 bytes)
+[32m2026-03-13 19:41:16 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89777 - token_distribution - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-13 19:41:16 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89777 - token_distribution - ASSET_MATERIALIZATION - Materialized value token_distribution.
+[32m2026-03-13 19:41:16 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89777 - token_distribution - STEP_SUCCESS - Finished execution of step "token_distribution" in 1h13m.

@@ -1,0 +1,9 @@
+[32m2026-03-13 18:27:37 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89837 - LOGS_CAPTURED - Started capturing logs in process (pid: 89837).
+[32m2026-03-13 18:27:37 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89837 - smallgrants_votes - STEP_START - Started execution of step "smallgrants_votes".
+[32m2026-03-13 18:27:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - smallgrants_votes - Estimated time: ~2-5 min (votes across all small grant proposals)
+[32m2026-03-13 18:27:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - smallgrants_votes - Fetching votes for 24 small grants proposals
+[32m2026-03-13 18:28:14 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - smallgrants_votes - Fetched 1562 small grants votes
+[32m2026-03-13 18:28:14 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - smallgrants_votes - Wrote 1562 records to /Users/rohitmalekar/work/ENS-Retro-Data/bronze/grants/smallgrants_votes.json (562,855 bytes)
+[32m2026-03-13 18:28:14 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89837 - smallgrants_votes - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-13 18:28:14 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89837 - smallgrants_votes - ASSET_MATERIALIZATION - Materialized value smallgrants_votes.
+[32m2026-03-13 18:28:14 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - cb99be94-1324-46b6-b047-c26ecd6af57b - 89837 - smallgrants_votes - STEP_SUCCESS - Finished execution of step "smallgrants_votes" in 37.27s.
