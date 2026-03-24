@@ -23,11 +23,8 @@ ENV/
 # Exception: dbt seed CSVs are committed
 !infra/dbt/seeds/*.csv
 
-# Dagster runtime data (NOT source code)
-.dagster/storage/*.db
-.dagster/storage/*/
-.dagster/.nux/
-.dagster/logs/
+# Dagster runtime (auto-generated, not source code)
+.dagster/
 .tmp_dagster_home_*
 
 # Bronze data outputs (pipeline results, not inputs)
@@ -39,8 +36,7 @@ infra/dbt/dbt_packages/
 infra/dbt/logs/
 infra/dbt/models/silver/_silver.yml
 
-# Warehouse (DuckDB)
-warehouse/*.duckdb
+# Warehouse (DuckDB) — .wal is temp write-ahead log, not data
 warehouse/*.duckdb.wal
 
 # Great Expectations
@@ -82,3 +78,4 @@ node_modules/
 List of Data Sources.csv
 skills
 skills-lock.json
+
