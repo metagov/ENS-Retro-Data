@@ -1,9 +1,6 @@
 # Secrets
 .env
 
-# Etherscan ingestion checkpoints (resumable fetch state)
-bronze/on-chain/.checkpoints/
-
 # Python
 __pycache__/
 *.py[cod]
@@ -27,14 +24,12 @@ ENV/
 .dagster/
 .tmp_dagster_home_*
 
-# Bronze data outputs (pipeline results, not inputs)
-bronze/
+bronze/governance/agora/fetch.sh
 
 # dbt runtime artifacts
 infra/dbt/target/
 infra/dbt/dbt_packages/
 infra/dbt/logs/
-infra/dbt/models/silver/_silver.yml
 
 # Warehouse (DuckDB) — .wal is temp write-ahead log, not data
 warehouse/*.duckdb.wal
@@ -78,4 +73,3 @@ node_modules/
 List of Data Sources.csv
 skills
 skills-lock.json
-
