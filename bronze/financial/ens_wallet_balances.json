@@ -1,0 +1,206 @@
+[
+  {
+    "name": "Controller",
+    "ens_name": "controller.ens.eth",
+    "address": "0x253553366Da8546fC250F225fe3d25d0C782303b",
+    "working_group": null,
+    "wallet_type": "contract",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "ENS Wallet",
+    "ens_name": "wallet.ensdao.eth",
+    "address": "0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7",
+    "working_group": null,
+    "wallet_type": "contract",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Legacy Controller",
+    "ens_name": null,
+    "address": "0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5",
+    "working_group": null,
+    "wallet_type": "contract",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Endowment",
+    "ens_name": null,
+    "address": "0x4F2083f5fBede34C2714aFfb3105539775f7FE64",
+    "working_group": null,
+    "wallet_type": "endowment",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Ecosystem Main",
+    "ens_name": "main.eco.wg.ens.eth",
+    "address": "0x2686A8919Df194aA7673244549E68D42C1685d03",
+    "working_group": "Ecosystem",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Ecosystem Buildoors",
+    "ens_name": "ens-buildors.pod.ens.eth",
+    "address": "0x6a016548310076285668e2378df70bd545396b5a",
+    "working_group": "Ecosystem",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Ecosystem IRL",
+    "ens_name": "irl.eco.wg.ens.eth",
+    "address": "0x536013c57DAF01D78e8a70cAd1B1abAda9411819",
+    "working_group": "Ecosystem",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Ecosystem Hackathons",
+    "ens_name": "hackathons.eco.wg.ens.eth",
+    "address": "0x9B9c249Be04dd433c7e8FbBF5E61E6741b89966D",
+    "working_group": "Ecosystem",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Ecosystem Newsletter",
+    "ens_name": "newsletter.eco.wg.ens.eth",
+    "address": "0x13aEe52C1C688d3554a15556c5353cb0c3696ea2",
+    "working_group": "Ecosystem",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Ecosystem Grants",
+    "ens_name": "ens-grants.pod.ens.eth",
+    "address": "0xBa0c461b22d918FB1F52fEF556310230d177D1F2",
+    "working_group": "Ecosystem",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Ecosystem Coltron",
+    "ens_name": null,
+    "address": "0x9718ba71dC1284842fcE66dC3e34DFFC6C630074",
+    "working_group": "Ecosystem",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Metagov Main",
+    "ens_name": "main.mg.wg.ens.eth",
+    "address": "0x91c32893216dE3eA0a55ABb9851f581d4503d39b",
+    "working_group": "Metagov",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Metagov Governance",
+    "ens_name": "ens-governance.pod.ens.eth",
+    "address": "0x4f4cAdb8AF8F1d463240c2b93952D8a16688a818",
+    "working_group": "Metagov",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Metagov DAO Tooling",
+    "ens_name": "ens-daotooling.pod.ens.eth",
+    "address": "0x8f730f4aC5fd234df9993E0E317f07e44fb869C1",
+    "working_group": "Metagov",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Metagov Stream",
+    "ens_name": "stream.mg.wg.ens.eth",
+    "address": "0xB162Bf7A7fD64eF32b787719335d06B2780e31D1",
+    "working_group": "Metagov",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Public Goods Main",
+    "ens_name": "main.pg.wg.ens.eth",
+    "address": "0xcD42b4c4D102cc22864e3A1341Bb0529c17fD87d",
+    "working_group": "Public Goods",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  },
+  {
+    "name": "Public Goods Large Grants",
+    "ens_name": "largegrants.pg.wg.ens.eth",
+    "address": "0xebA76C907F02BA13064EDAD7876Fe51D9d856F62",
+    "working_group": "Public Goods",
+    "wallet_type": "multisig",
+    "balances": {
+      "ETH": 0.0,
+      "ENS": 0.0,
+      "USDC": 0.0
+    }
+  }
+]

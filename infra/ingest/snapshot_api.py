@@ -1,11 +1,19 @@
 """Snapshot GraphQL API client for ENS DAO governance data."""
 
 import logging
+import sys
 import time
 
 import requests
 
 logger = logging.getLogger(__name__)
+
+
+def _emit(msg: str) -> None:
+    """Print to stdout, stderr, and logger."""
+    print(msg, flush=True)
+    print(msg, file=sys.stderr, flush=True)
+    logger.info(msg)
 
 API_URL = "https://hub.snapshot.org/graphql"
 SPACE = "ens.eth"
@@ -16,9 +24,15 @@ def run_query(query: str, *, _retries: int = 3) -> dict:
     logger.debug("[SNAPSHOT] Sending GraphQL request to %s", API_URL)
     resp = requests.post(API_URL, json={"query": query}, timeout=30)
     if resp.status_code == 429:
-        logger.warning("[SNAPSHOT] Rate limited (429), waiting 60s before retry...")
+        _emit("[SNAPSHOT] Rate limited (429), waiting 60s before retry...")
         time.sleep(60)
         return run_query(query, _retries=_retries)
+    if not resp.ok:
+        try:
+            err_body = resp.json()
+        except Exception:
+            err_body = resp.text
+        _emit(f"[SNAPSHOT] HTTP {resp.status_code} error: {err_body}")
     resp.raise_for_status()
     data = resp.json()
     logger.debug("[SNAPSHOT] Received response: %s", str(data)[:200])
@@ -32,10 +46,10 @@ def fetch_snapshot_proposals() -> list[dict]:
     id, title, body, choices, start, end, snapshot, state, author,
     created, scores, scores_total, votes, quorum, type
     """
-    logger.info("=" * 60)
-    logger.info("[SNAPSHOT] Starting: fetch_snapshot_proposals")
-    logger.info("[SNAPSHOT] API: %s", API_URL)
-    logger.info("[SNAPSHOT] Space: %s", SPACE)
+    _emit("=" * 60)
+    _emit("[SNAPSHOT] Starting: fetch_snapshot_proposals")
+    _emit(f"[SNAPSHOT] API: {API_URL}")
+    _emit(f"[SNAPSHOT] Space: {SPACE}")
 
     all_proposals: list[dict] = []
     skip = 0
@@ -44,9 +58,7 @@ def fetch_snapshot_proposals() -> list[dict]:
 
     while True:
         page_num += 1
-        logger.info(
-            "[SNAPSHOT] Fetching proposals batch %d (skip=%d, limit=%d)", page_num, skip, batch
-        )
+        _emit(f"[SNAPSHOT] Fetching proposals batch {page_num} (skip={skip}, limit={batch})")
 
         query = f"""
         {{
@@ -78,22 +90,20 @@ def fetch_snapshot_proposals() -> list[dict]:
         data = run_query(query)["data"]["proposals"]
 
         if not data:
-            logger.info("[SNAPSHOT] No more proposals (empty response)")
+            _emit("[SNAPSHOT] No more proposals (empty response)")
             break
 
         all_proposals.extend(data)
-        logger.info(
-            "[SNAPSHOT] ✓ Got %d proposals (total so far: %d)", len(data), len(all_proposals)
-        )
+        _emit(f"[SNAPSHOT] ✓ Got {len(data)} proposals (total so far: {len(all_proposals)})")
 
         if len(data) < batch:
-            logger.info("[SNAPSHOT] Reached end (got %d < %d)", len(data), batch)
+            _emit(f"[SNAPSHOT] Reached end (got {len(data)} < {batch})")
             break
 
         skip += batch
         time.sleep(1)
 
-    logger.info("[SNAPSHOT] COMPLETE: Fetched %d total proposals", len(all_proposals))
+    _emit(f"[SNAPSHOT] COMPLETE: Fetched {len(all_proposals)} total proposals")
     return all_proposals
 
 
@@ -104,10 +114,10 @@ def fetch_snapshot_votes(proposals: list[dict]) -> list[dict]:
     Returns flat list with fields:
     id, voter, choice, vp, created, proposal_id
     """
-    logger.info("=" * 60)
-    logger.info("[SNAPSHOT] Starting: fetch_snapshot_votes")
-    logger.info("[SNAPSHOT] API: %s", API_URL)
-    logger.info("[SNAPSHOT] Total proposals to fetch votes for: %d", len(proposals))
+    _emit("=" * 60)
+    _emit("[SNAPSHOT] Starting: fetch_snapshot_votes")
+    _emit(f"[SNAPSHOT] API: {API_URL}")
+    _emit(f"[SNAPSHOT] Total proposals to fetch votes for: {len(proposals)}")
 
     all_votes: list[dict] = []
     total_proposals = len(proposals)
@@ -161,18 +171,7 @@ def fetch_snapshot_votes(proposals: list[dict]) -> list[dict]:
             elapsed = time.time() - start_time
             rate = i / elapsed if elapsed > 0 else 0
             eta = (total_proposals - i) / rate if rate > 0 else 0
-            logger.info(
-                "[SNAPSHOT] Progress: %d/%d proposals (%d votes) - %.0fs elapsed, ~%.0fs remaining",
-                i,
-                total_proposals,
-                len(all_votes),
-                elapsed,
-                eta,
-            )
+            _emit(f"[SNAPSHOT] Progress: {i}/{total_proposals} proposals ({len(all_votes)} votes) - {elapsed:.0f}s elapsed, ~{eta:.0f}s remaining")
 
-    logger.info(
-        "[SNAPSHOT] COMPLETE: Fetched %d total votes for %d proposals",
-        len(all_votes),
-        total_proposals,
-    )
+    _emit(f"[SNAPSHOT] COMPLETE: Fetched {len(all_votes)} total votes for {total_proposals} proposals")
     return all_votes

@@ -20,5 +20,8 @@ select
     statement_summary,
     is_seeking_delegation,
     organization_id,
-    organization_name
+    organization_name,
+    participation_rate,
+    voted_proposals_count,
+    proposals_count
 from {{ source('bronze_governance', 'tally_delegates') }}

@@ -154,6 +154,38 @@ models:
               values: ['delegate', 'steward', 'contributor', 'token_holder', 'service_provider', 'multisig_signer', 'working_group_lead', 'dao_officer']
               severity: warn
 
+  - name: clean_oso_ens_code_metrics
+    description: "Cleaned OSO code metrics with deduplication and integer casts"
+    columns:
+      - name: artifact_id
+        tests:
+          - not_null
+          - unique
+      - name: artifact_name
+        tests:
+          - not_null
+      - name: source
+        tests:
+          - accepted_values:
+              values: ['oso']
+
+  - name: clean_oso_ens_timeseries
+    description: "Cleaned OSO timeseries events, deduplicated on (artifact_id, event_type, event_time)"
+    columns:
+      - name: artifact_id
+        tests:
+          - not_null
+      - name: event_type
+        tests:
+          - not_null
+      - name: event_time
+        tests:
+          - not_null
+      - name: source
+        tests:
+          - accepted_values:
+              values: ['oso']
+
   - name: address_crosswalk
     description: "Unified address lookup merging all sources"
     columns:

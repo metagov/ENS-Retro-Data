@@ -23,13 +23,13 @@
         "api_endpoint": "https://api.etherscan.io/api",
         "query_or_method": "Event logs API (DelegateChanged on ENS token contract)",
         "collected_by": "etherscan.io",
-        "collected_at": "2026-03-06T04:01:58.633827+00:00",
+        "collected_at": "2026-03-24T09:46:31.978199+00:00",
         "covers_period": "all-time (from ENS token deployment)",
         "notes": "token_balance is null; silver layer handles via try_cast",
-        "records": 122974
+        "records": 123051
       },
-      "actual_records": 122974,
-      "file_size_bytes": 26931308
+      "actual_records": 123051,
+      "file_size_bytes": 26948171
     },
     "token_distribution.json": {
       "status": "present",
@@ -46,13 +46,13 @@
         "api_endpoint": "https://api.etherscan.io/api",
         "query_or_method": "Event logs API (Transfer events, client-side balance computation)",
         "collected_by": "etherscan.io",
-        "collected_at": "2026-03-10T09:58:48.161658+00:00",
+        "collected_at": "2026-03-24T11:01:10.321351+00:00",
         "covers_period": "cumulative from token deployment to latest block",
         "notes": "Balances computed as sum(inflows) - sum(outflows) per address",
-        "records": 67107
+        "records": 67190
       },
-      "actual_records": 67107,
-      "file_size_bytes": 10876923
+      "actual_records": 67190,
+      "file_size_bytes": 10890216
     },
     "treasury_flows.json": {
       "status": "present",
@@ -73,14 +73,14 @@
         "api_endpoint": "https://api.etherscan.io/api",
         "query_or_method": "Account txlist + tokentx APIs for ENS DAO wallets",
         "collected_by": "etherscan.io",
-        "collected_at": "2026-03-06T12:25:52.106448+00:00",
+        "collected_at": "2026-03-24T09:40:53.979825+00:00",
         "covers_period": "all-time for wallet.ensdao.eth",
         "notes": "Category set to unknown; can be enriched from SafeNotes",
-        "records": 619
+        "records": 622
       },
-      "actual_records": 619,
-      "file_size_bytes": 214679
+      "actual_records": 622,
+      "file_size_bytes": 215701
     }
   },
-  "last_indexed_at": "2026-03-10T09:58:48.161658+00:00"
+  "last_indexed_at": "2026-03-24T11:01:10.321351+00:00"
 }

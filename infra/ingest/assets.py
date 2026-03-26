@@ -36,6 +36,7 @@ OUTPUT FILES:
 - bronze/grants/: Snapshot Small Grants proposals & votes
 - bronze/forum/: Discourse topics & posts
 - bronze/financial/: Safe wallet balances & transactions
+- bronze/github/: ENS GitHub repo metrics and event history (via OSO)
 """
 
 import json
@@ -65,7 +66,13 @@ from infra.ingest.tally_api import (
     flatten_tally_proposals,
     flatten_tally_votes,
 )
-from infra.resources import EtherscanApiConfig, TallyApiConfig
+from infra.ingest.oso_api import (
+    TIMESERIES_START,
+    fetch_ens_code_metrics,
+    fetch_ens_repos,
+    fetch_ens_timeseries,
+)
+from infra.resources import EtherscanApiConfig, OsoApiConfig, TallyApiConfig
 
 # Root directory for all bronze-layer data files
 BRONZE_ROOT = Path(__file__).resolve().parent.parent.parent / "bronze"
@@ -827,4 +834,136 @@ def ens_safe_transactions(context: AssetExecutionContext) -> None:
 
     context.log.info(
         f"[BRONZE] ✓ ens_safe_transactions COMPLETE - {len(transactions)} records written"
+    )
+
+
+# ============================================================================
+# OPEN SOURCE OBSERVER — GitHub activity data for ENS repositories
+# OSO indexes GitHub events for open-source projects via SQL data lake.
+# ============================================================================
+
+
+@asset(group_name="bronze", compute_kind="api")
+def oso_ens_repos(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
+    """Fetch all ENS GitHub repositories registered in Open Source Observer.
+
+    DATA: Artifact registry — one row per ENS repo with artifact ID, name, project linkage.
+    API: OSO data lake via pyoso (artifacts_by_project_v1, artifact_namespace='ensdomains')
+    OUTPUT: bronze/github/oso_ens_repos.json
+
+    DEPENDENCIES: None — reference table, fetched independently
+    ESTIMATED: ~10s
+    """
+    context.log.info("=" * 60)
+    context.log.info("[BRONZE] Starting: oso_ens_repos")
+    context.log.info("[BRONZE] Output: bronze/github/oso_ens_repos.json")
+
+    repos = fetch_ens_repos(oso_config.api_key)
+    context.log.info(f"[BRONZE] ✓ Received {len(repos)} ENS repo records from OSO")
+
+    _write_json(
+        repos,
+        "github",
+        "oso_ens_repos.json",
+        context,
+        source="opensource.observer",
+        method="pyoso SQL: artifacts_by_project_v1 WHERE artifact_namespace='ensdomains'",
+    )
+
+    context.log.info(f"[BRONZE] ✓ oso_ens_repos COMPLETE — {len(repos)} repos written")
+
+
+@asset(group_name="bronze", compute_kind="api")
+def oso_ens_code_metrics(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
+    """Fetch per-repo code health metrics for ENS GitHub repositories from OSO.
+
+    DATA: Current snapshot of stars, forks, contributors, commits, PRs, issues
+          per repo (6-month windows for activity metrics).
+    API: OSO data lake via pyoso (code_metrics_by_artifact_v0)
+    OUTPUT: bronze/github/oso_ens_code_metrics.json
+
+    DEPENDENCIES: None — fetched independently, full refresh on every run
+    ESTIMATED: ~15s
+    """
+    context.log.info("=" * 60)
+    context.log.info("[BRONZE] Starting: oso_ens_code_metrics")
+    context.log.info("[BRONZE] Output: bronze/github/oso_ens_code_metrics.json")
+
+    metrics = fetch_ens_code_metrics(oso_config.api_key)
+    context.log.info(f"[BRONZE] ✓ Received code metrics for {len(metrics)} repos from OSO")
+
+    _write_json(
+        metrics,
+        "github",
+        "oso_ens_code_metrics.json",
+        context,
+        source="opensource.observer",
+        method="pyoso SQL: code_metrics_by_artifact_v0 WHERE artifact_namespace='ensdomains'",
+    )
+
+    context.log.info(
+        f"[BRONZE] ✓ oso_ens_code_metrics COMPLETE — {len(metrics)} repo metric rows written"
+    )
+
+
+@asset(group_name="bronze", compute_kind="api")
+def oso_ens_timeseries(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
+    """Fetch daily GitHub event history for ENS repos from OSO (incremental append).
+
+    DATA: All GitHub event types (COMMIT_CODE, PULL_REQUEST_MERGED, ISSUE_OPENED, etc.)
+          one row per (repo, event_type, day). Incrementally appended on reruns.
+    API: OSO data lake via pyoso (timeseries_events_by_artifact_v0)
+    OUTPUT: bronze/github/oso_ens_timeseries.json
+
+    STRATEGY: Incremental append — reads existing JSON to find max(time), fetches
+              only newer events from OSO, merges and writes the combined dataset.
+              On first run (no existing file), fetches from TIMESERIES_START (2019-01-01).
+
+    DEPENDENCIES: None
+    ESTIMATED: ~30s first run (full history), ~5s on reruns
+    """
+    context.log.info("=" * 60)
+    context.log.info("[BRONZE] Starting: oso_ens_timeseries (incremental)")
+    context.log.info("[BRONZE] Output: bronze/github/oso_ens_timeseries.json")
+
+    path = BRONZE_ROOT / "github" / "oso_ens_timeseries.json"
+
+    # Determine incremental cutoff from max event time in existing data
+    existing: list[dict] = []
+    since = TIMESERIES_START
+    if path.exists():
+        with open(path) as f:
+            existing = json.load(f)
+        if existing:
+            since = max(str(r.get("time", "")) for r in existing if r.get("time"))
+            context.log.info(
+                f"[BRONZE] Found {len(existing)} existing rows — fetching since {since}"
+            )
+        else:
+            context.log.info("[BRONZE] Existing file is empty — fetching full history")
+    else:
+        context.log.info(f"[BRONZE] No existing file — fetching full history since {since}")
+
+    new_rows = fetch_ens_timeseries(oso_config.api_key, since=since)
+    context.log.info(f"[BRONZE] ✓ Received {len(new_rows)} new event rows from OSO")
+
+    merged = existing + new_rows
+    context.log.info(
+        f"[BRONZE] Merged: {len(existing)} existing + {len(new_rows)} new = {len(merged)} total"
+    )
+
+    _write_json(
+        merged,
+        "github",
+        "oso_ens_timeseries.json",
+        context,
+        source="opensource.observer",
+        method=(
+            f"pyoso SQL: timeseries_events_by_artifact_v0 "
+            f"WHERE artifact_namespace='ensdomains' AND time > '{since}'"
+        ),
+    )
+
+    context.log.info(
+        f"[BRONZE] ✓ oso_ens_timeseries COMPLETE — {len(merged)} total rows written"
     )

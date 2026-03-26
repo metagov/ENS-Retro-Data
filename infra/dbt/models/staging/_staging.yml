@@ -157,3 +157,40 @@ models:
               severity: warn
           - unique:
               severity: warn
+
+  - name: stg_oso_ens_repos
+    description: "Staged OSO ENS GitHub repository registry"
+    columns:
+      - name: artifact_id
+        description: "OSO artifact identifier"
+        tests:
+          - not_null
+          - unique
+      - name: artifact_name
+        tests:
+          - not_null
+
+  - name: stg_oso_ens_code_metrics
+    description: "Staged OSO per-repo code health metrics"
+    columns:
+      - name: artifact_id
+        description: "OSO artifact identifier"
+        tests:
+          - not_null
+          - unique
+      - name: artifact_name
+        tests:
+          - not_null
+
+  - name: stg_oso_ens_timeseries
+    description: "Staged OSO daily GitHub event history for ENS repos"
+    columns:
+      - name: artifact_id
+        tests:
+          - not_null
+      - name: event_type
+        tests:
+          - not_null
+      - name: event_time
+        tests:
+          - not_null

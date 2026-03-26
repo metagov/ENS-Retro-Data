@@ -19,6 +19,9 @@ select distinct on ({{ lowercase_address('address') }})
     statement,
     statement_summary,
     is_seeking_delegation,
+    participation_rate,
+    voted_proposals_count,
+    proposals_count,
     'tally' as source
 from {{ ref('stg_tally_delegates') }}
 where address is not null
