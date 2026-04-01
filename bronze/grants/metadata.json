@@ -29,7 +29,7 @@
         "api_endpoint": "https://hub.snapshot.org/graphql",
         "query_or_method": "GraphQL paginated query (space=small-grants.eth)",
         "collected_by": "snapshot.org",
-        "collected_at": "2026-03-06T04:06:14.837331+00:00",
+        "collected_at": "2026-03-24T09:40:25.022097+00:00",
         "covers_period": "all-time",
         "notes": "Raw API response objects, no transforms applied",
         "records": 24
@@ -54,7 +54,7 @@
         "api_endpoint": "https://hub.snapshot.org/graphql",
         "query_or_method": "GraphQL paginated query per proposal",
         "collected_by": "snapshot.org",
-        "collected_at": "2026-03-06T04:07:01.705313+00:00",
+        "collected_at": "2026-03-24T09:41:56.164863+00:00",
         "covers_period": "all votes across all small grants proposals",
         "notes": "proposal_id field added by pipeline",
         "records": 1562
@@ -63,5 +63,5 @@
       "file_size_bytes": 562855
     }
   },
-  "last_indexed_at": "2026-03-06T04:07:01.705313+00:00"
+  "last_indexed_at": "2026-03-24T09:41:56.164863+00:00"
 }

@@ -25,15 +25,15 @@
       "provenance": {
         "source": "discuss.ens.domains",
         "api_endpoint": "https://discuss.ens.domains/latest.json",
-        "query_or_method": "Discourse public JSON API (/latest.json paginated)",
+        "query_or_method": "Discourse JSON API (/latest.json paginated topics)",
         "collected_by": "discuss.ens.domains",
-        "collected_at": "2026-03-10T13:46:10.289190+00:00",
+        "collected_at": "2026-03-24T11:05:36.713323+00:00",
         "covers_period": "all-time",
         "notes": "Slimmed from raw API response, ~30 topics per page",
-        "records": 2474
+        "records": 2489
       },
-      "actual_records": 2474,
-      "file_size_bytes": 1227077
+      "actual_records": 2489,
+      "file_size_bytes": 1234622
     },
     "forum_posts.json": {
       "status": "present",
@@ -54,16 +54,16 @@
       "provenance": {
         "source": "discuss.ens.domains",
         "api_endpoint": "https://discuss.ens.domains/t/{slug}/{id}.json",
-        "query_or_method": "Discourse public JSON API (/t/{slug}/{id}.json per topic)",
+        "query_or_method": "Discourse JSON API (/t/{slug}/{id}.json per topic)",
         "collected_by": "discuss.ens.domains",
-        "collected_at": "2026-03-10T13:46:29.257469+00:00",
+        "collected_at": "2026-03-24T11:05:37.723932+00:00",
         "covers_period": "all posts across all topics",
         "notes": "Includes HTML body (cooked field). Posts fetched per-topic with batch loading for topics >20 posts.",
-        "records": 21665
+        "records": 21747
       },
-      "actual_records": 21665,
-      "file_size_bytes": 48761928
+      "actual_records": 21747,
+      "file_size_bytes": 49098992
     }
   },
-  "last_indexed_at": "2026-03-10T13:46:29.257469+00:00"
+  "last_indexed_at": "2026-03-24T11:05:37.723932+00:00"
 }

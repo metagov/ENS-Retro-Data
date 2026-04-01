@@ -1,13 +1,18 @@
 {
   "domain": "financial",
   "description": "Financial data including DAO ledger transactions, compensation, budgets, and spending",
-  "sources": ["ens-ledger-app", "0xLighthouse", "safe.global", "ens-dashboard"],
-  "collection_status": "in_progress",
+  "sources": [
+    "ens-ledger-app",
+    "0xLighthouse",
+    "safe.global",
+    "ens-dashboard"
+  ],
+  "collection_status": "complete",
   "notes": "Ledger CSV sourced from ens-ledger.app, annotated by 0xLighthouse (https://github.com/0xLighthouse/ens-ledger-analysis)",
   "files": {
     "ens_ledger_transactions.csv": {
       "status": "present",
-      "description": "ENS DAO ledger transactions — all wallet spending with categories, amounts, and USD values",
+      "description": "ENS DAO ledger transactions \u2014 all wallet spending with categories, amounts, and USD values",
       "expected_records": 2315,
       "schema_hints": {
         "Transaction Hash": "string (0x tx hash)",
@@ -22,15 +27,17 @@
       },
       "provenance": {
         "source": "ens-ledger.app",
-        "collected_by": "0xLighthouse",
-        "collected_at": "2025-11-28",
+        "collected_by": "manual_upload",
+        "collected_at": "2026-03-24T09:40:04.821101+00:00",
         "covers_period": "2022-03-31 to 2025-11-28",
-        "notes": "Raw CSV downloaded from ens-ledger.app, part of 0xLighthouse/ens-ledger-analysis repo. Contains 2,315 annotated transactions across 11 wallets, 449 unique recipients, $264M total USD value. Reports and plots available in docs/references/lighthouse-ledger-analysis/"
-      }
+        "notes": "Raw CSV downloaded from ens-ledger.app, part of 0xLighthouse/ens-ledger-analysis repo. Contains 2,315 annotated transactions across 11 wallets, 449 unique recipients, $264M total USD value. Reports and plots available in docs/references/lighthouse-ledger-analysis/",
+        "query_or_method": "sentinel check \u2014 file already on disk"
+      },
+      "file_size_bytes": 317677
     },
     "enswallets.json": {
       "status": "present",
-      "description": "ENS DAO wallet registry — operational contracts, endowment, and working group multisigs with addresses, multisig configs, and signers",
+      "description": "ENS DAO wallet registry \u2014 operational contracts, endowment, and working group multisigs with addresses, multisig configs, and signers",
       "schema_hints": {
         "operational_contracts[]": "name, ens_name, address, description, type, balances",
         "endowment[]": "name, ens_name, address, description, type",
@@ -43,23 +50,34 @@
       }
     },
     "ens_wallet_balances.json": {
-      "status": "pending",
+      "status": "present",
       "description": "Fresh ETH/ENS/USDC balances for all ENS DAO wallets, fetched from Safe Transaction Service",
       "provenance": {
         "source": "safe.global",
-        "query_or_method": "Safe Transaction Service /balances/usd/ per wallet"
-      }
+        "query_or_method": "Safe Transaction Service /balances/usd/ per wallet",
+        "collected_by": "safe.global",
+        "collected_at": "2026-03-24T09:40:35.187079+00:00",
+        "records": 17
+      },
+      "actual_records": 17,
+      "file_size_bytes": 4783
     },
     "ens_safe_transactions.json": {
-      "status": "pending",
-      "description": "Multisig transaction history for all ENS DAO Safe wallets — tagged with working group, category, direction",
+      "status": "present",
+      "description": "Multisig transaction history for all ENS DAO Safe wallets \u2014 tagged with working group, category, direction",
       "schema_hints": {
         "fields": "safe_address, safe_name, safe_ens_name, working_group, tx_hash, direction, token, amount, to_address, from_address, category, description, date, nonce, block_number"
       },
       "provenance": {
         "source": "safe.global",
-        "query_or_method": "Safe Transaction Service /multisig-transactions/ per wallet"
-      }
+        "query_or_method": "Safe Transaction Service /multisig-transactions/ per wallet",
+        "collected_by": "safe.global",
+        "collected_at": "2026-03-24T12:49:37.935349+00:00",
+        "records": 4235
+      },
+      "actual_records": 4235,
+      "file_size_bytes": 2519543
     }
-  }
+  },
+  "last_indexed_at": "2026-03-24T12:49:37.935349+00:00"
 }

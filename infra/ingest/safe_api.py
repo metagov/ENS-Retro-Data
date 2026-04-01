@@ -10,6 +10,8 @@ Endpoints used:
 
 import json
 import logging
+import struct
+import sys
 import time
 from pathlib import Path
 
@@ -37,6 +39,75 @@ TOKEN_SYMBOLS = {
 }
 
 REQUEST_DELAY = 0.5  # Be polite to the free API
+
+
+def _keccak256(data: bytes) -> bytes:
+    """Minimal pure-Python Keccak-256 (EIP-55 uses keccak, not NIST SHA-3)."""
+    # Keccak-f[1600] round constants
+    RC = [
+        0x0000000000000001, 0x0000000000008082, 0x800000000000808A, 0x8000000080008000,
+        0x000000000000808B, 0x0000000080000001, 0x8000000080008081, 0x8000000000008009,
+        0x000000000000008A, 0x0000000000000088, 0x0000000080008009, 0x000000008000000A,
+        0x000000008000808B, 0x800000000000008B, 0x8000000000008089, 0x8000000000008003,
+        0x8000000000008002, 0x8000000000000080, 0x000000000000800A, 0x800000008000000A,
+        0x8000000080008081, 0x8000000000008080, 0x0000000080000001, 0x8000000080008008,
+    ]
+    ROT = [
+        [0, 36, 3, 41, 18], [1, 44, 10, 45, 2], [62, 6, 43, 15, 61],
+        [28, 55, 25, 21, 56], [27, 20, 39, 8, 14],
+    ]
+
+    def rot64(v, n):
+        return ((v << n) | (v >> (64 - n))) & 0xFFFFFFFFFFFFFFFF
+
+    def keccak_f(st):
+        for rc in RC:
+            # Theta
+            c = [st[x][0] ^ st[x][1] ^ st[x][2] ^ st[x][3] ^ st[x][4] for x in range(5)]
+            d = [c[(x - 1) % 5] ^ rot64(c[(x + 1) % 5], 1) for x in range(5)]
+            st = [[st[x][y] ^ d[x] for y in range(5)] for x in range(5)]
+            # Rho + Pi
+            b = [[0] * 5 for _ in range(5)]
+            for x in range(5):
+                for y in range(5):
+                    b[y][(2 * x + 3 * y) % 5] = rot64(st[x][y], ROT[x][y])
+            # Chi
+            st = [[b[x][y] ^ ((~b[(x + 1) % 5][y]) & b[(x + 2) % 5][y]) for y in range(5)] for x in range(5)]
+            # Iota
+            st[0][0] ^= rc
+        return st
+
+    rate = 136  # rate in bytes for keccak-256
+    # Padding (Keccak, not SHA-3 — uses 0x01 not 0x06)
+    msg = bytearray(data)
+    msg.append(0x01)
+    while len(msg) % rate != 0:
+        msg.append(0x00)
+    msg[-1] |= 0x80
+
+    state = [[0] * 5 for _ in range(5)]
+    for block_start in range(0, len(msg), rate):
+        block = msg[block_start:block_start + rate]
+        words = struct.unpack_from("<17Q", bytes(block))
+        for i, w in enumerate(words):
+            state[i % 5][i // 5] ^= w
+        state = keccak_f(state)
+
+    # Squeeze 32 bytes
+    out = bytearray()
+    for y in range(5):
+        for x in range(5):
+            out += struct.pack("<Q", state[x][y])
+            if len(out) >= 32:
+                return bytes(out[:32])
+    return bytes(out[:32])
+
+
+def _to_checksum_address(address: str) -> str:
+    """Apply EIP-55 checksum to an Ethereum address (pure Python, no web3 dependency)."""
+    addr = address.lower().lstrip("0x")
+    h = _keccak256(addr.encode()).hex()
+    return "0x" + "".join(c.upper() if int(h[i], 16) >= 8 else c for i, c in enumerate(addr))
 WALLETS_PATH = Path(__file__).resolve().parent.parent.parent / "bronze" / "financial" / "enswallets.json"
 
 
@@ -95,6 +166,23 @@ def _safe_get(url: str, params: dict | None = None, *, retries: int = 3) -> dict
     if resp.status_code == 404:
         return {}
 
+    if resp.status_code == 422:
+        msg = f"[SAFE] 422 for {url} — not a valid Safe address, skipping"
+        print(msg, flush=True)
+        print(msg, file=sys.stderr, flush=True)
+        logger.warning(msg)
+        return {}
+
+    if not resp.ok:
+        try:
+            err_body = resp.json()
+        except Exception:
+            err_body = resp.text
+        msg = f"[SAFE] HTTP {resp.status_code} for {url}: {err_body}"
+        print(msg, flush=True)
+        print(msg, file=sys.stderr, flush=True)
+        logger.error(msg)
+
     resp.raise_for_status()
     return resp.json()
 
@@ -106,6 +194,7 @@ def _safe_get(url: str, params: dict | None = None, *, retries: int = 3) -> dict
 
 def _fetch_safe_balances(address: str) -> dict:
     """Fetch token balances for a single Safe address via the Safe TX Service."""
+    address = _to_checksum_address(address)
     url = f"{SAFE_TX_SERVICE_URL}/api/v1/safes/{address}/balances/usd/"
     data = _safe_get(url)
     if not isinstance(data, list):
@@ -161,6 +250,7 @@ def _fetch_safe_transactions(address: str) -> list[dict]:
     Paginates through the Safe Transaction Service API.
     Returns raw transaction dicts.
     """
+    address = _to_checksum_address(address)
     url = f"{SAFE_TX_SERVICE_URL}/api/v1/safes/{address}/multisig-transactions/"
     all_txs = []
     params = {"executed": "true", "limit": 100, "ordering": "-executionDate"}

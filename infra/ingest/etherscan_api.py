@@ -12,6 +12,7 @@ resumes from the last checkpoint.  Checkpoints are stored in
 
 import json
 import logging
+import sys
 import time
 from collections import defaultdict
 from collections.abc import Callable
@@ -20,6 +21,13 @@ from pathlib import Path
 import requests
 
 logger = logging.getLogger(__name__)
+
+
+def _emit(msg: str) -> None:
+    """Print to stdout, stderr, and logger."""
+    print(msg, flush=True)
+    print(msg, file=sys.stderr, flush=True)
+    logger.info(msg)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -119,16 +127,22 @@ def run_query(params: dict, api_key: str, *, _retries: int = 3) -> dict:
         resp = requests.get(API_URL, params=full_params, timeout=30)
     except (requests.ConnectionError, requests.Timeout):
         if _retries <= 0:
-            logger.error("[ETHERSCAN] Request timed out, no retries left")
+            _emit("[ETHERSCAN] Request timed out, no retries left")
             raise
-        logger.warning("[ETHERSCAN] Request timed out, retrying (%d left)", _retries)
+        _emit(f"[ETHERSCAN] Request timed out, retrying ({_retries} left)")
         time.sleep(REQUEST_DELAY * 5)
         return run_query(params, api_key, _retries=_retries - 1)
 
     if resp.status_code == 429:
-        logger.warning("[ETHERSCAN] Rate limited (429), backing off %ds", RATE_LIMIT_DELAY)
+        _emit(f"[ETHERSCAN] Rate limited (429), backing off {RATE_LIMIT_DELAY}s")
         time.sleep(RATE_LIMIT_DELAY)
         return run_query(params, api_key, _retries=_retries)
+    if not resp.ok:
+        try:
+            err_body = resp.json()
+        except Exception:
+            err_body = resp.text
+        _emit(f"[ETHERSCAN] HTTP {resp.status_code} error: {err_body}")
     resp.raise_for_status()
 
     data = resp.json()
@@ -136,15 +150,13 @@ def run_query(params: dict, api_key: str, *, _retries: int = 3) -> dict:
     if data.get("status") == "0" and data.get("message") != "No records found":
         msg = data.get("result", "Unknown Etherscan error")
         if "Max rate limit reached" in str(msg):
-            logger.warning("[ETHERSCAN] Rate limited (body), backing off %ds", RATE_LIMIT_DELAY)
+            _emit(f"[ETHERSCAN] Rate limited (body), backing off {RATE_LIMIT_DELAY}s")
             time.sleep(RATE_LIMIT_DELAY)
             return run_query(params, api_key, _retries=_retries)
         if not msg or str(msg) == "None":
             if _retries <= 0:
                 raise RuntimeError(f"Etherscan API error after retries: {msg}")
-            logger.warning(
-                "[ETHERSCAN] Etherscan returned empty error, retrying (%d left)", _retries
-            )
+            _emit(f"[ETHERSCAN] Empty error response, retrying ({_retries} left)")
             time.sleep(REQUEST_DELAY * 5)
             return run_query(params, api_key, _retries=_retries - 1)
         raise RuntimeError(f"Etherscan API error: {msg}")
@@ -223,14 +235,7 @@ def _paginate(
                 on_page(results)
 
             if request_count % 10 == 0 or len(results) == PAGE_SIZE:
-                logger.info(
-                    "[ETHERSCAN] Request #%d: got %d results (total: %d, block_range: %d-%d)",
-                    request_count,
-                    len(results),
-                    len(all_results),
-                    current_start,
-                    end_block,
-                )
+                _emit(f"[ETHERSCAN] Request #{request_count}: got {len(results)} results (total: {len(all_results)}, block_range: {current_start}-{end_block})")
 
             if len(results) < PAGE_SIZE:
                 break
@@ -258,11 +263,7 @@ def _paginate(
         current_start = last_block + 1
         logger.debug("[ETHERSCAN] Hit pagination cap, advancing to block %d", current_start)
 
-    logger.info(
-        "[ETHERSCAN] Pagination complete: %d total results in %d requests",
-        len(all_results),
-        request_count,
-    )
+    _emit(f"[ETHERSCAN] Pagination complete: {len(all_results)} total results in {request_count} requests")
     return all_results
 
 
@@ -335,11 +336,7 @@ def fetch_delegation_events(api_key: str) -> list[dict]:
                     }
                 )
             )
-            logger.info(
-                "Delegations progress: %d events, block %d",
-                len(events),
-                events[-1]["block_number"],
-            )
+            _emit(f"[ETHERSCAN] Delegations progress: {len(events)} events, block {events[-1]['block_number']}")
 
     params = {
         "module": "logs",
@@ -363,7 +360,7 @@ def fetch_delegation_events(api_key: str) -> list[dict]:
                 )
             )
 
-    logger.info("Delegations complete: %d events total", len(events))
+    _emit(f"[ETHERSCAN] Delegations complete: {len(events)} events total")
     # Clean up checkpoint files on success.
     for p in (partial_path, meta_path):
         if p.exists():
@@ -425,9 +422,7 @@ def fetch_token_transfers(api_key: str) -> list[dict]:
                 balances[to_addr] += value
         page_count += 1
         if page_count % CHECKPOINT_EVERY == 0:
-            logger.info(
-                "Token transfers progress: %d addresses, block %d", len(balances), latest_block
-            )
+            _emit(f"[ETHERSCAN] Token transfers progress: {len(balances)} addresses, block {latest_block}")
             _save_checkpoint(
                 "token_transfers",
                 {
@@ -437,10 +432,7 @@ def fetch_token_transfers(api_key: str) -> list[dict]:
                 },
             )
 
-    logger.info(
-        "Starting token transfer fetch (est. ~10-20 min on free tier — "
-        "replays all ENS Transfer events since deployment)"
-    )
+    _emit("[ETHERSCAN] Starting: token transfer fetch (est. ~10-20 min on free tier — replays all ENS Transfer events since deployment)")
 
     params = {
         "module": "logs",

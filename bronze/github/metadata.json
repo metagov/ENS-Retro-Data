@@ -1,8 +1,74 @@
 {
   "domain": "github",
-  "description": "GitHub repository activity for ENS-related repos",
-  "sources": ["github"],
-  "collection_status": "not_started",
-  "notes": "No data files present; GitHub API collection for development activity metrics to be indexed from OSO",
-  "files": {}
+  "description": "GitHub repository activity for ENS-related repos, indexed via Open Source Observer (OSO)",
+  "sources": [
+    "opensource.observer"
+  ],
+  "collection_status": "in_progress",
+  "notes": "Data fetched via pyoso SQL queries against the OSO data lake. Incremental append for timeseries.",
+  "files": {
+    "oso_ens_repos.json": {
+      "status": "present",
+      "description": "ENS GitHub repository registry from OSO (artifacts_by_project_v1)",
+      "expected_records": 60,
+      "schema_hints": {
+        "artifact_id": "string",
+        "artifact_name": "string (repo name)",
+        "artifact_namespace": "string (github org, e.g. ensdomains)",
+        "artifact_source": "string (GITHUB)",
+        "project_id": "string",
+        "project_name": "string"
+      },
+      "provenance": {
+        "source": "opensource.observer",
+        "api_endpoint": "OSO data lake (pyoso)",
+        "query_or_method": "pyoso SQL: artifacts_by_project_v1 WHERE artifact_namespace='ensdomains'",
+        "collected_by": "opensource.observer",
+        "collected_at": "2026-03-24T12:49:35.657779+00:00",
+        "records": 962
+      },
+      "actual_records": 962,
+      "file_size_bytes": 383352
+    },
+    "oso_ens_code_metrics.json": {
+      "status": "not_started",
+      "description": "Per-repo code health metrics from OSO (code_metrics_by_artifact_v0)",
+      "expected_records": 60,
+      "schema_hints": {
+        "artifact_id": "string",
+        "artifact_name": "string",
+        "star_count": "integer",
+        "fork_count": "integer",
+        "contributor_count": "float",
+        "commit_count_6_months": "float",
+        "merged_pull_request_count_6_months": "float",
+        "opened_issue_count_6_months": "float",
+        "first_commit_date": "datetime",
+        "last_commit_date": "datetime"
+      },
+      "provenance": {
+        "source": "opensource.observer",
+        "api_endpoint": "OSO data lake (pyoso)",
+        "query_or_method": "code_metrics_by_artifact_v0 WHERE artifact_namespace='ensdomains'"
+      }
+    },
+    "oso_ens_timeseries.json": {
+      "status": "not_started",
+      "description": "Daily GitHub event history for ENS repos from OSO (timeseries_events_by_artifact_v0). Incremental append \u2014 grows on each run.",
+      "expected_records": 50000,
+      "schema_hints": {
+        "artifact_id": "string",
+        "artifact_name": "string",
+        "event_type": "string (COMMIT_CODE, PULL_REQUEST_MERGED, ISSUE_OPENED, etc.)",
+        "amount": "float (event count for that day)",
+        "time": "datetime"
+      },
+      "provenance": {
+        "source": "opensource.observer",
+        "api_endpoint": "OSO data lake (pyoso)",
+        "query_or_method": "timeseries_events_by_artifact_v0 WHERE artifact_namespace='ensdomains'"
+      }
+    }
+  },
+  "last_indexed_at": "2026-03-24T12:49:35.657779+00:00"
 }

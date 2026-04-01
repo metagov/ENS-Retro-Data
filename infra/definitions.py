@@ -13,7 +13,7 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 from dagster import Definitions, load_asset_checks_from_modules, load_assets_from_modules
 
 from infra.ingest import assets as ingest_assets
-from infra.resources import EtherscanApiConfig, TallyApiConfig
+from infra.resources import EtherscanApiConfig, OsoApiConfig, TallyApiConfig
 from infra.validate import checks as check_modules
 
 bronze_assets = load_assets_from_modules([ingest_assets])
@@ -25,5 +25,6 @@ defs = Definitions(
     resources={
         "tally_config": TallyApiConfig(api_key=os.environ.get("TALLY_API_KEY", "")),
         "etherscan_config": EtherscanApiConfig(api_key=os.environ.get("ETHERSCAN_API_KEY", "")),
+        "oso_config": OsoApiConfig(api_key=os.environ.get("OSO_API_KEY", "")),
     },
 )

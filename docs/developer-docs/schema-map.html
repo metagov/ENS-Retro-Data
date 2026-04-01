@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENS Retro Data &mdash; Schema Map</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #c9d1d9; --text-dim: #8b949e;
+    --accent-blue: #58a6ff; --accent-green: #3fb950;
+    --accent-orange: #d29922; --accent-red: #f85149;
+    --accent-purple: #bc8cff;
+    --bronze: #cd7f32; --silver: #a0aec0; --gold: #ffd700;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'SF Mono','Cascadia Code','Fira Code',monospace;
+    background: var(--bg); color: var(--text);
+    line-height: 1.6; padding: 2rem;
+  }
+  h1 { font-size:1.5rem; color:#fff; margin-bottom:0.3rem; }
+  .subtitle { color:var(--text-dim); font-size:0.82rem; margin-bottom:1.5rem; }
+  .tabs { display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:1.5rem; }
+  .tab {
+    padding:0.5rem 1rem; cursor:pointer; color:var(--text-dim);
+    border:1px solid transparent; border-bottom:none;
+    border-radius:6px 6px 0 0; font-family:inherit; font-size:0.82rem;
+    background:none; transition:all 0.15s;
+  }
+  .tab:hover { color:var(--text); }
+  .tab.active {
+    color:#fff; background:var(--surface);
+    border-color:var(--border); border-bottom:1px solid var(--surface);
+    margin-bottom:-1px;
+  }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+  .layer {
+    border:1px solid var(--border); border-radius:8px;
+    margin-bottom:1.2rem; overflow:hidden;
+  }
+  .layer-header {
+    padding:0.7rem 1rem; font-weight:600; font-size:0.9rem;
+    display:flex; align-items:center; gap:0.5rem;
+    cursor:pointer; user-select:none;
+  }
+  .layer-header .arrow { transition:transform 0.2s; font-size:0.65rem; color:var(--text-dim); }
+  .layer-header.collapsed .arrow { transform:rotate(-90deg); }
+  .layer-header.bronze { background:rgba(205,127,50,0.12); color:var(--bronze); }
+  .layer-header.silver { background:rgba(160,174,192,0.12); color:var(--silver); }
+  .layer-header.gold { background:rgba(255,215,0,0.12); color:var(--gold); }
+  .layer-header.staging { background:rgba(188,140,255,0.12); color:var(--accent-purple); }
+  .layer-body { padding:0 1rem 1rem; }
+  .layer-header.collapsed + .layer-body { display:none; }
+  .domain {
+    margin-top:0.8rem; border:1px solid var(--border);
+    border-radius:6px; overflow:hidden;
+  }
+  .domain-header {
+    padding:0.4rem 0.7rem; background:rgba(255,255,255,0.03);
+    font-weight:600; font-size:0.78rem; color:var(--accent-blue);
+    cursor:pointer; display:flex; align-items:center; gap:0.4rem;
+  }
+  .domain-header .arrow { transition:transform 0.2s; font-size:0.55rem; color:var(--text-dim); }
+  .domain-header.collapsed .arrow { transform:rotate(-90deg); }
+  .domain-header.collapsed + .domain-body { display:none; }
+  .domain-body { padding:0.4rem 0.7rem; }
+  .file {
+    margin:0.5rem 0; padding:0.5rem;
+    background:rgba(255,255,255,0.02); border-radius:4px;
+    border-left:3px solid var(--border);
+  }
+  .file.sentinel { border-left-color:var(--accent-orange); }
+  .file-name {
+    font-weight:600; font-size:0.78rem; color:#fff;
+    display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;
+  }
+  .badge {
+    font-size:0.62rem; padding:0.1rem 0.35rem;
+    border-radius:3px; font-weight:400;
+  }
+  .badge-json { background:rgba(88,166,255,0.15); color:var(--accent-blue); }
+  .badge-csv { background:rgba(63,185,80,0.15); color:var(--accent-green); }
+  .badge-sql { background:rgba(188,140,255,0.15); color:var(--accent-purple); }
+  .badge-py { background:rgba(210,153,34,0.15); color:var(--accent-orange); }
+  .badge-count { background:rgba(255,255,255,0.08); color:var(--text-dim); }
+  .badge-lfs { background:rgba(248,81,73,0.15); color:var(--accent-red); }
+  .badge-sentinel { background:rgba(210,153,34,0.2); color:var(--accent-orange); }
+  .file-meta { font-size:0.72rem; color:var(--text-dim); margin-top:0.15rem; }
+  .fields {
+    margin-top:0.3rem; font-size:0.72rem;
+    display:flex; flex-wrap:wrap; gap:0.25rem;
+  }
+  .field {
+    background:rgba(255,255,255,0.06); padding:0.1rem 0.35rem;
+    border-radius:3px; white-space:nowrap;
+  }
+  .field.key { background:rgba(88,166,255,0.15); color:var(--accent-blue); }
+  .field.new-field { background:rgba(63,185,80,0.15); color:var(--accent-green); }
+  .comparison {
+    width:100%; border-collapse:collapse; font-size:0.75rem; margin-top:0.8rem;
+  }
+  .comparison th, .comparison td {
+    padding:0.4rem 0.6rem; border:1px solid var(--border);
+    text-align:left; vertical-align:top;
+  }
+  .comparison th {
+    background:rgba(255,255,255,0.04); color:var(--accent-blue);
+    font-weight:600; position:sticky; top:0;
+  }
+  .comparison tr:hover td { background:rgba(255,255,255,0.02); }
+  .stats { display:flex; gap:1.2rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+  .stat {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:6px; padding:0.7rem 1rem; min-width:120px;
+  }
+  .stat-value { font-size:1.3rem; font-weight:700; color:#fff; }
+  .stat-label { font-size:0.68rem; color:var(--text-dim); margin-top:0.1rem; }
+  .note {
+    background:rgba(210,153,34,0.1); border:1px solid rgba(210,153,34,0.3);
+    border-radius:6px; padding:0.6rem 0.8rem; font-size:0.75rem;
+    color:var(--accent-orange); margin:0.8rem 0;
+  }
+  .note.info {
+    background:rgba(88,166,255,0.08); border-color:rgba(88,166,255,0.25);
+    color:var(--accent-blue);
+  }
+  .search-box {
+    width:100%; padding:0.5rem 0.8rem; background:var(--surface);
+    border:1px solid var(--border); border-radius:6px;
+    color:var(--text); font-family:inherit; font-size:0.82rem;
+    margin-bottom:1.2rem; outline:none;
+  }
+  .search-box:focus { border-color:var(--accent-blue); }
+  .search-box::placeholder { color:var(--text-dim); }
+  .hidden { display:none !important; }
+  .section-title {
+    font-size:0.95rem; color:#fff; margin:1.5rem 0 0.4rem;
+    padding-bottom:0.2rem; border-bottom:1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<h1>ENS Retro Data &mdash; Schema Map</h1>
+<p class="subtitle">Auto-generated 2026-03-24 08:49 UTC &nbsp;|&nbsp; Run <code>python scripts/generate_schema_map.py</code> to refresh</p>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value" style="color:var(--bronze)">34</div><div class="stat-label">Bronze Files</div></div>
+  <div class="stat"><div class="stat-value" style="color:var(--accent-purple)">13</div><div class="stat-label">Staging Models</div></div>
+  <div class="stat"><div class="stat-value" style="color:var(--silver)">11</div><div class="stat-label">Silver Models</div></div>
+  <div class="stat"><div class="stat-value" style="color:var(--gold)">5</div><div class="stat-label">Gold Models</div></div>
+  <div class="stat"><div class="stat-value" style="color:var(--accent-green)">6</div><div class="stat-label">Active Silver</div></div>
+  <div class="stat"><div class="stat-value" style="color:var(--accent-orange)">5</div><div class="stat-label">Sentinel</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('bronze')">Bronze (Raw)</button>
+  <button class="tab" onclick="switchTab('staging')">Staging (Views)</button>
+  <button class="tab" onclick="switchTab('silver')">Silver (Clean)</button>
+  <button class="tab" onclick="switchTab('gold')">Gold (Analysis)</button>
+  <button class="tab" onclick="switchTab('lineage')">Lineage</button>
+</div>
+
+<!-- BRONZE -->
+<div id="tab-bronze" class="tab-content active">
+  <input type="text" class="search-box" placeholder="Search fields, files, domains..."
+         oninput="searchFiles(this.value, 'tab-bronze')">
+  
+        <div class="layer">
+          <div class="layer-header bronze" onclick="toggleLayer(this)">
+            <span class="arrow">&#9660;</span> BRONZE &mdash; financial/
+            <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">2 files</span>
+          </div>
+          <div class="layer-body">
+    <div class="file" data-search="ens_ledger_transactions.csv transaction hash date quarter from to category amount asset value">
+      <div class="file-name">ens_ledger_transactions.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">2,316 records</span></div>
+      <div class="file-meta">financial/ens_ledger_transactions.csv</div>
+      <div class="fields"><span class="field ">Transaction Hash</span><span class="field ">Date</span><span class="field ">Quarter</span><span class="field ">From</span><span class="field ">To</span><span class="field ">Category</span><span class="field ">Amount</span><span class="field ">Asset</span><span class="field ">Value</span></div>
+    </div>
+    <div class="file" data-search="enswallets.json snapshot_date source operational_contracts endowment working_group_multisigs">
+      <div class="file-name">enswallets.json <span class="badge badge-json">JSON</span></div>
+      <div class="file-meta">financial/enswallets.json</div>
+      <div class="fields"><span class="field ">snapshot_date</span><span class="field ">source</span><span class="field ">operational_contracts</span><span class="field ">endowment</span><span class="field ">working_group_multisigs</span></div>
+    </div></div>
+        </div>
+        <div class="layer">
+          <div class="layer-header bronze" onclick="toggleLayer(this)">
+            <span class="arrow">&#9660;</span> BRONZE &mdash; forum/
+            <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">2 files</span>
+          </div>
+          <div class="layer-body">
+    <div class="file" data-search="forum_posts.json post_id topic_id post_number username name created_at updated_at cooked reply_count reply_to_post_number like_count reads score user_trust_level accepted_answer">
+      <div class="file-name">forum_posts.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">21,665 records</span></div>
+      <div class="file-meta">forum/forum_posts.json</div>
+      <div class="fields"><span class="field ">post_id</span><span class="field ">topic_id</span><span class="field ">post_number</span><span class="field ">username</span><span class="field ">name</span><span class="field ">created_at</span><span class="field ">updated_at</span><span class="field ">cooked</span><span class="field ">reply_count</span><span class="field ">reply_to_post_number</span><span class="field ">like_count</span><span class="field ">reads</span><span class="field ">score</span><span class="field ">user_trust_level</span><span class="field ">accepted_answer</span></div>
+    </div>
+    <div class="file" data-search="forum_topics.json topic_id title slug category_id tags created_at last_posted_at posts_count reply_count views like_count closed archived pinned visible has_accepted_answer">
+      <div class="file-name">forum_topics.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">2,474 records</span></div>
+      <div class="file-meta">forum/forum_topics.json</div>
+      <div class="fields"><span class="field ">topic_id</span><span class="field ">title</span><span class="field ">slug</span><span class="field ">category_id</span><span class="field ">tags</span><span class="field ">created_at</span><span class="field ">last_posted_at</span><span class="field ">posts_count</span><span class="field ">reply_count</span><span class="field ">views</span><span class="field ">like_count</span><span class="field ">closed</span><span class="field ">archived</span><span class="field ">pinned</span><span class="field ">visible</span><span class="field ">has_accepted_answer</span></div>
+    </div></div>
+        </div>
+        <div class="layer">
+          <div class="layer-header bronze" onclick="toggleLayer(this)">
+            <span class="arrow">&#9660;</span> BRONZE &mdash; governance/
+            <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">22 files</span>
+          </div>
+          <div class="layer-body">
+    <div class="file" data-search="snapshot_proposals.json id title body choices start end snapshot state author created scores scores_total votes quorum type">
+      <div class="file-name">snapshot_proposals.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">90 records</span></div>
+      <div class="file-meta">governance/snapshot_proposals.json</div>
+      <div class="fields"><span class="field ">id</span><span class="field ">title</span><span class="field ">body</span><span class="field ">choices</span><span class="field ">start</span><span class="field ">end</span><span class="field ">snapshot</span><span class="field ">state</span><span class="field ">author</span><span class="field ">created</span><span class="field ">scores</span><span class="field ">scores_total</span><span class="field ">votes</span><span class="field ">quorum</span><span class="field ">type</span></div>
+    </div>
+    <div class="file" data-search="snapshot_votes.json id voter vp created choice proposal_id">
+      <div class="file-name">snapshot_votes.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">47,551 records</span></div>
+      <div class="file-meta">governance/snapshot_votes.json</div>
+      <div class="fields"><span class="field ">id</span><span class="field ">voter</span><span class="field ">vp</span><span class="field ">created</span><span class="field ">choice</span><span class="field ">proposal_id</span></div>
+    </div>
+    <div class="file" data-search="tally_delegates.json id address name ens_name twitter bio picture account_type voting_power delegators_count is_prioritized chain_id token_symbol token_name statement statement_summary is_seeking_delegation organization_id organization_name">
+      <div class="file-name">tally_delegates.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">37,891 records</span></div>
+      <div class="file-meta">governance/tally_delegates.json</div>
+      <div class="fields"><span class="field ">id</span><span class="field ">address</span><span class="field ">name</span><span class="field ">ens_name</span><span class="field ">twitter</span><span class="field ">bio</span><span class="field ">picture</span><span class="field ">account_type</span><span class="field ">voting_power</span><span class="field ">delegators_count</span><span class="field ">is_prioritized</span><span class="field ">chain_id</span><span class="field ">token_symbol</span><span class="field ">token_name</span><span class="field ">statement</span><span class="field ">statement_summary</span><span class="field ">is_seeking_delegation</span><span class="field ">organization_id</span><span class="field ">organization_name</span></div>
+    </div>
+    <div class="file" data-search="tally_proposals.json id onchain_id title description status eta discourse_url snapshot_url proposer proposer_name proposer_ens governor_id governor_name organization_id organization_name start_block start_timestamp end_block end_timestamp block_number block_timestamp created_block for_votes against_votes abstain_votes for_voters against_voters abstain_voters for_percent against_percent abstain_percent quorum">
+      <div class="file-name">tally_proposals.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">66 records</span></div>
+      <div class="file-meta">governance/tally_proposals.json</div>
+      <div class="fields"><span class="field ">id</span><span class="field ">onchain_id</span><span class="field ">title</span><span class="field ">description</span><span class="field ">status</span><span class="field ">eta</span><span class="field ">discourse_url</span><span class="field ">snapshot_url</span><span class="field ">proposer</span><span class="field ">proposer_name</span><span class="field ">proposer_ens</span><span class="field ">governor_id</span><span class="field ">governor_name</span><span class="field ">organization_id</span><span class="field ">organization_name</span><span class="field ">start_block</span><span class="field ">start_timestamp</span><span class="field ">end_block</span><span class="field ">end_timestamp</span><span class="field ">block_number</span><span class="field ">block_timestamp</span><span class="field ">created_block</span><span class="field ">for_votes</span><span class="field ">against_votes</span><span class="field ">abstain_votes</span><span class="field ">for_voters</span><span class="field ">against_voters</span><span class="field ">abstain_voters</span><span class="field ">for_percent</span><span class="field ">against_percent</span><span class="field ">abstain_percent</span><span class="field ">quorum</span></div>
+    </div>
+    <div class="file" data-search="tally_votes.json id voter voter_name voter_ens support weight reason tx_hash chain_id proposal_id block_timestamp block_number">
+      <div class="file-name">tally_votes.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">9,987 records</span></div>
+      <div class="file-meta">governance/tally_votes.json</div>
+      <div class="fields"><span class="field ">id</span><span class="field ">voter</span><span class="field ">voter_name</span><span class="field ">voter_ens</span><span class="field ">support</span><span class="field ">weight</span><span class="field ">reason</span><span class="field ">tx_hash</span><span class="field ">chain_id</span><span class="field ">proposal_id</span><span class="field ">block_timestamp</span><span class="field ">block_number</span></div>
+    </div>
+                <div class="domain">
+                  <div class="domain-header" onclick="toggleDomain(this)"><span class="arrow">&#9660;</span> agora</div>
+                  <div class="domain-body">
+    <div class="file" data-search="fetch.sh">
+      <div class="file-name">fetch.sh <span class="badge badge-json">SH</span></div>
+      <div class="file-meta">governance/agora/fetch.sh</div>
+      <span class="file-meta">No fields detected</span>
+    </div></div>
+                </div>
+                <div class="domain">
+                  <div class="domain-header" onclick="toggleDomain(this)"><span class="arrow">&#9660;</span> agora/Governor Contract</div>
+                  <div class="domain-body">
+    <div class="file" data-search="proposalcanceled.csv block_number transaction_index log_index proposal_id">
+      <div class="file-name">ProposalCanceled.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">0 records</span></div>
+      <div class="file-meta">governance/agora/Governor Contract/ProposalCanceled.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">proposal_id</span></div>
+    </div>
+    <div class="file" data-search="proposalcreated.csv block_number transaction_index log_index proposal_id proposer targets values signatures calldatas start_block end_block description">
+      <div class="file-name">ProposalCreated.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">4,521 records</span></div>
+      <div class="file-meta">governance/agora/Governor Contract/ProposalCreated.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">proposal_id</span><span class="field ">proposer</span><span class="field ">targets</span><span class="field ">values</span><span class="field ">signatures</span><span class="field ">calldatas</span><span class="field ">start_block</span><span class="field ">end_block</span><span class="field ">description</span></div>
+    </div>
+    <div class="file" data-search="proposalexecuted.csv block_number transaction_index log_index proposal_id">
+      <div class="file-name">ProposalExecuted.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">59 records</span></div>
+      <div class="file-meta">governance/agora/Governor Contract/ProposalExecuted.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">proposal_id</span></div>
+    </div>
+    <div class="file" data-search="proposalqueued.csv block_number transaction_index log_index proposal_id eta">
+      <div class="file-name">ProposalQueued.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">60 records</span></div>
+      <div class="file-meta">governance/agora/Governor Contract/ProposalQueued.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">proposal_id</span><span class="field ">eta</span></div>
+    </div>
+    <div class="file" data-search="quorumnumeratorupdated.csv block_number transaction_index log_index old_quorum_numerator new_quorum_numerator">
+      <div class="file-name">QuorumNumeratorUpdated.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">1 records</span></div>
+      <div class="file-meta">governance/agora/Governor Contract/QuorumNumeratorUpdated.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">old_quorum_numerator</span><span class="field ">new_quorum_numerator</span></div>
+    </div>
+    <div class="file" data-search="votecast.csv block_number transaction_index log_index voter proposal_id support weight reason">
+      <div class="file-name">VoteCast.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">10,092 records</span></div>
+      <div class="file-meta">governance/agora/Governor Contract/VoteCast.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">voter</span><span class="field ">proposal_id</span><span class="field ">support</span><span class="field ">weight</span><span class="field ">reason</span></div>
+    </div></div>
+                </div>
+                <div class="domain">
+                  <div class="domain-header" onclick="toggleDomain(this)"><span class="arrow">&#9660;</span> agora/Token Contract</div>
+                  <div class="domain-body">
+    <div class="file" data-search="claim.csv block_number transaction_index log_index claimant amount">
+      <div class="file-name">Claim.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">102,833 records</span></div>
+      <div class="file-meta">governance/agora/Token Contract/Claim.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">claimant</span><span class="field ">amount</span></div>
+    </div>
+    <div class="file" data-search="delegatechanged.csv block_number transaction_index log_index delegator from_delegate to_delegate">
+      <div class="file-name">DelegateChanged.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">123,121 records</span></div>
+      <div class="file-meta">governance/agora/Token Contract/DelegateChanged.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">delegator</span><span class="field ">from_delegate</span><span class="field ">to_delegate</span></div>
+    </div>
+    <div class="file" data-search="delegatevoteschanged.csv block_number transaction_index log_index delegate previous_balance new_balance">
+      <div class="file-name">DelegateVotesChanged.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">308,871 records</span></div>
+      <div class="file-meta">governance/agora/Token Contract/DelegateVotesChanged.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">delegate</span><span class="field ">previous_balance</span><span class="field ">new_balance</span></div>
+    </div>
+    <div class="file" data-search="merklerootchanged.csv block_number transaction_index log_index merkle_root">
+      <div class="file-name">MerkleRootChanged.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">1 records</span></div>
+      <div class="file-meta">governance/agora/Token Contract/MerkleRootChanged.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">merkle_root</span></div>
+    </div>
+    <div class="file" data-search="ownershiptransferred.csv block_number transaction_index log_index previous_owner new_owner">
+      <div class="file-name">OwnershipTransferred.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">2 records</span></div>
+      <div class="file-meta">governance/agora/Token Contract/OwnershipTransferred.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">previous_owner</span><span class="field ">new_owner</span></div>
+    </div>
+    <div class="file" data-search="transfer.csv block_number transaction_index log_index from to value">
+      <div class="file-name">Transfer.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">1,513,540 records</span> <span class="badge badge-lfs">LFS 178.0 MB</span></div>
+      <div class="file-meta">governance/agora/Token Contract/Transfer.csv</div>
+      <div class="fields"><span class="field ">block_number</span><span class="field ">transaction_index</span><span class="field ">log_index</span><span class="field ">from</span><span class="field ">to</span><span class="field ">value</span></div>
+    </div></div>
+                </div>
+                <div class="domain">
+                  <div class="domain-header" onclick="toggleDomain(this)"><span class="arrow">&#9660;</span> scripts</div>
+                  <div class="domain-body">
+    <div class="file" data-search="export_ens_snapshot.py">
+      <div class="file-name">export_ens_snapshot.py <span class="badge badge-json">PY</span></div>
+      <div class="file-meta">governance/scripts/export_ens_snapshot.py</div>
+      <span class="file-meta">No fields detected</span>
+    </div>
+    <div class="file" data-search="export_ens_tally.py">
+      <div class="file-name">export_ens_tally.py <span class="badge badge-json">PY</span></div>
+      <div class="file-meta">governance/scripts/export_ens_tally.py</div>
+      <span class="file-meta">No fields detected</span>
+    </div>
+    <div class="file" data-search="requirements.txt">
+      <div class="file-name">requirements.txt <span class="badge badge-json">TXT</span></div>
+      <div class="file-meta">governance/scripts/requirements.txt</div>
+      <span class="file-meta">No fields detected</span>
+    </div></div>
+                </div>
+                <div class="domain">
+                  <div class="domain-header" onclick="toggleDomain(this)"><span class="arrow">&#9660;</span> votingpower-xyz</div>
+                  <div class="domain-body">
+    <div class="file" data-search="ens-delegates-2026-02-20.csv rank delegate voting power 30 day change delegations on-chain votes">
+      <div class="file-name">ens-delegates-2026-02-20.csv <span class="badge badge-csv">CSV</span> <span class="badge badge-count">100 records</span></div>
+      <div class="file-meta">governance/votingpower-xyz/ens-delegates-2026-02-20.csv</div>
+      <div class="fields"><span class="field ">Rank</span><span class="field ">Delegate</span><span class="field ">Voting Power</span><span class="field ">30 Day Change</span><span class="field ">Delegations</span><span class="field ">On-chain Votes</span></div>
+    </div></div>
+                </div></div>
+        </div>
+        <div class="layer">
+          <div class="layer-header bronze" onclick="toggleLayer(this)">
+            <span class="arrow">&#9660;</span> BRONZE &mdash; grants/
+            <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">3 files</span>
+          </div>
+          <div class="layer-body">
+    <div class="file" data-search="smallgrants_proposals.json id title body choices start end snapshot state author created scores scores_total votes quorum type">
+      <div class="file-name">smallgrants_proposals.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">24 records</span></div>
+      <div class="file-meta">grants/smallgrants_proposals.json</div>
+      <div class="fields"><span class="field ">id</span><span class="field ">title</span><span class="field ">body</span><span class="field ">choices</span><span class="field ">start</span><span class="field ">end</span><span class="field ">snapshot</span><span class="field ">state</span><span class="field ">author</span><span class="field ">created</span><span class="field ">scores</span><span class="field ">scores_total</span><span class="field ">votes</span><span class="field ">quorum</span><span class="field ">type</span></div>
+    </div>
+    <div class="file" data-search="smallgrants_votes.json id voter vp created choice proposal_id">
+      <div class="file-name">smallgrants_votes.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">1,562 records</span></div>
+      <div class="file-meta">grants/smallgrants_votes.json</div>
+      <div class="fields"><span class="field ">id</span><span class="field ">voter</span><span class="field ">vp</span><span class="field ">created</span><span class="field ">choice</span><span class="field ">proposal_id</span></div>
+    </div>
+                <div class="domain">
+                  <div class="domain-header" onclick="toggleDomain(this)"><span class="arrow">&#9660;</span> scripts</div>
+                  <div class="domain-body">
+    <div class="file" data-search="export_ens_smallgrants_snapshot.py">
+      <div class="file-name">export_ens_smallgrants_snapshot.py <span class="badge badge-json">PY</span></div>
+      <div class="file-meta">grants/scripts/export_ens_smallgrants_snapshot.py</div>
+      <span class="file-meta">No fields detected</span>
+    </div></div>
+                </div></div>
+        </div>
+        <div class="layer">
+          <div class="layer-header bronze" onclick="toggleLayer(this)">
+            <span class="arrow">&#9660;</span> BRONZE &mdash; on-chain/
+            <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">5 files</span>
+          </div>
+          <div class="layer-body">
+    <div class="file" data-search="delegations.json delegator delegate block_number timestamp token_balance">
+      <div class="file-name">delegations.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">122,974 records</span></div>
+      <div class="file-meta">on-chain/delegations.json</div>
+      <div class="fields"><span class="field ">delegator</span><span class="field ">delegate</span><span class="field ">block_number</span><span class="field ">timestamp</span><span class="field ">token_balance</span></div>
+    </div>
+    <div class="file" data-search="token_distribution.json address balance percentage snapshot_block">
+      <div class="file-name">token_distribution.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">67,107 records</span></div>
+      <div class="file-meta">on-chain/token_distribution.json</div>
+      <div class="fields"><span class="field ">address</span><span class="field ">balance</span><span class="field ">percentage</span><span class="field ">snapshot_block</span></div>
+    </div>
+    <div class="file" data-search="treasury_flows.json tx_hash from to value token block_number timestamp category">
+      <div class="file-name">treasury_flows.json <span class="badge badge-json">JSON</span> <span class="badge badge-count">619 records</span></div>
+      <div class="file-meta">on-chain/treasury_flows.json</div>
+      <div class="fields"><span class="field ">tx_hash</span><span class="field ">from</span><span class="field ">to</span><span class="field ">value</span><span class="field ">token</span><span class="field ">block_number</span><span class="field ">timestamp</span><span class="field ">category</span></div>
+    </div>
+                <div class="domain">
+                  <div class="domain-header" onclick="toggleDomain(this)"><span class="arrow">&#9660;</span> scripts</div>
+                  <div class="domain-body">
+    <div class="file" data-search="export_ens_onchain.py">
+      <div class="file-name">export_ens_onchain.py <span class="badge badge-json">PY</span></div>
+      <div class="file-meta">on-chain/scripts/export_ens_onchain.py</div>
+      <span class="file-meta">No fields detected</span>
+    </div>
+    <div class="file" data-search="requirements.txt">
+      <div class="file-name">requirements.txt <span class="badge badge-json">TXT</span></div>
+      <div class="file-meta">on-chain/scripts/requirements.txt</div>
+      <span class="file-meta">No fields detected</span>
+    </div></div>
+                </div></div>
+        </div>
+</div>
+
+<!-- STAGING -->
+<div id="tab-staging" class="tab-content">
+  <input type="text" class="search-box" placeholder="Search models, columns..."
+         oninput="searchFiles(this.value, 'tab-staging')">
+  <div class="layer">
+    <div class="layer-header staging" onclick="toggleLayer(this)">
+      <span class="arrow">&#9660;</span> STAGING &mdash; column renames + type casts
+      <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">13 models</span>
+    </div>
+    <div class="layer-body">
+      <div class="note info">Staging models are views that normalize column names and apply basic type casts from bronze sources.</div>
+      
+    <div class="file sentinel" data-search="stg_compensation recipient_address amount token period working_group role">
+      <div class="file-name">stg_compensation <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Staged compensation records (placeholder until financial data collected)</div>
+      <div class="fields"><span class="field ">recipient_address</span><span class="field ">amount</span><span class="field ">token</span><span class="field ">period</span><span class="field ">working_group</span><span class="field ">role</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: recipient_address: not_null (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="stg_delegate_profiles address name role interview_date key_themes summary">
+      <div class="file-name">stg_delegate_profiles <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Staged delegate profile data (placeholder until interviews collected)</div>
+      <div class="fields"><span class="field ">address</span><span class="field ">name</span><span class="field ">role</span><span class="field ">interview_date</span><span class="field ">key_themes</span><span class="field ">summary</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: address: not_null (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="stg_delegations delegator delegate block_number timestamp_unix token_balance_wei">
+      <div class="file-name">stg_delegations <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Staged delegation events (placeholder until on-chain data collected)</div>
+      <div class="fields"><span class="field ">delegator</span><span class="field ">delegate</span><span class="field ">block_number</span><span class="field ">timestamp_unix</span><span class="field ">token_balance_wei</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: delegator: not_null (warn); delegate: not_null (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="stg_forum_posts post_id topic_id author body created_at likes reply_count">
+      <div class="file-name">stg_forum_posts <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Staged forum posts (placeholder until forum data collected)</div>
+      <div class="fields"><span class="field ">post_id</span><span class="field ">topic_id</span><span class="field ">author</span><span class="field ">body</span><span class="field ">created_at</span><span class="field ">likes</span><span class="field ">reply_count</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: post_id: not_null (warn), unique (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="stg_grants grant_id title applicant amount_requested amount_awarded token status working_group description">
+      <div class="file-name">stg_grants <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Staged grants data (placeholder until grants data collected)</div>
+      <div class="fields"><span class="field ">grant_id</span><span class="field ">title</span><span class="field ">applicant</span><span class="field ">amount_requested</span><span class="field ">amount_awarded</span><span class="field ">token</span><span class="field ">status</span><span class="field ">working_group</span><span class="field ">description</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: grant_id: not_null (warn), unique (warn)</div>
+    </div>
+    <div class="file " data-search="stg_snapshot_proposals proposal_id title body author_address status proposal_type choices scores scores_total vote_count start_ts end_ts snapshot_block">
+      <div class="file-name">stg_snapshot_proposals <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Staged Snapshot governance proposals</div>
+      <div class="fields"><span class="field ">proposal_id</span><span class="field ">title</span><span class="field ">body</span><span class="field ">author_address</span><span class="field ">status</span><span class="field ">proposal_type</span><span class="field ">choices</span><span class="field ">scores</span><span class="field ">scores_total</span><span class="field ">vote_count</span><span class="field ">start_ts</span><span class="field ">end_ts</span><span class="field ">snapshot_block</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: proposal_id: not_null, unique; author_address: not_null; status: not_null</div>
+    </div>
+    <div class="file " data-search="stg_snapshot_votes vote_id voter choice_index voting_power created_ts proposal_id">
+      <div class="file-name">stg_snapshot_votes <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Staged Snapshot individual votes</div>
+      <div class="fields"><span class="field ">vote_id</span><span class="field ">voter</span><span class="field ">choice_index</span><span class="field ">voting_power</span><span class="field ">created_ts</span><span class="field ">proposal_id</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: vote_id: not_null, unique; voter: not_null; proposal_id: not_null</div>
+    </div>
+    <div class="file " data-search="stg_tally_delegates id address name ens_name twitter bio picture account_type voting_power_wei delegators_count is_prioritized chain_id token_symbol token_name statement statement_summary is_seeking_delegation organization_id organization_name">
+      <div class="file-name">stg_tally_delegates <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Staged Tally delegate profiles</div>
+      <div class="fields"><span class="field ">id</span><span class="field ">address</span><span class="field ">name</span><span class="field ">ens_name</span><span class="field ">twitter</span><span class="field ">bio</span><span class="field ">picture</span><span class="field ">account_type</span><span class="field ">voting_power_wei</span><span class="field ">delegators_count</span><span class="field ">is_prioritized</span><span class="field ">chain_id</span><span class="field ">token_symbol</span><span class="field ">token_name</span><span class="field ">statement</span><span class="field ">statement_summary</span><span class="field ">is_seeking_delegation</span><span class="field ">organization_id</span><span class="field ">organization_name</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: address: not_null, unique</div>
+    </div>
+    <div class="file " data-search="stg_tally_proposals proposal_id onchain_id title body status eta discourse_url snapshot_url proposer_address proposer_name proposer_ens governor_id governor_name organization_id organization_name start_block start_timestamp end_block end_timestamp created_block created_timestamp for_votes_wei against_votes_wei abstain_votes_wei for_voters against_voters abstain_voters for_percent against_percent abstain_percent quorum">
+      <div class="file-name">stg_tally_proposals <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Staged Tally on-chain governance proposals</div>
+      <div class="fields"><span class="field ">proposal_id</span><span class="field ">onchain_id</span><span class="field ">title</span><span class="field ">body</span><span class="field ">status</span><span class="field ">eta</span><span class="field ">discourse_url</span><span class="field ">snapshot_url</span><span class="field ">proposer_address</span><span class="field ">proposer_name</span><span class="field ">proposer_ens</span><span class="field ">governor_id</span><span class="field ">governor_name</span><span class="field ">organization_id</span><span class="field ">organization_name</span><span class="field ">start_block</span><span class="field ">start_timestamp</span><span class="field ">end_block</span><span class="field ">end_timestamp</span><span class="field ">created_block</span><span class="field ">created_timestamp</span><span class="field ">for_votes_wei</span><span class="field ">against_votes_wei</span><span class="field ">abstain_votes_wei</span><span class="field ">for_voters</span><span class="field ">against_voters</span><span class="field ">abstain_voters</span><span class="field ">for_percent</span><span class="field ">against_percent</span><span class="field ">abstain_percent</span><span class="field ">quorum</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: proposal_id: not_null, unique; status: not_null</div>
+    </div>
+    <div class="file " data-search="stg_tally_votes vote_id voter voter_name voter_ens support_code weight_wei reason tx_hash chain_id proposal_id block_timestamp block_number">
+      <div class="file-name">stg_tally_votes <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Staged Tally individual votes</div>
+      <div class="fields"><span class="field ">vote_id</span><span class="field ">voter</span><span class="field ">voter_name</span><span class="field ">voter_ens</span><span class="field ">support_code</span><span class="field ">weight_wei</span><span class="field ">reason</span><span class="field ">tx_hash</span><span class="field ">chain_id</span><span class="field ">proposal_id</span><span class="field ">block_timestamp</span><span class="field ">block_number</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: vote_id: not_null, unique; voter: not_null; proposal_id: not_null</div>
+    </div>
+    <div class="file sentinel" data-search="stg_token_distribution address balance_wei percentage snapshot_block">
+      <div class="file-name">stg_token_distribution <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Staged token distribution snapshot (placeholder until on-chain data collected)</div>
+      <div class="fields"><span class="field ">address</span><span class="field ">balance_wei</span><span class="field ">percentage</span><span class="field ">snapshot_block</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: address: not_null (warn), unique (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="stg_treasury_flows tx_hash">
+      <div class="file-name">stg_treasury_flows <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Staged treasury transaction flows (placeholder until on-chain data collected)</div>
+      <div class="fields"><span class="field ">tx_hash</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: tx_hash: not_null (warn), unique (warn); from_address: not_null (warn)</div>
+    </div>
+    <div class="file " data-search="stg_votingpower_delegates rank delegate_address voting_power voting_power_30d_change delegations_count onchain_votes_count">
+      <div class="file-name">stg_votingpower_delegates <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Staged votingpower.xyz delegate export</div>
+      <div class="fields"><span class="field ">rank</span><span class="field ">delegate_address</span><span class="field ">voting_power</span><span class="field ">voting_power_30d_change</span><span class="field ">delegations_count</span><span class="field ">onchain_votes_count</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: delegate_address: not_null, unique; rank: not_null</div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- SILVER -->
+<div id="tab-silver" class="tab-content">
+  <input type="text" class="search-box" placeholder="Search models, columns..."
+         oninput="searchFiles(this.value, 'tab-silver')">
+  <div class="layer">
+    <div class="layer-header silver" onclick="toggleLayer(this)">
+      <span class="arrow">&#9660;</span> SILVER &mdash; Active Models
+      <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">6 models</span>
+    </div>
+    <div class="layer-body">
+      <div class="note info">Transforms: lowercase addresses, wei&rarr;ETH, unix&rarr;timestamp, vote choice mapping, deduplication</div>
+      
+    <div class="file " data-search="address_crosswalk address ens_name primary_source">
+      <div class="file-name">address_crosswalk <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Unified address lookup merging all sources</div>
+      <div class="fields"><span class="field ">address</span><span class="field ">ens_name</span><span class="field ">primary_source</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: address: not_null, unique</div>
+    </div>
+    <div class="file " data-search="clean_snapshot_proposals proposal_id title body author_address status proposal_type choices scores scores_total vote_count start_date end_date snapshot_block source">
+      <div class="file-name">clean_snapshot_proposals <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Cleaned Snapshot proposals with normalized columns and timestamps</div>
+      <div class="fields"><span class="field ">proposal_id</span><span class="field ">title</span><span class="field ">body</span><span class="field ">author_address</span><span class="field ">status</span><span class="field ">proposal_type</span><span class="field ">choices</span><span class="field ">scores</span><span class="field ">scores_total</span><span class="field ">vote_count</span><span class="field ">start_date</span><span class="field ">end_date</span><span class="field ">snapshot_block</span><span class="field ">source</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: proposal_id: not_null, unique; author_address: not_null; status: not_null, accepted_values; source: accepted_values</div>
+    </div>
+    <div class="file " data-search="clean_snapshot_votes vote_id voter proposal_id vote_choice voting_power created_at source">
+      <div class="file-name">clean_snapshot_votes <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Cleaned Snapshot votes with normalized addresses and mapped choices</div>
+      <div class="fields"><span class="field ">vote_id</span><span class="field ">voter</span><span class="field ">proposal_id</span><span class="field ">vote_choice</span><span class="field ">voting_power</span><span class="field ">created_at</span><span class="field ">source</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: vote_id: not_null, unique; voter: not_null; vote_choice: not_null, accepted_values; source: accepted_values</div>
+    </div>
+    <div class="file " data-search="clean_tally_delegates address id name ens_name twitter bio picture account_type voting_power delegators_count is_prioritized chain_id token_symbol token_name statement statement_summary is_seeking_delegation source">
+      <div class="file-name">clean_tally_delegates <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Cleaned delegate profiles with lowercased addresses</div>
+      <div class="fields"><span class="field ">address</span><span class="field ">id</span><span class="field ">name</span><span class="field ">ens_name</span><span class="field ">twitter</span><span class="field ">bio</span><span class="field ">picture</span><span class="field ">account_type</span><span class="field ">voting_power</span><span class="field ">delegators_count</span><span class="field ">is_prioritized</span><span class="field ">chain_id</span><span class="field ">token_symbol</span><span class="field ">token_name</span><span class="field ">statement</span><span class="field ">statement_summary</span><span class="field ">is_seeking_delegation</span><span class="field ">source</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: address: not_null, unique</div>
+    </div>
+    <div class="file " data-search="clean_tally_proposals proposal_id title body proposer_address status start_block end_block for_votes against_votes abstain_votes source">
+      <div class="file-name">clean_tally_proposals <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Cleaned Tally proposals with wei-to-ether conversion</div>
+      <div class="fields"><span class="field ">proposal_id</span><span class="field ">title</span><span class="field ">body</span><span class="field ">proposer_address</span><span class="field ">status</span><span class="field ">start_block</span><span class="field ">end_block</span><span class="field ">for_votes</span><span class="field ">against_votes</span><span class="field ">abstain_votes</span><span class="field ">source</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: proposal_id: not_null, unique; status: not_null, accepted_values; source: accepted_values</div>
+    </div>
+    <div class="file " data-search="clean_tally_votes vote_id voter proposal_id vote_choice weight reason created_at source">
+      <div class="file-name">clean_tally_votes <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Cleaned Tally votes with mapped support codes</div>
+      <div class="fields"><span class="field ">vote_id</span><span class="field ">voter</span><span class="field ">proposal_id</span><span class="field ">vote_choice</span><span class="field ">weight</span><span class="field ">reason</span><span class="field ">created_at</span><span class="field ">source</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: vote_id: not_null, unique; voter: not_null; vote_choice: not_null, accepted_values; source: accepted_values</div>
+    </div>
+    </div>
+  </div>
+  <div class="layer">
+    <div class="layer-header silver" onclick="toggleLayer(this)">
+      <span class="arrow">&#9660;</span> SILVER &mdash; Sentinel Models (placeholders)
+      <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">5 models</span>
+    </div>
+    <div class="layer-body">
+      <div class="note">Sentinel models have warn-level tests. Waiting for bronze data collection.</div>
+      
+    <div class="file sentinel" data-search="clean_compensation recipient_address amount token period working_group role">
+      <div class="file-name">clean_compensation <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Cleaned compensation records (placeholder until financial data collected)</div>
+      <div class="fields"><span class="field ">recipient_address</span><span class="field ">amount</span><span class="field ">token</span><span class="field ">period</span><span class="field ">working_group</span><span class="field ">role</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: recipient_address: not_null (warn); working_group: accepted_values (warn); role: accepted_values (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="clean_delegations delegator delegate block_number delegated_at token_balance">
+      <div class="file-name">clean_delegations <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Cleaned delegation events (placeholder until on-chain data collected)</div>
+      <div class="fields"><span class="field ">delegator</span><span class="field ">delegate</span><span class="field ">block_number</span><span class="field ">delegated_at</span><span class="field ">token_balance</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: delegator: not_null (warn); delegate: not_null (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="clean_grants grant_id title applicant amount_requested amount_awarded token status working_group description">
+      <div class="file-name">clean_grants <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Cleaned grants data (placeholder until grants data collected)</div>
+      <div class="fields"><span class="field ">grant_id</span><span class="field ">title</span><span class="field ">applicant</span><span class="field ">amount_requested</span><span class="field ">amount_awarded</span><span class="field ">token</span><span class="field ">status</span><span class="field ">working_group</span><span class="field ">description</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: grant_id: not_null (warn), unique (warn); working_group: accepted_values (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="clean_token_distribution address balance percentage snapshot_block">
+      <div class="file-name">clean_token_distribution <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Cleaned token distribution with computed percentages (placeholder until on-chain data collected)</div>
+      <div class="fields"><span class="field ">address</span><span class="field ">balance</span><span class="field ">percentage</span><span class="field ">snapshot_block</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: address: not_null (warn), unique (warn)</div>
+    </div>
+    <div class="file sentinel" data-search="clean_treasury_flows tx_hash from_address to_address value_ether token block_number transacted_at category">
+      <div class="file-name">clean_treasury_flows <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Cleaned treasury flows with normalized addresses (placeholder until on-chain data collected)</div>
+      <div class="fields"><span class="field ">tx_hash</span><span class="field ">from_address</span><span class="field ">to_address</span><span class="field ">value_ether</span><span class="field ">token</span><span class="field ">block_number</span><span class="field ">transacted_at</span><span class="field ">category</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: tx_hash: not_null (warn), unique (warn)</div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- GOLD -->
+<div id="tab-gold" class="tab-content">
+  <div class="layer">
+    <div class="layer-header gold" onclick="toggleLayer(this)">
+      <span class="arrow">&#9660;</span> GOLD &mdash; Analysis-Ready
+      <span style="margin-left:auto;font-size:0.75rem;opacity:0.6">5 models</span>
+    </div>
+    <div class="layer-body">
+      <div class="note info">Materialized as tables in DuckDB &mdash; warehouse/ens_retro.duckdb</div>
+      
+    <div class="file " data-search="decentralization_index clean_token_distribution clean_delegations delegate_scorecard voting_power metric nakamoto_coefficient value voting_power_hhi balance token_hhi top_10_delegation_pct delegator unique_delegators delegate unique_delegates_receiving">
+      <div class="file-name">decentralization_index <span class="badge badge-py">PY</span></div>
+      <div class="file-meta">Power distribution metrics: Nakamoto, HHI, delegation concentration</div>
+      <div class="fields"><span class="field ">clean_token_distribution</span><span class="field ">clean_delegations</span><span class="field ">delegate_scorecard</span><span class="field ">voting_power</span><span class="field ">metric</span><span class="field ">nakamoto_coefficient</span><span class="field ">value</span><span class="field ">voting_power_hhi</span><span class="field ">balance</span><span class="field ">token_hhi</span><span class="field ">top_10_delegation_pct</span><span class="field ">delegator</span><span class="field ">unique_delegators</span><span class="field ">delegate</span><span class="field ">unique_delegates_receiving</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: metric: not_null, unique; value: not_null</div>
+    </div>
+    <div class="file " data-search="delegate_scorecard address name ens_name ens_name twitter voting_power snapshot_votes_cast snapshot_votes_cast tally_votes_cast tally_votes_cast delegators_count is_prioritized is_seeking_delegation statement_summary snapshot_votes_cast tally_votes_cast 100 participation_rate">
+      <div class="file-name">delegate_scorecard <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Per-delegate scorecard with participation and influence metrics</div>
+      <div class="fields"><span class="field ">address</span><span class="field ">name</span><span class="field ">ens_name</span><span class="field ">ens_name</span><span class="field ">twitter</span><span class="field ">voting_power</span><span class="field ">snapshot_votes_cast</span><span class="field ">snapshot_votes_cast</span><span class="field ">tally_votes_cast</span><span class="field ">tally_votes_cast</span><span class="field ">delegators_count</span><span class="field ">is_prioritized</span><span class="field ">is_seeking_delegation</span><span class="field ">statement_summary</span><span class="field ">snapshot_votes_cast</span><span class="field ">tally_votes_cast</span><span class="field ">100</span><span class="field ">participation_rate</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: address: not_null, unique; voting_power: not_null</div>
+    </div>
+    <div class="file " data-search="governance_activity proposal_id source title status vote_count voter_count 100 for_pct 100 against_pct 100 abstain_pct start_date end_date">
+      <div class="file-name">governance_activity <span class="badge badge-sql">SQL</span></div>
+      <div class="file-meta">Unified governance activity combining Snapshot and Tally proposals</div>
+      <div class="fields"><span class="field ">proposal_id</span><span class="field ">source</span><span class="field ">title</span><span class="field ">status</span><span class="field ">vote_count</span><span class="field ">voter_count</span><span class="field ">100</span><span class="field ">for_pct</span><span class="field ">100</span><span class="field ">against_pct</span><span class="field ">100</span><span class="field ">abstain_pct</span><span class="field ">start_date</span><span class="field ">end_date</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: proposal_id: not_null, unique; source: not_null, accepted_values; title: not_null</div>
+    </div>
+    <div class="file " data-search="participation_index governance_activity delegate_scorecard clean_token_distribution snapshot tally metric total_proposals value snapshot_proposals tally_proposals snapshot_votes_cast tally_votes_cast active_delegates total_delegates participation_rate avg_participation_rate voting_power voting_power_gini balance token_gini">
+      <div class="file-name">participation_index <span class="badge badge-py">PY</span></div>
+      <div class="file-meta">Composite participation metrics including Gini coefficient</div>
+      <div class="fields"><span class="field ">governance_activity</span><span class="field ">delegate_scorecard</span><span class="field ">clean_token_distribution</span><span class="field ">snapshot</span><span class="field ">tally</span><span class="field ">metric</span><span class="field ">total_proposals</span><span class="field ">value</span><span class="field ">snapshot_proposals</span><span class="field ">tally_proposals</span><span class="field ">snapshot_votes_cast</span><span class="field ">tally_votes_cast</span><span class="field ">active_delegates</span><span class="field ">total_delegates</span><span class="field ">participation_rate</span><span class="field ">avg_participation_rate</span><span class="field ">voting_power</span><span class="field ">voting_power_gini</span><span class="field ">balance</span><span class="field ">token_gini</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: metric: not_null, unique; value: not_null</div>
+    </div>
+    <div class="file sentinel" data-search="treasury_summary period category inflows outflows net grant_spend grant_spend compensation_spend compensation_spend">
+      <div class="file-name">treasury_summary <span class="badge badge-sql">SQL</span> <span class="badge badge-sentinel">SENTINEL</span></div>
+      <div class="file-meta">Treasury flows aggregated by month and category (placeholder until on-chain data collected)</div>
+      <div class="fields"><span class="field ">period</span><span class="field ">category</span><span class="field ">inflows</span><span class="field ">outflows</span><span class="field ">net</span><span class="field ">grant_spend</span><span class="field ">grant_spend</span><span class="field ">compensation_spend</span><span class="field ">compensation_spend</span></div>
+      <div class="file-meta" style="margin-top:0.3rem">Tests: period: not_null (warn)</div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- LINEAGE -->
+<div id="tab-lineage" class="tab-content">
+  <h2 class="section-title">Source &rarr; Bronze File Mapping</h2>
+  <table class="comparison">
+    <thead><tr><th>Source Group</th><th>Table Name</th><th>Bronze File</th><th>Description</th></tr></thead>
+    <tbody>
+        <tr>
+          <td>bronze_financial</td>
+          <td>compensation</td>
+          <td>../../bronze/financial/compensation.json</td>
+          <td>Steward and contributor compensation records (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_interviews</td>
+          <td>delegate_profiles</td>
+          <td>../../bronze/interviews/delegate_profiles.json</td>
+          <td>Structured delegate profile data (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_onchain</td>
+          <td>delegations</td>
+          <td>../../bronze/on-chain/delegations.json</td>
+          <td>ENS token delegation events (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_forum</td>
+          <td>forum_posts</td>
+          <td>../../bronze/forum/forum_posts.json</td>
+          <td>Forum discussion posts (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_grants</td>
+          <td>grants</td>
+          <td>../../bronze/grants/grants.json</td>
+          <td>Grant applications and awards (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_governance</td>
+          <td>snapshot_proposals</td>
+          <td>../../bronze/governance/snapshot_proposals.json</td>
+          <td>Snapshot governance proposals for ENS DAO (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_governance</td>
+          <td>snapshot_votes</td>
+          <td>../../bronze/governance/snapshot_votes.json</td>
+          <td>Individual votes cast on Snapshot proposals (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_governance</td>
+          <td>tally_delegates</td>
+          <td>../../bronze/governance/tally_delegates.json</td>
+          <td>Delegate profiles and metadata from Tally (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_governance</td>
+          <td>tally_proposals</td>
+          <td>../../bronze/governance/tally_proposals.json</td>
+          <td>On-chain governance proposals from Tally (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_governance</td>
+          <td>tally_votes</td>
+          <td>../../bronze/governance/tally_votes.json</td>
+          <td>Individual votes cast on Tally proposals (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_onchain</td>
+          <td>token_distribution</td>
+          <td>../../bronze/on-chain/token_distribution.json</td>
+          <td>ENS token holder balances snapshot (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_onchain</td>
+          <td>treasury_flows</td>
+          <td>../../bronze/on-chain/treasury_flows.json</td>
+          <td>ENS DAO treasury inflows and outflows (JSON)</td>
+        </tr>
+        <tr>
+          <td>bronze_governance</td>
+          <td>votingpower_delegates</td>
+          <td>../../bronze/governance/votingpower-xyz/ens-delegates-2026-02-20.csv</td>
+          <td>Delegate list with voting power from votingpower.xyz (CSV)</td>
+        </tr></tbody>
+  </table>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggleLayer(el) { el.classList.toggle('collapsed'); }
+function toggleDomain(el) { el.classList.toggle('collapsed'); }
+function searchFiles(query, tabId) {
+  const tab = document.getElementById(tabId);
+  const files = tab.querySelectorAll('.file');
+  const q = query.toLowerCase();
+  files.forEach(f => {
+    const search = (f.getAttribute('data-search') || '') + ' ' + f.textContent;
+    f.classList.toggle('hidden', q.length > 0 && !search.toLowerCase().includes(q));
+  });
+}
+</script>
+</body>
+</html>

@@ -76,3 +76,19 @@ sources:
         description: "Forum discussion posts (JSON)"
         meta:
           external_location: "read_json_auto('../../bronze/forum/forum_posts.json')"
+
+  - name: bronze_github
+    description: "Raw GitHub activity data for ENS repos via Open Source Observer (OSO)"
+    tables:
+      - name: oso_ens_repos
+        description: "ENS GitHub repository registry from OSO (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/github/oso_ens_repos.json')"
+      - name: oso_ens_code_metrics
+        description: "Per-repo code health metrics from OSO (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/github/oso_ens_code_metrics.json')"
+      - name: oso_ens_timeseries
+        description: "Daily GitHub event history for ENS repos from OSO (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/github/oso_ens_timeseries.json')"

@@ -10,11 +10,19 @@ Endpoints used:
 """
 
 import logging
+import sys
 import time
 
 import requests
 
 logger = logging.getLogger(__name__)
+
+
+def _emit(msg: str) -> None:
+    """Print to stdout, stderr, and logger."""
+    print(msg, flush=True)
+    print(msg, file=sys.stderr, flush=True)
+    logger.info(msg)
 
 BASE_URL = "https://discuss.ens.domains"
 TOPICS_PER_PAGE = 30
@@ -27,9 +35,15 @@ def _get_json(path: str, params: dict | None = None) -> dict:
     resp = requests.get(url, params=params, timeout=30)
     if resp.status_code == 429:
         retry_after = int(resp.headers.get("Retry-After", 60))
-        logger.warning("Rate limited, waiting %ds", retry_after)
+        _emit(f"[DISCOURSE] Rate limited (429), waiting {retry_after}s before retry...")
         time.sleep(retry_after)
         return _get_json(path, params)
+    if not resp.ok:
+        try:
+            err_body = resp.json()
+        except Exception:
+            err_body = resp.text
+        _emit(f"[DISCOURSE] HTTP {resp.status_code} error for {url}: {err_body}")
     resp.raise_for_status()
     return resp.json()
 
@@ -47,7 +61,7 @@ def fetch_all_topics() -> list[dict]:
     page = 0
     start_time = time.time()
 
-    logger.info("Starting topic fetch (est. ~30s for ~2,400 topics)")
+    _emit("[DISCOURSE] Starting: fetch_all_topics (est. ~30s for ~2,400 topics)")
 
     while True:
         data = _get_json("/latest.json", {"page": page})
@@ -62,10 +76,7 @@ def fetch_all_topics() -> list[dict]:
 
         if page % 20 == 0:
             elapsed = time.time() - start_time
-            logger.info(
-                "Topics progress: %d fetched (page %d, %.0fs elapsed)",
-                len(all_topics), page, elapsed,
-            )
+            _emit(f"[DISCOURSE] Topics progress: {len(all_topics)} fetched (page {page}, {elapsed:.0f}s elapsed)")
 
         more = topic_list.get("more_topics_url")
         if not more:
@@ -73,7 +84,7 @@ def fetch_all_topics() -> list[dict]:
 
         time.sleep(REQUEST_DELAY)
 
-    logger.info("Topics complete: %d total", len(all_topics))
+    _emit(f"[DISCOURSE] Topics complete: {len(all_topics)} total")
     return all_topics
 
 
@@ -175,7 +186,7 @@ def fetch_forum_data() -> tuple[list[dict], list[dict]]:
     total = len(raw_topics)
     start_time = time.time()
 
-    logger.info("Starting post fetch for %d topics (est. ~15-25 min)", total)
+    _emit(f"[DISCOURSE] Starting: fetch posts for {total} topics (est. ~15-25 min)")
 
     for i, topic in enumerate(raw_topics, 1):
         topic_id = topic["id"]
@@ -187,12 +198,9 @@ def fetch_forum_data() -> tuple[list[dict], list[dict]]:
             elapsed = time.time() - start_time
             est_total = elapsed / i * total
             remaining = est_total - elapsed
-            logger.info(
-                "Posts progress: topic %d/%d, %d posts so far (~%.0fs remaining)",
-                i, total, len(all_posts), remaining,
-            )
+            _emit(f"[DISCOURSE] Posts progress: topic {i}/{total}, {len(all_posts)} posts so far (~{remaining:.0f}s remaining)")
 
         time.sleep(REQUEST_DELAY)
 
-    logger.info("Posts complete: %d total across %d topics", len(all_posts), total)
+    _emit(f"[DISCOURSE] COMPLETE: {len(all_posts)} posts across {total} topics")
     return topics, all_posts

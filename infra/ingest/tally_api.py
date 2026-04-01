@@ -61,7 +61,16 @@ def run_query(
         time.sleep(delay)
         return run_query(query, variables, api_key, _retries=_retries - 1)
 
-    resp.raise_for_status()
+    if not resp.ok:
+        try:
+            err_body = resp.json()
+        except Exception:
+            err_body = resp.text
+        print(f"[TALLY] HTTP {resp.status_code} error body: {err_body}", flush=True)
+        import sys
+        print(f"[TALLY] HTTP {resp.status_code} error body: {err_body}", file=sys.stderr, flush=True)
+        logger.error("[TALLY] HTTP %d error body: %s", resp.status_code, err_body)
+        resp.raise_for_status()
     body = resp.json()
     data = body.get("data", {})
     logger.debug("[TALLY] Received response with keys: %s", list(data.keys()) if data else "empty")
@@ -410,7 +419,17 @@ def fetch_tally_delegates(org_id: str, api_key: str, *, progress_callback=None) 
 
     Estimated time: 2-6 HOURS due to Tally rate limiting (~38k delegates)
     """
-    _log = progress_callback or logger.info
+    import sys
+
+    def _log(msg, *args):
+        formatted = msg % args if args else msg
+        if progress_callback:
+            progress_callback(formatted)
+        else:
+            logger.info(formatted)
+        print(formatted, flush=True)
+        print(formatted, file=sys.stderr, flush=True)
+
     _log("=" * 60)
     _log("[TALLY] Starting: fetch_tally_delegates")
     _log("[TALLY] API: %s", API_URL)
@@ -603,7 +622,8 @@ def flatten_tally_delegates(raw_delegates: list[dict]) -> list[dict]:
     Output fields: id, address, ens_name, name, twitter, bio, picture, account_type,
     voting_power, delegators_count, is_prioritized, chain_id,
     token_symbol, token_name, statement, statement_summary, is_seeking_delegation,
-    organization_id, organization_name
+    organization_id, organization_name,
+    participation_rate, voted_proposals_count, proposals_count
     """
     result = []
     for d in raw_delegates:
@@ -611,6 +631,7 @@ def flatten_tally_delegates(raw_delegates: list[dict]) -> list[dict]:
         stmt = d.get("statement") or {}
         token = d.get("token") or {}
         org = d.get("organization") or {}
+        part = d.get("participation") or {}
         result.append(
             {
                 "id": d.get("id", ""),
@@ -632,6 +653,9 @@ def flatten_tally_delegates(raw_delegates: list[dict]) -> list[dict]:
                 "is_seeking_delegation": stmt.get("isSeekingDelegation", False),
                 "organization_id": org.get("id", ""),
                 "organization_name": org.get("name", ""),
+                "participation_rate": part.get("participationRate"),
+                "voted_proposals_count": part.get("votedProposalsCount"),
+                "proposals_count": part.get("proposalsCount"),
             }
         )
     return result
