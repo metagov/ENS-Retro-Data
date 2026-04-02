@@ -1,6 +1,6 @@
 # ENS-Retro-Data: Schema Report
 
-> For dashboard and chart preparation. Last updated: 2026-04-02.
+> For dashboard and chart preparation. Last updated: 2026-04-02 (treasury pipeline rebuilt).
 
 ---
 
@@ -25,7 +25,7 @@
 
 | File | Records | Key Fields |
 |---|---|---|
-| `financial/ens_ledger_transactions.csv` | 2,315 | Transaction Hash, Date (YYYY-MM-DD), Quarter, From (wallet label), To (recipient label), Category (84 types), Amount, Asset (ENS/ETH/USDC), Value (USD) |
+| `financial/ens_ledger_transactions.csv` | 2,316 | Transaction Hash, Date (YYYY-MM-DD), Quarter, From (wallet label), To (recipient label), Category (84 types), Amount (token units), Asset (ENS/ETH/USDC), Value (USD) — **primary source for treasury_summary** |
 | `financial/compensation.json` | 599 | id, recipient, amount, token, value_usd, period, date, working_group, role, category |
 | `financial/enswallets.json` | — | name, address, working_group, type, multisig_config, balances |
 | `financial/ens_wallet_balances.json` | 17 | wallet address, ETH/ENS/USDC balances |
@@ -85,6 +85,7 @@ Models live in `infra/dbt/models/staging/` and `infra/dbt/models/silver/`.
 | `stg_delegations` | bronze_onchain.delegations | delegator, delegate, block_number, timestamp_unix, token_balance_wei |
 | `stg_token_distribution` | bronze_onchain.token_distribution | address, balance_wei, percentage, snapshot_block |
 | `stg_treasury_flows` | bronze_onchain.treasury_flows | tx_hash, from_address, to_address, value_raw, token, block_number, timestamp_unix, category |
+| `stg_ens_ledger` | bronze_financial.ens_ledger | tx_hash, tx_date, quarter, source_entity, destination, category, amount, asset, value_usd |
 | `stg_compensation` | bronze_financial.compensation | recipient_address, amount, token, period, working_group, role |
 | `stg_grants` | bronze_grants.grants | grant_id, title, applicant, amount_requested (null), amount_awarded, token, status, working_group, description |
 | `stg_forum_posts` | bronze_forum.forum_posts | post_id, topic_id, author, body, created_at, likes, reply_count |
@@ -104,7 +105,8 @@ Models live in `infra/dbt/models/staging/` and `infra/dbt/models/silver/`.
 | `clean_tally_delegates` | wei→ether, dedup by address | address, name, ens_name, twitter, bio, voting_power, delegators_count, statement, statement_summary, is_seeking_delegation, participation_rate, voted_proposals_count, source |
 | `clean_delegations` | unix→datetime, wei→ether, lowercase addresses | delegator, delegate, block_number, delegated_at, token_balance |
 | `clean_token_distribution` | wei→ether, recalculate %, lowercase address | address, balance, percentage, snapshot_block |
-| `clean_treasury_flows` | wei→ether, unix→datetime, lowercase addresses | tx_hash, from_address, to_address, value_ether, token, block_number, transacted_at, category |
+| `clean_ens_ledger` | lowercase entities, add flow_type (inflow/outflow/internal), filter null value_usd | tx_hash, tx_date, quarter, source_entity, destination, category, amount, asset, value_usd, flow_type |
+| `clean_treasury_flows` | token-aware decimal conversion (USDC/USDT÷1e6, others÷1e18), unix→datetime, lowercase addresses, **whitelist ETH/ENS/USDC/USDT/WETH only** | tx_hash, from_address, to_address, value_ether, token, block_number, transacted_at, category |
 | `clean_compensation` | lowercase fields, distinct on full row | recipient_address, amount, token, period, working_group, role |
 | `clean_grants` | lowercase status/working_group, distinct on grant_id | grant_id, title, applicant, amount_requested, amount_awarded, token, status, working_group, description |
 | `clean_oso_ens_code_metrics` | dedup by last_commit_date, cast counts to int | artifact_id, artifact_name, artifact_namespace, star_count, fork_count, contributor_count, commit_count_6m, merged_PR_count_6m, opened_issue_count_6m, first_commit_date, last_commit_date, source |
@@ -121,7 +123,7 @@ Models live in `infra/dbt/models/gold/`.
 |---|---|---|---|
 | `governance_activity` | clean_snapshot_proposals + clean_snapshot_votes, clean_tally_proposals | proposal_id, source (snapshot/tally), title, status, vote_count, voter_count, for_pct, against_pct, abstain_pct, start_date, end_date | Vote outcomes over time, participation trends |
 | `delegate_scorecard` | clean_tally_delegates + clean_snapshot_votes + clean_tally_votes + governance_activity + address_crosswalk | address, ens_name, voting_power, snapshot_votes_cast, tally_votes_cast, delegators_count, is_seeking_delegation, statement_summary, participation_rate | Delegate rankings, activity heatmaps, leaderboards |
-| `treasury_summary` | clean_treasury_flows + clean_grants + clean_compensation | period (monthly), category, inflows, outflows, net, grant_spend, compensation_spend | Spending over time, category breakdowns, treasury balance |
+| `treasury_summary` | clean_ens_ledger | period (monthly), category, inflows_usd, outflows_usd, net_usd, internal_transfer_usd | Spending over time, 84-category breakdowns, treasury balance — **amounts in USD** |
 | `participation_index` *(Python model)* | governance_activity + delegate_scorecard | metric (name), value (numeric) | KPI cards, trend lines |
 | `decentralization_index` *(Python model)* | clean_tally_delegates + clean_delegations | metric (name), value (numeric) | Nakamoto coefficient, HHI, Gini coefficient |
 
@@ -130,112 +132,54 @@ Models live in `infra/dbt/models/gold/`.
 ## Notes for Chart Preparation
 
 - **Timestamps:** All gold/clean layer timestamps are ISO 8601 datetimes (not unix)
-- **Token amounts:** All gold/clean layer amounts are in ether, not wei
+- **Token amounts:** All gold/clean layer amounts are in ether (not wei), **except `treasury_summary` which uses USD**
+- **treasury_summary amounts:** `inflows_usd`, `outflows_usd`, `net_usd`, `internal_transfer_usd` are all in USD
 - **Addresses:** Lowercased uniformly across all layers
 - **Tally data:** Historical snapshot only — Tally.xyz shut down, no re-indexing
 - **Pending data:** `oso_ens_code_metrics`, `oso_ens_timeseries`, `ens_safe_transactions` not yet collected
 - **Grants:** `large_grants.json` records actual disbursements only — `amount_requested` is always null
 - **Delegations:** `token_balance` is null by design — join with `token_distribution` for balances
-- **Period coverage:** Ledger/financial data spans 2022-04-20 to 2025-11-28
+- **Period coverage:** Ledger/financial data spans 2022-03-31 to 2025-11-28
 
 ---
 
-## treasury_summary — Data Quality Investigation
+## treasury_summary — Schema & Data Notes
 
-> Investigation date: 2026-04-02. Scope: full chain from `treasury_flows.json` → `stg_treasury_flows` → `clean_treasury_flows` → `treasury_summary`.
+> Pipeline rebuilt 2026-04-02. Source switched from `treasury_flows.json` to `ens_ledger_transactions.csv`.
 
-### Summary
+### Current state (post-fix)
 
-`treasury_summary` has **5 structural data quality issues** that cause `grant_spend` and `compensation_spend` to always be 0, inflows/outflows to be double-counted, USDC amounts to be near-zero, and noise from spam tokens. The model is not currently usable for reliable financial analysis without fixes.
+| Column | Source | Notes |
+|---|---|---|
+| `period` | ens_ledger.tx_date | Monthly buckets, Mar 2022–Nov 2025 (45 months) |
+| `category` | ens_ledger.category | 84 real labels (Salaries, Eco. Grants, IRL, DAO Wallet, etc.) |
+| `inflows_usd` | flow_type = 'inflow' | External revenue: Registrar ETH, CoW Swap yield, Endowment |
+| `outflows_usd` | flow_type = 'outflow' | WG spending: grants, salaries, contractors, IRL, etc. |
+| `net_usd` | inflows − outflows | Per-month, per-category net position in USD |
+| `internal_transfer_usd` | flow_type = 'internal' | DAO Wallet → WG budget allocations (not end-spend) |
 
----
+**Output:** 577 rows · 45 months · 84 categories · $121.6M inflows · $25.5M outflows · 21/21 dbt tests pass
 
-### Issue 1 — Category mismatch: grant/compensation joins always return 0 (CRITICAL)
+### flow_type classification (in `clean_ens_ledger`)
 
-**What happens:** `treasury_summary.sql` joins `clean_treasury_flows` with `clean_grants` and `clean_compensation` on `category = working_group`. But ALL 622 records in `treasury_flows.json` have `category = "unknown"`. The lowercased working groups in grants are `ecosystem`, `public goods`; in compensation they are `community wg`, `ecosystem`, `metagov`, `providers`, `public goods`. The intersection with `unknown` is empty — the join **never matches**, so `grant_spend` and `compensation_spend` are always `0` for every row.
+| flow_type | source_entity values | What it represents |
+|---|---|---|
+| `inflow` | Registrar, CoW Swap, UniSwap, Endowment | External revenue entering the treasury |
+| `internal` | DAO Wallet | Budget allocations from treasury to working groups |
+| `outflow` | Ecosystem, Metagov, Public Goods, Community WG, Providers, etc. | End-spend to individuals, grantees, contractors |
 
-**Root cause:** `treasury_flows.json` was ingested without category labels. The category field needs to be populated (e.g. by mapping ENS treasury wallet addresses to known working groups) before this join can produce real results.
+### Macros updated
 
-**Impact:** `grant_spend` and `compensation_spend` columns in the gold model are always `coalesce(null, 0) = 0`. Charts built on these columns will show no grant or compensation spend.
+| Macro | File | Change |
+|---|---|---|
+| `wei_to_ether` | `macros/wei_to_ether.sql` | Unchanged — still used for on-chain vote/delegation amounts |
+| `token_to_value` *(new)* | `macros/token_to_value.sql` | Token-aware: USDC/USDT ÷ 1e6, all others ÷ 1e18. Used in `clean_treasury_flows`. |
 
----
+### Why `treasury_flows.json` is no longer the primary treasury source
 
-### Issue 2 — Double-counted inflows/outflows (HIGH)
+`bronze/on-chain/treasury_flows.json` (622 raw on-chain records) has three unresolvable problems for financial analysis:
+1. All 622 records have `category = "unknown"` — no spend labels
+2. 621/622 records have both `from` and `to` populated, making inflow/outflow direction indeterminate without a treasury address whitelist
+3. 87 records (14%) are spam/phishing token transfers to treasury addresses
 
-**What happens:** The directional logic in `treasury_summary.sql` is:
-```sql
-sum(case when to_address is not null then value_ether else 0 end) as outflows,
-sum(case when from_address is not null then value_ether else 0 end) as inflows
-```
-621 of 622 records have **both** `from` and `to` populated (only 1 record has an empty `to`). This means the same transaction value is counted **once as an inflow and once as an outflow** for every normal transfer. Both inflows and outflows are inflated by the same amount, and `net` (inflows − outflows) is near-zero for all rows regardless of actual cash flow.
-
-**Root cause:** Direction should be determined by whether the treasury address appears in `from` (outflow) or `to` (inflow), not by null-checking both fields. The known ENS DAO treasury addresses (e.g. from `financial/enswallets.json`) need to be used as the reference set.
-
----
-
-### Issue 3 — USDC decimal mismatch: USDC amounts near-zero (HIGH)
-
-**What happens:** The `wei_to_ether` macro divides all `value_raw` by `1e18`:
-```sql
-try_cast(value_raw as double) / 1e18
-```
-ETH and ENS use 18 decimal places, so this is correct for them. USDC uses **6 decimal places**. Dividing a USDC raw value by `1e18` instead of `1e6` underestimates every USDC amount by a factor of `1e12`.
-
-**Example:** Raw USDC value `10318098311236` → correct: `$10,318,098 USDC` → actual output: `~0.00001 ETH`.
-
-**Impact:** All 104 non-zero USDC treasury flow records are effectively zeroed out in the silver/gold layers. Any financial totals that include USDC are massively understated.
-
-**Affected records:** 104 non-zero USDC records in `treasury_flows.json`. Fix requires a token-aware conversion macro.
-
----
-
-### Issue 4 — Spam/dust token contamination (MEDIUM)
-
-**What happens:** `treasury_flows.json` contains 87 records (14%) with token names that are phishing URLs or dust tokens. Examples:
-- `'$ USDCNotice.com <- Visit to secure your wallet'`
-- `'Visit https://atuni.site'`
-- `'LOFE'` (14 records)
-
-These appear because ENS treasury addresses receive unsolicited token transfers. The `clean_treasury_flows` silver model has no filter on recognized tokens — it passes all records through. In `treasury_summary`, these inflate row counts and distort aggregations.
-
-**Legitimate tokens:** `ETH` (110 records), `ENS` (319 records), `USDC` (104 records), `USDT` (1), `WETH` (1) = 535 legitimate records. The remaining 87 (14%) are noise.
-
-**Fix:** Add a `token IN ('ETH', 'ENS', 'USDC', 'USDT', 'WETH')` filter in `clean_treasury_flows`.
-
----
-
-### Issue 5 — Richer source unused: `ens_ledger_transactions.csv` not wired in (MEDIUM)
-
-**What happens:** `bronze/financial/ens_ledger_transactions.csv` has **2,316 records** with labeled `From`/`To` (e.g. "DAO Wallet", "Ecosystem WG"), 84 distinct `Category` values (Salaries, DAO Wallet, Stream, $ENS Distribution, Support, Eco. Small Grants, IRL, PG Small Grants, Eco. Grants, Hackathons, …), amounts, and USD values. This file has the category labels that `treasury_flows.json` lacks.
-
-The ledger CSV is documented in the schema report (Bronze → Financial) but is **not sourced** into any dbt staging model. Currently, `treasury_summary` uses only the raw address-level `treasury_flows.json` (all `category='unknown'`). The labeled ledger data would directly resolve Issue 1 (category joins).
-
-**Date range:** 2022-03-31 to 2025-11-28 (approximately 15 quarters of data).
-
----
-
-### Issue 6 — Minimal dbt tests on treasury_summary (LOW)
-
-`_gold.yml` defines only 1 test for `treasury_summary` (`not_null:warn` on `period`) compared to 5+ tests for `governance_activity` and `delegate_scorecard`. The description still reads "placeholder until on-chain data collected" even though the data is collected. No tests exist for `inflows`, `outflows`, `net`, `grant_spend`, or `compensation_spend`.
-
----
-
-### Data Completeness by Column
-
-| Column | Source | Issue | Status |
-|---|---|---|---|
-| `period` | treasury_flows.timestamp | Correct — 50 months Nov 2021–Mar 2026 | ✅ OK |
-| `category` | treasury_flows.category | All rows are `"unknown"` | ❌ Broken |
-| `inflows` | treasury_flows.value (wei→ether) | Double-counted with outflows; USDC decimals wrong | ❌ Broken |
-| `outflows` | treasury_flows.value (wei→ether) | Double-counted with inflows; USDC decimals wrong | ❌ Broken |
-| `net` | inflows − outflows | Near-zero due to double-counting | ❌ Broken |
-| `grant_spend` | clean_grants.amount_awarded | Always 0 due to category mismatch | ❌ Broken |
-| `compensation_spend` | clean_compensation.amount | Always 0 due to category mismatch | ❌ Broken |
-
-### Recommended Fixes (priority order)
-
-1. **Wire `ens_ledger_transactions.csv` into a `stg_ens_ledger` model** — it has real categories and labeled addresses, resolves Issues 1 and 2.
-2. **Fix directional logic** — determine flow direction by matching treasury wallet addresses (from `enswallets.json`) against `from_address`/`to_address`.
-3. **Fix USDC decimal conversion** — use a token-aware macro: divide USDC by `1e6`, ETH/ENS by `1e18`.
-4. **Filter spam tokens** in `clean_treasury_flows` — whitelist `ETH`, `ENS`, `USDC`, `USDT`, `WETH`.
-5. **Update `_gold.yml`** — fix stale description, add `not_null`/`accepted_values` tests on key columns.
+`ens_ledger_transactions.csv` is the ENS Foundation's own labeled bookkeeping ledger and resolves all three. `clean_treasury_flows` is still built and tested for other potential uses (address-level on-chain analysis).
