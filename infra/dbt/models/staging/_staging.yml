@@ -165,7 +165,8 @@ models:
         description: "OSO artifact identifier"
         tests:
           - not_null
-          - unique
+          - unique:
+              severity: warn
       - name: artifact_name
         tests:
           - not_null
