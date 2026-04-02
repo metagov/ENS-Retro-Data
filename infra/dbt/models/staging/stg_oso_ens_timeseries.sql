@@ -1,16 +1,14 @@
--- Staging: OSO ENS daily GitHub event history
--- One row per (repo, event_type, day). All event types included.
--- Incremental appends in bronze may produce duplicates — deduplicated in silver.
+-- Staging: OSO ENS periodic GitHub metric history
+-- One row per (repo, metric_type, sample_date).
+-- Schema updated 2026-04: OSO retired timeseries_events_by_artifact_v0;
+-- data now sourced from timeseries_metrics_by_artifact_v0 + metrics_v0.
 
 select
     artifact_id,
     artifact_name,
     artifact_namespace,
     event_source,
-    event_source_id,
     event_type,
-    from_artifact_id,
-    to_artifact_id,
-    amount,
-    cast(time as timestamp) as event_time
+    cast(event_time as timestamp) as event_time,
+    amount
 from {{ source('bronze_github', 'oso_ens_timeseries') }}
