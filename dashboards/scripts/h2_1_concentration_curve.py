@@ -26,21 +26,15 @@ def _load_data() -> tuple[pd.DataFrame, int, float]:
         ORDER BY voting_power DESC
     """).df()
 
-    vp = vp_df["voting_power"].to_numpy(dtype=float)
+    # Read pre-computed metrics from the gold decentralization index (single source of truth)
+    idx = con.execute("""
+        SELECT metric, value
+        FROM main_gold.decentralization_index
+        WHERE metric IN ('nakamoto_coefficient', 'voting_power_gini')
+    """).df().set_index("metric")["value"]
 
-    # Nakamoto coefficient: min delegates needed to hold >50% of total VP
-    vp_desc = np.sort(vp)[::-1]
-    cumulative = np.cumsum(vp_desc)
-    nakamoto = int(np.searchsorted(cumulative, vp_desc.sum() * 0.5) + 1)
-
-    # Gini coefficient for voting power inequality
-    vp_asc = np.sort(vp)
-    n = len(vp_asc)
-    index = np.arange(1, n + 1)
-    gini = round(
-        (2 * np.sum(index * vp_asc) - (n + 1) * np.sum(vp_asc)) / (n * np.sum(vp_asc)),
-        4,
-    )
+    nakamoto = int(idx["nakamoto_coefficient"])
+    gini = round(float(idx["voting_power_gini"]), 4)
 
     return vp_df, nakamoto, gini
 

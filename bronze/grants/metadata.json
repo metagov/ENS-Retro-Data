@@ -1,12 +1,42 @@
 {
   "domain": "grants",
-  "description": "ENS DAO small grants program data from Snapshot (small-grants.eth space)",
+  "description": "ENS DAO grants data: formal grant disbursements (derived from ledger) and small grants (Snapshot)",
   "sources": [
-    "snapshot"
+    "snapshot",
+    "ens-ledger.app"
   ],
   "collection_status": "complete",
-  "notes": "Proposals and votes fetched via Snapshot GraphQL API for the small-grants.eth space",
+  "notes": "large_grants.json is derived from bronze/financial/ens_ledger_transactions.csv by filtering grant categories. smallgrants_proposals/votes fetched via Snapshot GraphQL API.",
   "files": {
+    "large_grants.json": {
+      "status": "present",
+      "description": "Formal ENS DAO grant disbursements extracted from the ENS ledger — covers Eco Grants, PG Grants, Small Grants, Gitcoin Grants, and more",
+      "actual_records": 423,
+      "schema_hints": {
+        "id": "string (transaction hash)",
+        "title": "string (recipient name)",
+        "applicant": "string (recipient name)",
+        "amount_requested": "null (not available from ledger)",
+        "amount_awarded": "float (token amount)",
+        "token": "string (ENS, ETH, or USDC)",
+        "status": "string (always 'awarded' — ledger only contains executed txns)",
+        "working_group": "string (From wallet label, e.g. 'Ecosystem', 'Public Goods')",
+        "description": "string (ledger category, e.g. 'Eco. Grants', 'PG Large Grants')",
+        "date": "string (YYYY-MM-DD)",
+        "quarter": "string (e.g. 2022Q2)",
+        "value_usd": "float (USD value at time of transaction)"
+      },
+      "provenance": {
+        "source": "ens-ledger.app via 0xLighthouse/ens-ledger-analysis",
+        "derived_from": "bronze/financial/ens_ledger_transactions.csv",
+        "query_or_method": "Filter rows where Category contains 'grant' (case-insensitive), map to stg_grants schema",
+        "collected_by": "dagster_pipeline",
+        "collected_at": "2026-04-02T00:00:00+00:00",
+        "covers_period": "2022-04-26 to 2025-11-28",
+        "notes": "amount_requested is null — the ledger records actual disbursements only, not applications. 11 grant categories: Discretionary Grants, Eco. Grants, Eco. Small Grants, Gitcoin Grants, Grant Platform, Growth Grants, Mini Grants, PG Grants, PG Large Grants, PG Small Grants, Retro Grants. Total value: ~$3.3M USD.",
+        "records": 423
+      }
+    },
     "smallgrants_proposals.json": {
       "status": "present",
       "description": "Small grants proposals from Snapshot (small-grants.eth)",
@@ -63,5 +93,6 @@
       "file_size_bytes": 562855
     }
   },
-  "last_indexed_at": "2026-03-24T09:41:56.164863+00:00"
+  "last_indexed_at": "2026-03-24T09:41:56.164863+00:00",
+  "warnings": []
 }

@@ -59,7 +59,7 @@ sources:
       - name: grants
         description: "Grant applications and awards (JSON)"
         meta:
-          external_location: "read_json_auto('../../bronze/grants/grants.json')"
+          external_location: "read_json_auto('../../bronze/grants/large_grants.json')"
 
   - name: bronze_interviews
     description: "Raw qualitative data from interviews"

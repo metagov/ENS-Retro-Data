@@ -65,6 +65,7 @@ uv.lock
 
 # Internal dev notes
 DEV/
+TODOS.md
 
 # Node (if any tooling uses it)
 node_modules/

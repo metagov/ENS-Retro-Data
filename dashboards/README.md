@@ -108,6 +108,22 @@ df = con.execute("SELECT ... FROM main_gold.<table>").df()
 
 Use `@st.cache_data` on data-loading functions to avoid re-querying on every interaction.
 
+## Updating data
+
+The warehouse file (`warehouse/ens_retro.duckdb`) is tracked via Git LFS. To refresh the dashboard with new data:
+
+```bash
+# 1. Run the dbt pipeline to rebuild the warehouse
+cd infra/dbt && dbt run
+
+# 2. Commit the updated warehouse file (LFS handles the binary)
+git add ../../warehouse/ens_retro.duckdb
+git commit -m "Refresh warehouse — data as of $(date +%Y-%m-%d)"
+git push origin main  # triggers Fly.io deploy automatically
+```
+
+> **Cold start note:** The first request after a Fly.io machine wakes from sleep may take 3–5 seconds while Streamlit initialises and DuckDB loads the warehouse file. Subsequent requests are served from the in-memory connection cache.
+
 ## Dependencies
 
 | Package | Purpose |
