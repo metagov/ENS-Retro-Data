@@ -14,8 +14,9 @@ _BRONZE_ROOT = dbt_project.project_dir.parent.parent / "bronze"
 # If the file is missing we exclude the model (and its dependents) rather
 # than crashing the entire dbt run.
 _OPTIONAL_SOURCES: dict[str, tuple[Path, str]] = {
-    "stg_oso_ens_code_metrics": (_BRONZE_ROOT / "github" / "oso_ens_code_metrics.json", "github"),
-    "stg_oso_ens_timeseries":   (_BRONZE_ROOT / "github" / "oso_ens_timeseries.json",   "github"),
+    # oso_ens_timeseries: timeseries_metrics_by_artifact_v0 returns 500 for full
+    # dataset pulls (OSO backend issue); skip until resolved.
+    "stg_oso_ens_timeseries": (_BRONZE_ROOT / "github" / "oso_ens_timeseries.json", "github"),
 }
 
 

@@ -170,71 +170,75 @@ def fetch_ens_code_metrics(api_key: str) -> list[dict]:
 
 
 def fetch_ens_timeseries(api_key: str, *, since: str = TIMESERIES_START) -> list[dict]:
-    """Fetch periodic GitHub metric history for ENS repos since a given date.
+    """Fetch activity metric snapshot for ENS repos from OSO.
 
-    Queries timeseries_metrics_by_artifact_v0 joined with metrics_v0 and
-    artifacts_v1. Returns one row per (artifact, metric_type, sample_date).
+    NOTE: OSO's timeseries_metrics_by_artifact_v0 exceeds the query stage
+    limit (183 > 150) for any filter combination and cannot be queried.
+    This function uses key_metrics_by_artifact_v0 instead, which returns
+    the most recent snapshot of weekly/monthly activity metrics per repo.
+    It is not a true time series — sample_date reflects the OSO refresh date.
 
     Args:
         api_key: OSO API key
-        since:   ISO date string (YYYY-MM-DD) — fetch rows after this date.
-                 Defaults to TIMESERIES_START ('2019-01-01') for first run.
+        since:   unused (kept for API compatibility)
     """
-    _emit(f"[OSO] Fetching ENS timeseries metrics since {since} (namespace='{OSO_NAMESPACE}')")
+    _emit(f"[OSO] Fetching ENS activity metrics snapshot (namespace='{OSO_NAMESPACE}')")
     import pandas as pd
     client = _make_client(api_key)
 
-    # Step 1: resolve artifact IDs for ensdomains (small, fast query)
+    # Step 1: resolve artifact IDs for ensdomains
     df_arts = client.to_pandas(f"""
         SELECT artifact_id, artifact_name, artifact_namespace
         FROM artifacts_v1
         WHERE artifact_namespace = '{OSO_NAMESPACE}'
     """)
     if df_arts.empty:
-        _emit("[OSO] No ENS artifacts found — skipping timeseries")
+        _emit("[OSO] No ENS artifacts found — skipping")
         return []
 
-    artifact_ids = df_arts["artifact_id"].tolist()
-    _emit(f"[OSO] Fetching timeseries for {len(artifact_ids)} artifacts in batches of 20")
-
-    # Step 2: fetch metric lookup table locally (tiny table, fast)
-    df_metrics = client.to_pandas("""
+    # Step 2: fetch key activity metrics (all-time aggregates — only variant in key_metrics table)
+    ACTIVITY_METRICS = (
+        "GITHUB_commits_over_all_time",
+        "GITHUB_contributors_over_all_time",
+        "GITHUB_merged_pull_requests_over_all_time",
+        "GITHUB_opened_pull_requests_over_all_time",
+        "GITHUB_opened_issues_over_all_time",
+        "GITHUB_closed_issues_over_all_time",
+        "GITHUB_stars_over_all_time",
+        "GITHUB_forks_over_all_time",
+        "GITHUB_comments_over_all_time",
+        "GITHUB_releases_over_all_time",
+        "GITHUB_first_time_contributor_over_all_time",
+    )
+    names_sql = ", ".join(f"'{n}'" for n in ACTIVITY_METRICS)
+    df_metrics = client.to_pandas(f"""
         SELECT metric_id, metric_name AS event_type, metric_source AS event_source
         FROM metrics_v0
-        WHERE metric_event_source = 'GITHUB'
+        WHERE metric_name IN ({names_sql})
     """)
-    github_metric_ids_sql = ", ".join(f"'{mid}'" for mid in df_metrics["metric_id"].tolist())
-
-    # Step 3: batch by artifact ID (20 at a time) — no JOIN, just filter
-    BATCH = 20
-    chunks = []
-    for i in range(0, len(artifact_ids), BATCH):
-        batch = artifact_ids[i : i + BATCH]
-        ids_sql = ", ".join(f"'{aid}'" for aid in batch)
-        try:
-            df_batch = client.to_pandas(f"""
-                SELECT artifact_id, metric_id, sample_date AS event_time, amount
-                FROM timeseries_metrics_by_artifact_v0
-                WHERE artifact_id IN ({ids_sql})
-                  AND metric_id IN ({github_metric_ids_sql})
-                  AND sample_date >= DATE '{since}'
-            """)
-            chunks.append(df_batch)
-            _emit(f"[OSO]   batch {i//BATCH + 1}: {len(df_batch)} rows")
-        except Exception as e:
-            _emit(f"[OSO]   batch {i//BATCH + 1} ERROR: {e} — skipping")
-
-    if not chunks:
-        _emit("[OSO] All timeseries batches failed")
+    if df_metrics.empty:
+        _emit("[OSO] No matching metric IDs — skipping")
         return []
 
-    df_ts = pd.concat(chunks, ignore_index=True)
+    # Step 3: join artifacts_v1 by namespace (avoids large artifact_id IN clause)
+    try:
+        df_km = client.to_pandas(f"""
+            SELECT k.artifact_id, k.metric_id, k.sample_date AS event_time, k.amount
+            FROM key_metrics_by_artifact_v0 k
+            JOIN metrics_v0 m ON m.metric_id = k.metric_id
+            JOIN artifacts_v1 a ON a.artifact_id = k.artifact_id
+            WHERE a.artifact_namespace = '{OSO_NAMESPACE}'
+              AND m.metric_name IN ({names_sql})
+        """)
+    except Exception as e:
+        _emit(f"[OSO] ERROR fetching activity metrics: {e}")
+        raise
 
-    # Step 4: join metric names and artifact metadata locally (fast pandas merges)
-    df = df_ts.merge(df_metrics, on="metric_id", how="left")
+    # Step 4: join metric and artifact metadata locally
+    df = df_km.merge(df_metrics, on="metric_id", how="left")
     df = df.merge(df_arts[["artifact_id", "artifact_name", "artifact_namespace"]], on="artifact_id", how="left")
     df = df.drop(columns=["metric_id"])
 
     records = df.to_dict(orient="records")
-    _emit(f"[OSO] ✓ Fetched {len(records)} timeseries rows total (since {since})")
+    _emit(f"[OSO] ✓ Fetched {len(records)} activity metric rows")
     return records
