@@ -13,10 +13,7 @@ _BRONZE_ROOT = dbt_project.project_dir.parent.parent / "bronze"
 # Staging models that depend on manually-placed or not-yet-fetched files.
 # If the file is missing we exclude the model (and its dependents) rather
 # than crashing the entire dbt run.
-_OPTIONAL_SOURCES: dict[str, tuple[Path, str]] = {
-    "stg_compensation":      (_BRONZE_ROOT / "financial" / "compensation.json",       "financial"),
-    "stg_delegate_profiles": (_BRONZE_ROOT / "interviews"/ "delegate_profiles.json",  "interviews"),
-}
+_OPTIONAL_SOURCES: dict[str, tuple[Path, str]] = {}
 
 
 def _log_dbt_skip_warning(subdir: str, message: str) -> None:

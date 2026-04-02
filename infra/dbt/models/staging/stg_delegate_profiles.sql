@@ -1,11 +1,11 @@
--- Staging: Delegate profiles from interviews
--- Reads raw JSON and renames columns to snake_case
+-- Staging: Delegate profiles from Tally (historical snapshot — Tally.xyz shut down)
+-- Maps Tally delegate fields to a common profile schema
 
 select
     address,
-    name,
-    role,
-    interview_date,
-    key_themes,
-    summary
-from {{ source('bronze_interviews', 'delegate_profiles') }}
+    coalesce(ens_name, name)             as name,
+    null::varchar                         as role,
+    null::date                            as interview_date,
+    statement_summary                     as key_themes,
+    bio                                   as summary
+from {{ source('bronze_governance', 'tally_delegates') }}
