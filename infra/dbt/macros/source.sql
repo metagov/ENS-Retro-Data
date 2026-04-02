@@ -10,7 +10,7 @@
     'bronze_onchain.token_distribution': "read_json_auto('../../bronze/on-chain/token_distribution.json')",
     'bronze_onchain.treasury_flows': "read_json_auto('../../bronze/on-chain/treasury_flows.json')",
     'bronze_financial.compensation': "read_json_auto('../../bronze/financial/compensation.json')",
-    'bronze_grants.grants': "read_json_auto('../../bronze/grants/grants.json')",
+    'bronze_grants.grants': "read_json_auto('../../bronze/grants/large_grants.json')",
     'bronze_interviews.delegate_profiles': "read_json_auto('../../bronze/interviews/delegate_profiles.json')",
     'bronze_forum.forum_posts': "read_json_auto('../../bronze/forum/forum_posts.json')"
   } -%}
