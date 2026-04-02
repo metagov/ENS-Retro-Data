@@ -6,9 +6,9 @@
     "ens-ledger.app"
   ],
   "collection_status": "complete",
-  "notes": "grants.json is derived from bronze/financial/ens_ledger_transactions.csv by filtering grant categories. smallgrants_proposals/votes fetched via Snapshot GraphQL API.",
+  "notes": "large_grants.json is derived from bronze/financial/ens_ledger_transactions.csv by filtering grant categories. smallgrants_proposals/votes fetched via Snapshot GraphQL API.",
   "files": {
-    "grants.json": {
+    "large_grants.json": {
       "status": "present",
       "description": "Formal ENS DAO grant disbursements extracted from the ENS ledger — covers Eco Grants, PG Grants, Small Grants, Gitcoin Grants, and more",
       "actual_records": 423,

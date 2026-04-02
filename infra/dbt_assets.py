@@ -15,7 +15,7 @@ _BRONZE_ROOT = dbt_project.project_dir.parent.parent / "bronze"
 # than crashing the entire dbt run.
 _OPTIONAL_SOURCES: dict[str, tuple[Path, str]] = {
     "stg_compensation":      (_BRONZE_ROOT / "financial" / "compensation.json",       "financial"),
-    "stg_grants":            (_BRONZE_ROOT / "grants"    / "grants.json",             "grants"),
+    "stg_grants":            (_BRONZE_ROOT / "grants"    / "large_grants.json",        "grants"),
     "stg_delegate_profiles": (_BRONZE_ROOT / "interviews"/ "delegate_profiles.json",  "interviews"),
 }
 
