@@ -803,7 +803,7 @@ def ens_safe_transactions(context: AssetExecutionContext) -> None:
 # ============================================================================
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_github", compute_kind="api")
 def oso_ens_repos(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
     """Fetch all ENS GitHub repositories registered in Open Source Observer.
 
@@ -833,7 +833,7 @@ def oso_ens_repos(context: AssetExecutionContext, oso_config: OsoApiConfig) -> N
     context.log.info(f"[BRONZE] ✓ oso_ens_repos COMPLETE — {len(repos)} repos written")
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_github", compute_kind="api")
 def oso_ens_code_metrics(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
     """Fetch per-repo code health metrics for ENS GitHub repositories from OSO.
 
@@ -866,7 +866,7 @@ def oso_ens_code_metrics(context: AssetExecutionContext, oso_config: OsoApiConfi
     )
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_github", compute_kind="api")
 def oso_ens_timeseries(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
     """Fetch daily GitHub event history for ENS repos from OSO (incremental append).
 

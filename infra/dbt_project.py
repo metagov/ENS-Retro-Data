@@ -29,8 +29,21 @@ _SOURCE_TO_ASSET_KEY = {
 }
 
 
+_DBT_FOLDER_TO_GROUP = {
+    "staging": "staging",
+    "silver":  "silver",
+    "gold":    "gold",
+}
+
+
 class EnsDbtTranslator(DagsterDbtTranslator):
-    """Maps dbt sources to upstream Dagster bronze asset keys."""
+    """Maps dbt sources to upstream Dagster bronze asset keys and assigns UI groups."""
+
+    def get_group_name(self, dbt_resource_props: dict) -> str:
+        # fqn = ["ens_retro", "<folder>", "<model_name>"]
+        fqn = dbt_resource_props.get("fqn", [])
+        folder = fqn[1] if len(fqn) >= 2 else ""
+        return _DBT_FOLDER_TO_GROUP.get(folder, folder or "dbt")
 
     def get_asset_key(self, dbt_resource_props: dict) -> AssetKey:
         resource_type = dbt_resource_props.get("resource_type")
