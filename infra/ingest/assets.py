@@ -56,16 +56,7 @@ from infra.ingest.smallgrants_api import (
     fetch_smallgrants_votes,
 )
 from infra.ingest.snapshot_api import fetch_snapshot_proposals, fetch_snapshot_votes
-from infra.ingest.tally_api import (
-    fetch_organization,
-    fetch_tally_delegates,
-    fetch_tally_proposals,
-    fetch_tally_votes,
-    flatten_tally_delegates,
-    flatten_tally_proposals,
-    flatten_tally_votes,
-)
-from infra.resources import EtherscanApiConfig, TallyApiConfig
+from infra.resources import EtherscanApiConfig
 
 # Root directory for all bronze-layer data files
 BRONZE_ROOT = Path(__file__).resolve().parent.parent.parent / "bronze"
@@ -163,6 +154,29 @@ def _write_json(
     )
 
 
+def _log_metadata_warning(subdir: str, message: str, *, source: str = "dagster_pipeline") -> None:
+    """Append a warning entry to the top-level warnings list in bronze/{subdir}/metadata.json.
+
+    Warnings capture things like skipped addresses, shutdown APIs, or missing
+    files so the provenance record reflects what happened during the run.
+    """
+    meta_path = BRONZE_ROOT / subdir / "metadata.json"
+    if not meta_path.exists():
+        return
+    with open(meta_path) as f:
+        meta = json.load(f)
+
+    warnings = meta.setdefault("warnings", [])
+    warnings.append({
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "source": source,
+        "message": message,
+    })
+
+    with open(meta_path, "w") as f:
+        json.dump(meta, f, indent=2)
+
+
 def _check_file_exists(subdir: str, filename: str, context: AssetExecutionContext):
     """Verify manually-placed files exist and update metadata accordingly.
 
@@ -171,8 +185,6 @@ def _check_file_exists(subdir: str, filename: str, context: AssetExecutionContex
     1. Check if the file exists on disk
     2. Log a warning if missing
     3. Update metadata to track availability
-
-    Run文化建设 (data culture) to ensure these files are placed before analysis.
     """
     path = BRONZE_ROOT / subdir / filename
     if path.exists():
@@ -187,8 +199,37 @@ def _check_file_exists(subdir: str, filename: str, context: AssetExecutionContex
             method="sentinel check — file already on disk",
         )
     else:
-        context.log.warning(f"Missing {path} — place file manually")
+        msg = f"Missing {path.name} — file not on disk, place manually before running dbt"
+        context.log.warning(msg)
         _update_metadata(subdir, filename, status="missing")
+        _log_metadata_warning(subdir, msg, source=filename)
+
+
+def _already_on_disk(path: Path, context: AssetExecutionContext) -> bool:
+    """Return True if a bronze JSON file already exists, logging its stats.
+
+    When True, the calling asset should skip the API fetch — the data is
+    already present from a previous run.  Delete the file to force a re-fetch.
+    """
+    if not path.exists():
+        return False
+    stat = path.stat()
+    try:
+        with open(path) as f:
+            records = len(json.load(f))
+        context.log.info(
+            f"[BRONZE] Already on disk: {path.name} ({records:,} records, {stat.st_size:,} bytes)"
+        )
+        context.log.info("[BRONZE] Skipping fetch — delete the file to force a re-fetch.")
+        context.add_output_metadata(
+            {"records": records, "file_size_bytes": stat.st_size, "status": "existing_file"}
+        )
+    except Exception:
+        context.log.info(f"[BRONZE] Already on disk: {path.name} ({stat.st_size:,} bytes)")
+        context.add_output_metadata(
+            {"file_size_bytes": stat.st_size, "status": "existing_file"}
+        )
+    return True
 
 
 # ============================================================================
@@ -197,7 +238,7 @@ def _check_file_exists(subdir: str, filename: str, context: AssetExecutionContex
 # ============================================================================
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_governance", compute_kind="api")
 def snapshot_proposals(context: AssetExecutionContext) -> None:
     """Fetch all ENS governance proposals from Snapshot.org.
 
@@ -208,6 +249,8 @@ def snapshot_proposals(context: AssetExecutionContext) -> None:
     DEPENDENCIES: None — fetches all proposals directly
     ESTIMATED: ~30s for ~90 proposals
     """
+    if _already_on_disk(BRONZE_ROOT / "governance" / "snapshot_proposals.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: snapshot_proposals")
     context.log.info("[BRONZE] Source: snapshot.org (space: ens.eth)")
@@ -231,7 +274,7 @@ def snapshot_proposals(context: AssetExecutionContext) -> None:
     context.log.info(f"[BRONZE] ✓ snapshot_proposals COMPLETE - {len(proposals)} records written")
 
 
-@asset(group_name="bronze", compute_kind="api", deps=["snapshot_proposals"])
+@asset(group_name="bronze_governance", compute_kind="api", deps=["snapshot_proposals"])
 def snapshot_votes(context: AssetExecutionContext) -> None:
     """Fetch all votes cast on Snapshot ENS proposals.
 
@@ -246,6 +289,8 @@ def snapshot_votes(context: AssetExecutionContext) -> None:
           → loops through each, fetching votes via GraphQL
           → writes combined vote records to disk
     """
+    if _already_on_disk(BRONZE_ROOT / "governance" / "snapshot_votes.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: snapshot_votes (depends on snapshot_proposals)")
     context.log.info("[BRONZE] Source: snapshot.org GraphQL API")
@@ -280,171 +325,63 @@ def snapshot_votes(context: AssetExecutionContext) -> None:
 
 
 # ============================================================================
-# TALLY.XYZ — On-chain governance data
-# Tally indexes ENS Governor contract events and provides enriched data
+# TALLY.XYZ — Historical snapshot (read-only)
+# Tally shut down its API in 2025. These assets are now frozen sentinels that
+# confirm the previously indexed data is still present on disk. Re-indexing
+# is no longer possible.
 # ============================================================================
 
+_TALLY_SHUTDOWN_MSG = (
+    "Tally.xyz has shut down its API, so this data can no longer be refreshed. "
+    "What you see here is a historical snapshot captured before the shutdown. "
+    "The underlying JSON file is committed to the repository and serves as the "
+    "permanent source of record for all downstream dbt models."
+)
 
-@asset(group_name="bronze", compute_kind="api")
-def tally_proposals(context: AssetExecutionContext, tally_config: TallyApiConfig) -> None:
-    """Fetch ENS governance proposals from Tally (on-chain).
 
-    DATA: On-chain proposals with vote stats, quorum, proposer info
-    API: Tally GraphQL (organization: ens)
-    OUTPUT: bronze/governance/tally_proposals.json
+@asset(group_name="bronze_governance", compute_kind="file")
+def tally_proposals(context: AssetExecutionContext) -> None:
+    """Historical snapshot of ENS on-chain governance proposals from Tally.
 
-    DEPENDENCIES: None — fetches all proposals directly
-    ESTIMATED: ~15s for ~62 proposals
+    SOURCE: Tally GraphQL API (now shut down — data frozen as of last index run)
+    PATH: bronze/governance/tally_proposals.json
+    RECORDS: 66 proposals
 
-    NOTE: We first fetch the org ID (required for GraphQL queries),
-          then use it to paginate through all proposals.
+    NOTE: Tally.xyz has shut down its API. This data cannot be re-indexed.
     """
-    context.log.info("=" * 60)
-    context.log.info("[BRONZE] Starting: tally_proposals")
-    context.log.info("[BRONZE] Source: tally.xyz GraphQL API")
-    context.log.info("[BRONZE] Output: bronze/governance/tally_proposals.json")
-
-    # Tally requires org_id from the organization query before listing proposals
-    context.log.info("[BRONZE] Fetching ENS organization from Tally...")
-    org = fetch_organization(tally_config.api_key)
-    org_id = org["id"]
-    context.log.info(f"[BRONZE] ✓ Connected to Tally org: {org['name']} (id={org_id})")
-
-    # Fetch raw proposals from Tally (nested GraphQL response)
-    context.log.info("[BRONZE] Fetching proposals with vote stats, quorum, proposer info...")
-    raw = fetch_tally_proposals(org_id, tally_config.api_key)
-
-    # Flatten nested structure for easier dbt processing
-    # Transforms: {proposal { voteStats { type, votesCount } }}
-    # Into: { for_votes, against_votes, abstain_votes, for_percent, etc. }
-    context.log.info("[BRONZE] Flattening nested GraphQL response...")
-    proposals = flatten_tally_proposals(raw)
-    context.log.info(f"[BRONZE] ✓ Flattened {len(proposals)} tally proposals")
-
-    _write_json(
-        proposals,
-        "governance",
-        "tally_proposals.json",
-        context,
-        source="tally.xyz",
-        method="GraphQL paginated query (org=ens), flattened",
-    )
-
-    context.log.info(f"[BRONZE] ✓ tally_proposals COMPLETE - {len(proposals)} records written")
+    context.log.warning(_TALLY_SHUTDOWN_MSG)
+    _log_metadata_warning("governance", _TALLY_SHUTDOWN_MSG, source="tally_proposals")
+    _check_file_exists("governance", "tally_proposals.json", context)
 
 
-@asset(group_name="bronze", compute_kind="api", deps=["tally_proposals"])
-def tally_votes(context: AssetExecutionContext, tally_config: TallyApiConfig) -> None:
-    """Fetch all on-chain votes cast on Tally/ENS proposals.
+@asset(group_name="bronze_governance", compute_kind="file", deps=["tally_proposals"])
+def tally_votes(context: AssetExecutionContext) -> None:
+    """Historical snapshot of ENS on-chain votes from Tally.
 
-    DATA: Individual vote records (voter, support, weight, tx_hash)
-    API: Tally GraphQL — queries each proposal by ID
-    OUTPUT: bronze/governance/tally_votes.json
+    SOURCE: Tally GraphQL API (now shut down — data frozen as of last index run)
+    PATH: bronze/governance/tally_votes.json
+    RECORDS: ~9,987 votes across 66 proposals
 
-    DEPENDENCIES: tally_proposals (reads proposal IDs from disk)
-    ESTIMATED: ~2-4 min for ~9.5k votes across ~62 proposals
-
-    FLOW: Reads proposal IDs from bronze/governance/tally_proposals.json
-          → loops through each, fetching paginated votes
-          → flattens nested voter/proposal/block data
-          → writes combined vote records to disk
+    NOTE: Tally.xyz has shut down its API. This data cannot be re-indexed.
     """
-    context.log.info("=" * 60)
-    context.log.info("[BRONZE] Starting: tally_votes (depends on tally_proposals)")
-    context.log.info("[BRONZE] Source: tally.xyz GraphQL API")
-    context.log.info("[BRONZE] Output: bronze/governance/tally_votes.json")
-
-    proposals_path = BRONZE_ROOT / "governance" / "tally_proposals.json"
-    with open(proposals_path) as f:
-        flat_proposals = json.load(f)
-
-    context.log.info(f"[BRONZE] Found {len(flat_proposals)} proposals from previous asset")
-    context.log.info(f"[BRONZE] Fetching on-chain votes for {len(flat_proposals)} proposals...")
-    context.log.info(
-        "[BRONZE] WARNING: With Tally rate limiting (429 errors), this may take 1-4 HOURS"
-    )
-    context.log.info(
-        "[BRONZE] Rate limiting is handled with exponential backoff (60s-10min delays)"
-    )
-    context.log.info("[BRONZE] Progress will be logged every 5 proposals")
-
-    # Fetch raw votes with progress callback for Dagster console
-    raw_votes = fetch_tally_votes(
-        flat_proposals, tally_config.api_key, progress_callback=context.log.info
-    )
-    context.log.info(f"[BRONZE] ✓ Received {len(raw_votes)} raw vote records")
-
-    # Flatten: { voter { address, name, ens }, block { timestamp, number } }
-    # Into: { voter, voter_name, voter_ens, block_timestamp, block_number }
-    context.log.info("[BRONZE] Flattening nested voter/proposal/block data...")
-    votes = flatten_tally_votes(raw_votes)
-    context.log.info(f"[BRONZE] ✓ Flattened to {len(votes)} vote records")
-
-    _write_json(
-        votes,
-        "governance",
-        "tally_votes.json",
-        context,
-        source="tally.xyz",
-        method="GraphQL paginated query per proposal, flattened",
-    )
-
-    context.log.info(f"[BRONZE] ✓ tally_votes COMPLETE - {len(votes)} records written")
+    context.log.warning(_TALLY_SHUTDOWN_MSG)
+    _log_metadata_warning("governance", _TALLY_SHUTDOWN_MSG, source="tally_votes")
+    _check_file_exists("governance", "tally_votes.json", context)
 
 
-@asset(group_name="bronze", compute_kind="api")
-def tally_delegates(context: AssetExecutionContext, tally_config: TallyApiConfig) -> None:
-    """Fetch all ENS token delegates from Tally.
+@asset(group_name="bronze_governance", compute_kind="file")
+def tally_delegates(context: AssetExecutionContext) -> None:
+    """Historical snapshot of ENS delegate profiles from Tally.
 
-    DATA: Delegate profiles with voting power, delegators, statements
-    API: Tally GraphQL (sorted by votes descending)
-    OUTPUT: bronze/governance/tally_delegates.json
+    SOURCE: Tally GraphQL API (now shut down — data frozen as of last index run)
+    PATH: bronze/governance/tally_delegates.json
+    RECORDS: ~37,891 delegate profiles
 
-    DEPENDENCIES: None — fetches all delegates directly
-    ESTIMATED: ~2-3 min for ~38k delegates (500/page, ~76 pages)
-
-    NOTE: Results are sorted by voting power (highest first), useful for
-          identifying top delegates in the gold layer scorecard.
+    NOTE: Tally.xyz has shut down its API. This data cannot be re-indexed.
     """
-    context.log.info("=" * 60)
-    context.log.info("[BRONZE] Starting: tally_delegates")
-    context.log.info("[BRONZE] Source: tally.xyz GraphQL API")
-    context.log.info("[BRONZE] Output: bronze/governance/tally_delegates.json")
-
-    context.log.info("[BRONZE] Fetching ENS organization from Tally...")
-    org = fetch_organization(tally_config.api_key)
-    org_id = org["id"]
-    context.log.info(f"[BRONZE] ✓ Connected to Tally org: {org['name']} (id={org_id})")
-
-    # Fetch all delegates — paginates through 500 at a time
-    # Sort by voting power to surface top delegates first
-    context.log.info("[BRONZE] Fetching all ENS delegates (sorted by voting power)...")
-    context.log.info(
-        "[BRONZE] WARNING: With Tally rate limiting (429 errors), this may take 2-6 HOURS"
-    )
-    context.log.info("[BRONZE] ~38k delegates at 500/page with rate limiting delays")
-    context.log.info("[BRONZE] Progress will be logged every 5 pages")
-
-    # Fetch delegates with progress callback for Dagster console
-    raw = fetch_tally_delegates(org_id, tally_config.api_key, progress_callback=context.log.info)
-    context.log.info(f"[BRONZE] ✓ Received {len(raw)} raw delegate records")
-
-    # Flatten nested account/statement/token objects
-    # Extracts: twitter, bio, picture, statement, token info, org info
-    context.log.info("[BRONZE] Flattening nested account/statement/token data...")
-    delegates = flatten_tally_delegates(raw)
-    context.log.info(f"[BRONZE] ✓ Flattened to {len(delegates)} delegate profiles")
-
-    _write_json(
-        delegates,
-        "governance",
-        "tally_delegates.json",
-        context,
-        source="tally.xyz",
-        method="GraphQL paginated query (org=ens, sorted by votes), flattened",
-    )
-
-    context.log.info(f"[BRONZE] ✓ tally_delegates COMPLETE - {len(delegates)} records written")
+    context.log.warning(_TALLY_SHUTDOWN_MSG)
+    _log_metadata_warning("governance", _TALLY_SHUTDOWN_MSG, source="tally_delegates")
+    _check_file_exists("governance", "tally_delegates.json", context)
 
 
 # ============================================================================
@@ -453,7 +390,7 @@ def tally_delegates(context: AssetExecutionContext, tally_config: TallyApiConfig
 # ============================================================================
 
 
-@asset(group_name="bronze", compute_kind="file")
+@asset(group_name="bronze_governance", compute_kind="file")
 def votingpower_delegates(context: AssetExecutionContext) -> None:
     """Sentinel check for votingpower.xyz delegate snapshot.
 
@@ -465,7 +402,7 @@ def votingpower_delegates(context: AssetExecutionContext) -> None:
     _check_file_exists("governance", "votingpower-xyz/ens-delegates-2026-02-20.csv", context)
 
 
-@asset(group_name="bronze", compute_kind="file")
+@asset(group_name="bronze_financial", compute_kind="file")
 def ens_ledger_transactions(context: AssetExecutionContext) -> None:
     """Sentinel check for ENS DAO ledger transactions.
 
@@ -483,7 +420,7 @@ def ens_ledger_transactions(context: AssetExecutionContext) -> None:
 # ============================================================================
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_onchain", compute_kind="api")
 def delegations(
     context: AssetExecutionContext,
     etherscan_config: EtherscanApiConfig,
@@ -503,6 +440,8 @@ def delegations(
     NOTE: Uses checkpointing — if interrupted, resumes from last block.
           Checkpoint file: .cache/delegations_checkpoint.json
     """
+    if _already_on_disk(BRONZE_ROOT / "on-chain" / "delegations.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: delegations (ON-CHAIN)")
     context.log.info("[BRONZE] Source: Etherscan Logs API")
@@ -527,7 +466,7 @@ def delegations(
     context.log.info(f"[BRONZE] ✓ delegations COMPLETE - {len(events)} records written")
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_onchain", compute_kind="api")
 def token_distribution(
     context: AssetExecutionContext,
     etherscan_config: EtherscanApiConfig,
@@ -549,6 +488,8 @@ def token_distribution(
 
     NOTE: This is computationally expensive — uses checkpointing to resume.
     """
+    if _already_on_disk(BRONZE_ROOT / "on-chain" / "token_distribution.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: token_distribution (ON-CHAIN)")
     context.log.info("[BRONZE] Source: Etherscan Logs API")
@@ -577,7 +518,7 @@ def token_distribution(
     )
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_onchain", compute_kind="api")
 def treasury_flows(
     context: AssetExecutionContext,
     etherscan_config: EtherscanApiConfig,
@@ -597,6 +538,8 @@ def treasury_flows(
     - ENS.eth (ENS main treasury)
     See: infra/ingest/etherscan_api.py for full list
     """
+    if _already_on_disk(BRONZE_ROOT / "on-chain" / "treasury_flows.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: treasury_flows (ON-CHAIN)")
     context.log.info("[BRONZE] Source: Etherscan Account APIs")
@@ -624,7 +567,7 @@ def treasury_flows(
 # ============================================================================
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_grants", compute_kind="api")
 def smallgrants_proposals(context: AssetExecutionContext) -> None:
     """Fetch ENS Small Grants proposals from Snapshot.
 
@@ -635,6 +578,8 @@ def smallgrants_proposals(context: AssetExecutionContext) -> None:
     DEPENDENCIES: None
     ESTIMATED: ~30s
     """
+    if _already_on_disk(BRONZE_ROOT / "grants" / "smallgrants_proposals.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: smallgrants_proposals")
     context.log.info("[BRONZE] Source: snapshot.org (space: small-grants.eth)")
@@ -658,7 +603,7 @@ def smallgrants_proposals(context: AssetExecutionContext) -> None:
     )
 
 
-@asset(group_name="bronze", compute_kind="api", deps=["smallgrants_proposals"])
+@asset(group_name="bronze_grants", compute_kind="api", deps=["smallgrants_proposals"])
 def smallgrants_votes(context: AssetExecutionContext) -> None:
     """Fetch votes on ENS Small Grants proposals.
 
@@ -669,6 +614,8 @@ def smallgrants_votes(context: AssetExecutionContext) -> None:
     DEPENDENCIES: smallgrants_proposals (reads proposal IDs from disk)
     ESTIMATED: ~2-5 min
     """
+    if _already_on_disk(BRONZE_ROOT / "grants" / "smallgrants_votes.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: smallgrants_votes (depends on smallgrants_proposals)")
     context.log.info("[BRONZE] Source: snapshot.org GraphQL API")
@@ -702,7 +649,7 @@ def smallgrants_votes(context: AssetExecutionContext) -> None:
 # ============================================================================
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_forum", compute_kind="api")
 def forum_topics(context: AssetExecutionContext) -> None:
     """Fetch ENS Governance Forum topics and posts from Discourse.
 
@@ -719,6 +666,11 @@ def forum_topics(context: AssetExecutionContext) -> None:
 
     USE CASE: Sentiment analysis, participation metrics, governance discussions
     """
+    if (
+        _already_on_disk(BRONZE_ROOT / "forum" / "forum_topics.json", context)
+        and (BRONZE_ROOT / "forum" / "forum_posts.json").exists()
+    ):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: forum_topics")
     context.log.info("[BRONZE] Source: discuss.ens.domains Discourse API")
@@ -758,7 +710,7 @@ def forum_topics(context: AssetExecutionContext) -> None:
 # ============================================================================
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_financial", compute_kind="api")
 def ens_wallet_balances(context: AssetExecutionContext) -> None:
     """Fetch current balances for all ENS DAO Safe wallets.
 
@@ -772,6 +724,8 @@ def ens_wallet_balances(context: AssetExecutionContext) -> None:
     WALLETS: ENS DAO Multisig, Grants Multisig, ENS.eth, etc.
     REFRESH: Run before treasury analysis to get current state
     """
+    if _already_on_disk(BRONZE_ROOT / "financial" / "ens_wallet_balances.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: ens_wallet_balances")
     context.log.info("[BRONZE] Source: Safe Transaction Service API")
@@ -793,7 +747,7 @@ def ens_wallet_balances(context: AssetExecutionContext) -> None:
     context.log.info(f"[BRONZE] ✓ ens_wallet_balances COMPLETE - {len(balances)} records written")
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_financial", compute_kind="api")
 def ens_safe_transactions(context: AssetExecutionContext) -> None:
     """Fetch historical transactions for ENS DAO Safe wallets.
 
@@ -807,13 +761,19 @@ def ens_safe_transactions(context: AssetExecutionContext) -> None:
     USE CASE: Treasury spending analysis, governance fund flows,
               contributor compensation tracking
     """
+    if _already_on_disk(BRONZE_ROOT / "financial" / "ens_safe_transactions.json", context):
+        return
     context.log.info("=" * 60)
     context.log.info("[BRONZE] Starting: ens_safe_transactions")
     context.log.info("[BRONZE] Source: Safe Transaction Service API")
     context.log.info("[BRONZE] Output: bronze/financial/ens_safe_transactions.json")
     context.log.info("[BRONZE] Fetching historical multisig transactions for ENS DAO wallets...")
 
-    transactions = fetch_all_safe_transactions()
+    fetch_warnings: list[str] = []
+    transactions = fetch_all_safe_transactions(warnings=fetch_warnings)
+    for w in fetch_warnings:
+        context.log.warning(f"[BRONZE] {w}")
+        _log_metadata_warning("financial", w, source="ens_safe_transactions")
     context.log.info(f"[BRONZE] ✓ Received {len(transactions)} multisig transaction records")
 
     _write_json(

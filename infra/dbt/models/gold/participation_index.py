@@ -10,9 +10,9 @@ def model(dbt, session):
     dbt.config(materialized="table")
 
     # Load upstream models
-    governance = dbt.ref("governance_activity")
-    scorecard = dbt.ref("delegate_scorecard")
-    token_dist = dbt.ref("clean_token_distribution")
+    governance = dbt.ref("governance_activity").df()
+    scorecard = dbt.ref("delegate_scorecard").df()
+    token_dist = dbt.ref("clean_token_distribution").df()
 
     metrics = []
 

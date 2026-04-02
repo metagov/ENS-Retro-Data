@@ -1,12 +1,14 @@
 import sys
 from pathlib import Path
 
+import duckdb
 import streamlit as st
 
 # Ensure scripts/ is importable
 sys.path.insert(0, str(Path(__file__).parent))
 
 from scripts.config import load_config, resolve_render_fn  # noqa: E402
+from scripts.db import get_connection  # noqa: E402
 
 st.set_page_config(
     page_title="ENS DAO Governance Retrospective",
@@ -15,6 +17,18 @@ st.set_page_config(
 )
 
 config = load_config()
+
+_DB_PATH = Path(__file__).parent.parent / "warehouse" / "ens_retro.duckdb"
+
+
+def _data_as_of() -> str:
+    """Return a 'data as of' string from the warehouse file mtime."""
+    try:
+        mtime = _DB_PATH.stat().st_mtime
+        from datetime import datetime, timezone
+        return datetime.fromtimestamp(mtime, tz=timezone.utc).strftime("%Y-%m-%d")
+    except Exception:
+        return "unknown"
 
 
 # ---------------------------------------------------------------------------
@@ -54,6 +68,7 @@ def _render_takeaway(text: str) -> None:
 # ---------------------------------------------------------------------------
 
 st.markdown("# ENS DAO Governance Retrospective")
+st.caption(f"Data as of {_data_as_of()}")
 st.markdown(
     """
 This dashboard presents quantitative findings from the **ENS DAO Governance Retrospective**,
@@ -136,7 +151,7 @@ for c_tab, challenge in zip(challenge_tabs, config.challenges):
                         try:
                             render_fn = resolve_render_fn(visual)
                             render_fn()
-                        except (ModuleNotFoundError, AttributeError):
+                        except (ModuleNotFoundError, AttributeError, duckdb.Error):
                             _render_wip(label=visual.title)
                         else:
                             if visual.takeaway:

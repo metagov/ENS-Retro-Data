@@ -7,7 +7,7 @@
     "votingpower-xyz"
   ],
   "collection_status": "complete",
-  "last_indexed_at": "2026-03-20T01:44:24.790773+00:00",
+  "last_indexed_at": "2026-04-02T06:57:10.366936+00:00",
   "notes": "All governance data indexed via Dagster pipeline. Snapshot + Tally fetched from GraphQL APIs, votingpower.xyz manually exported.",
   "files": {
     "snapshot_proposals.json": {
@@ -111,9 +111,9 @@
       "provenance": {
         "source": "tally.xyz",
         "api_endpoint": "https://api.tally.xyz/query",
-        "query_or_method": "GraphQL paginated query per proposal, flattened",
-        "collected_by": "tally.xyz",
-        "collected_at": "2026-03-20T00:38:23.621166+00:00",
+        "query_or_method": "sentinel check \u2014 file already on disk",
+        "collected_by": "manual_upload",
+        "collected_at": "2026-04-02T06:57:10.366936+00:00",
         "covers_period": "all votes across 62 on-chain proposals",
         "notes": "Nested API response flattened by flatten_tally_votes(); voter address extracted from nested voter object",
         "records": 9987
@@ -160,12 +160,19 @@
       "provenance": {
         "source": "votingpower.xyz",
         "collected_by": "manual_upload",
-        "collected_at": "2026-03-06T12:25:53.956692+00:00",
+        "collected_at": "2026-04-02T06:20:01.145911+00:00",
         "query_or_method": "sentinel check \u2014 file already on disk",
         "covers_period": "point-in-time snapshot 2026-02-20",
         "notes": "Delegate voting power rankings"
       },
       "file_size_bytes": 6171
     }
-  }
+  },
+  "warnings": [
+    {
+      "timestamp": "2026-04-02T06:57:10.167603+00:00",
+      "source": "tally_votes",
+      "message": "Tally.xyz has shut down its API, so this data can no longer be refreshed. What you see here is a historical snapshot captured before the shutdown. The underlying JSON file is committed to the repository and serves as the permanent source of record for all downstream dbt models."
+    }
+  ]
 }

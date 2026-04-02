@@ -95,6 +95,11 @@ def _safe_get(url: str, params: dict | None = None, *, retries: int = 3) -> dict
     if resp.status_code == 404:
         return {}
 
+    if resp.status_code == 422:
+        # Address is not a valid Safe (may be an EOA or inactive/undeployed contract).
+        logger.warning("422 Unprocessable — %s is not a valid Safe, skipping", url)
+        return {}
+
     resp.raise_for_status()
     return resp.json()
 
@@ -293,7 +298,7 @@ def _classify_transfer(tx: dict, safe_address: str, all_safe_addresses: set[str]
     return records
 
 
-def fetch_all_safe_transactions() -> list[dict]:
+def fetch_all_safe_transactions(warnings: list[str] | None = None) -> list[dict]:
     """Fetch and classify all multisig transactions across ENS DAO Safe wallets.
 
     Reads enswallets.json for the list of multisig addresses, fetches their
@@ -324,6 +329,12 @@ def fetch_all_safe_transactions() -> list[dict]:
         logger.info("Fetching transactions for %s (%s)", ms["name"], address)
 
         raw_txs = _fetch_safe_transactions(address)
+        if not raw_txs:
+            msg = f"No transactions returned for {ms['name']} ({address}) — skipped (address may not be a valid Safe)"
+            logger.warning(msg)
+            if warnings is not None:
+                warnings.append(msg)
+            continue
         logger.info("Got %d raw transactions for %s", len(raw_txs), ms["name"])
 
         for tx in raw_txs:
