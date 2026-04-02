@@ -104,8 +104,27 @@ models:
           - unique:
               severity: warn
 
+  - name: stg_ens_ledger
+    description: "Staged ENS Foundation labeled transaction ledger (CSV)"
+    columns:
+      - name: tx_hash
+        tests:
+          - not_null
+      - name: tx_date
+        tests:
+          - not_null
+      - name: category
+        tests:
+          - not_null
+      - name: amount
+        tests:
+          - not_null
+      - name: value_usd
+        tests:
+          - not_null
+
   - name: stg_treasury_flows
-    description: "Staged treasury transaction flows (placeholder until on-chain data collected)"
+    description: "Staged treasury transaction flows (on-chain raw data)"
     columns:
       - name: tx_hash
         description: "Transaction hash"
