@@ -16,6 +16,12 @@ schedule_storage:
   config:
     base_dir: .dagster/storage
 
+# Cap parallel steps to avoid SQLite "database is locked" errors.
+# SQLite can't handle many concurrent writers; limiting to 4 keeps it stable.
+concurrency:
+  runs:
+    max_concurrent_runs: 4
+
 run_retries:
   max_retries: 3
 

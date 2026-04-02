@@ -1,0 +1,121 @@
+# flyctl launch added from .gitignore
+# Secrets
+**/.env
+
+# Etherscan ingestion checkpoints (resumable fetch state)
+
+# Python
+**/__pycache__
+**/*.py[cod]
+**/*$py.class
+**/*.egg-info
+**/dist
+**/build
+**/.eggs
+**/*.egg
+
+# Virtual environments
+**/.venv
+**/venv
+**/ENV
+
+
+# Exception: dbt seed CSVs are committed
+!**/infra/dbt/seeds/*.csv
+
+# Exception: dbt seed CSVs are committed
+!**/infra/dbt/seeds/*.csv
+
+# Dagster artifacts — track config + storage for run history
+**/.tmp_dagster_home_*
+
+# dbt artifacts
+**/infra/dbt/target
+**/infra/dbt/dbt_packages
+**/infra/dbt/logs
+
+# Warehouse (DuckDB) — excluded from git but included in Docker builds
+# **/warehouse/*.duckdb   ← intentionally NOT ignored so fly deploy can bundle the DB
+**/warehouse/*.duckdb.wal
+
+# Great Expectations
+**/infra/great_expectations/uncommitted
+**/infra/great_expectations/data_docs
+
+# IDE
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+**/*~
+
+# OS
+**/.DS_Store
+**/Thumbs.db
+
+# Jupyter
+**/.ipynb_checkpoints
+
+# uv
+**/uv.lock
+
+# Linting / tooling
+**/.ruff_cache
+**/.mypy_cache
+**/.pytest_cache
+
+# Claude Code
+**/.claude
+
+# Internal dev notes
+**/DEV
+
+# Node (if any tooling uses it)
+**/node_modules
+
+# Misc
+**/List of Data Sources.csv
+**/skills
+**/skills-lock.json
+
+# flyctl launch added from .venv/.gitignore
+.venv/**/*
+
+# flyctl launch added from .venv/lib/python3.12/site-packages/dbt/include/starter_project/.gitignore
+
+.venv/lib/python3.12/site-packages/dbt/include/starter_project/**/target
+.venv/lib/python3.12/site-packages/dbt/include/starter_project/**/dbt_packages
+.venv/lib/python3.12/site-packages/dbt/include/starter_project/**/logs
+
+# flyctl launch added from infra/dbt/dbt_packages/dbt_utils/.gitignore
+
+infra/dbt/dbt_packages/dbt_utils/**/target
+infra/dbt/dbt_packages/dbt_utils/**/dbt_modules
+infra/dbt/dbt_packages/dbt_utils/**/dbt_packages
+infra/dbt/dbt_packages/dbt_utils/**/logs
+infra/dbt/dbt_packages/dbt_utils/**/venv
+infra/dbt/dbt_packages/dbt_utils/**/__pycache__
+infra/dbt/dbt_packages/dbt_utils/**/.tox
+infra/dbt/dbt_packages/dbt_utils/.pytest_cache
+
+
+# Ignore all directories that start with 'env-' and can have any name after
+infra/dbt/dbt_packages/dbt_utils/**/env*
+
+# Do not ignore .env files in any directory and do not ignore .env directories
+!infra/dbt/dbt_packages/dbt_utils/**/.env
+!infra/dbt/dbt_packages/dbt_utils/**/*/.env
+
+# But explicitly ignore test.env files
+infra/dbt/dbt_packages/dbt_utils/**/test.env
+infra/dbt/dbt_packages/dbt_utils/**/dbt_internal_packages
+
+# flyctl launch added from infra/dbt/dbt_packages/dbt_utils/integration_tests/.gitignore
+infra/dbt/dbt_packages/dbt_utils/integration_tests/**/target
+infra/dbt/dbt_packages/dbt_utils/integration_tests/**/dbt_modules
+infra/dbt/dbt_packages/dbt_utils/integration_tests/**/logs
+infra/dbt/dbt_packages/dbt_utils/integration_tests/**/.env
+infra/dbt/dbt_packages/dbt_utils/integration_tests/**/profiles.yml
+infra/dbt/dbt_packages/dbt_utils/integration_tests/**/package-lock.yml
+infra/dbt/dbt_packages/dbt_utils/integration_tests/**/dbt_internal_packages
+fly.toml

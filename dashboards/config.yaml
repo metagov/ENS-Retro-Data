@@ -1,0 +1,258 @@
+# ENS DAO Governance Retrospective Portal — Navigation Config
+#
+# Structure: challenges > hypotheses > visuals
+#
+# To add a new visual:
+#   1. Write dashboards/scripts/<script>.py with a named render function
+#   2. Add a visuals entry below referencing script + fn
+#   3. Nothing else changes — sidebar and routing update automatically
+#
+# If a hypothesis has no visuals yet (visuals: []), a "Work in progress"
+# message is shown in the main area automatically.
+
+challenges:
+  - id: "C1"
+    title: "Voting Power Concentration"
+    short_title: "Power Concentration"
+    doc_url: "https://docs.google.com/document/d/1dEaXfp8FyojyPjQ-BMaX1L5ASfKeD-CZhmHrA2dXzvQ/edit?tab=t.0#heading=h.b7fnn3fnb011"
+    description: >
+      Voting power concentration refers to the condition where governance authority remains highly 
+      concentrated among initial token recipients with minimal redistribution over time. 
+      In ENS DAO, top delegates hold significant influence while some publicly admit non-participation, 
+      creating a governance system where formal power structures diverge from actual engagement patterns.
+    hypotheses:
+      - id: "H1.3"
+        title: "Legacy distribution — early patterns still dominate"
+        short_title: "Legacy distribution"
+        description: >
+          Initial token distribution created a static power structure resistant to change.
+          Individuals not present during initial delegate setup or who did not receive tokens
+          from the initial distribution find it nearly impossible to become significant delegates —
+          token holders rarely re-delegate, creating permanent barriers to entry for new participants.
+          Even talented contributors cannot accumulate sufficient delegation to meaningfully influence
+          governance regardless of their contributions or expertise; the system rewards early presence
+          over sustained performance. Community members report that single messages or votes from
+          high-power delegates can dramatically alter individual outcomes, generating feelings of
+          animosity within the governance community.
+        visuals: []
+
+      - id: "H2.1"
+        title: "Token-weighted democracy paradox — 1T1V leads to concentration"
+        short_title: "Token-weighted paradox"
+        description: >
+          Despite many token holders, voting power concentrates in a handful of delegates,
+          creating a structural gap between token distribution and actual governance influence.
+          The concentration curve reveals how few delegates are needed to reach majority control.
+        visuals:
+          - script: "h2_1_concentration_curve"
+            fn: "render_concentration_curve"
+            title: "Concentration Curve — Voting Power vs Delegates"
+            takeaway: >
+              A tiny fraction of delegates holds the majority of voting power. The Nakamoto
+              coefficient measures how many delegates are needed to reach 50% — the lower
+              this number, the more oligarchic the effective governance structure.
+
+      - id: "H3.3"
+        title: "Low re-delegation churn — delegations rarely change"
+        short_title: "Low re-delegation"
+        description: >
+          Concentration correlates with delegate inactivity. Interview evidence documents cases where
+          top delegates publicly acknowledge non-participation in governance while maintaining significant
+          voting power through sticky delegations. When the airdrop occurred, token holders allocated
+          delegation and then abandoned their wallets or simply never revisited their choices — many
+          delegates hold substantial delegations that are idle or stale, representing voting power
+          controlled by disengaged or absent delegates (governance by ghost votes). The initial airdrop
+          allocation has frozen into permanent voting patterns: governance decisions reflect neither
+          broad community input nor active stakeholder engagement, but rather the legacy of a one-time
+          token distribution event.
+        visuals: []
+
+      - id: "H6.2"
+        title: "Reputation lock-in — early delegates keep power despite low activity"
+        short_title: "Reputation lock-in"
+        description: >
+          Power concentration correlates with resistance to accountability mechanisms. Data from
+          interviews shows that top grant recipients were the strongest opponents of retrospective
+          accountability reviews — those who received the largest grants were also those who most
+          vocally opposed retrospective evaluation processes. This represents a structural incentive
+          alignment where those with the most to gain from reduced transparency wield sufficient power
+          to prevent transparency measures. The governance retrospective — designed to evaluate capital
+          allocation effectiveness — faced its strongest opposition from its primary subjects.
+          Beneficiaries of the existing system possess both the incentive and the capacity to resist
+          accountability reforms.
+        visuals:
+          - script: "h6_2_reputation_lock_in"
+            fn: "render_activity_vs_vp"
+            title: "Activity vs. Delegated Voting Power"
+            takeaway: >
+              A significant share of top delegates maintain substantial voting power despite low
+              participation rates — the lock-in zone. Their delegations persist not because of
+              active engagement, but because token holders rarely revisit their delegation choices
+              after the initial airdrop.
+          - script: "h6_2_inactivity_gaps"
+            fn: "render_inactivity_gaps"
+            title: "Inactivity Gaps vs Delegation Retention"
+            takeaway: >
+              Delegates with long inactive gaps continue to hold delegation through the entire
+              24-month window. The absence of re-delegation — even for delegates who visibly
+              stop voting — is the clearest evidence of delegation stickiness and the structural
+              lock-in that prevents governance power from redistributing to more active participants.
+
+  - id: "C2"
+    title: "Low Broad-Based Participation"
+    short_title: "Low Participation"
+    doc_url: "https://docs.google.com/document/d/1dEaXfp8FyojyPjQ-BMaX1L5ASfKeD-CZhmHrA2dXzvQ/edit?tab=t.0#heading=h.kalwurhhwe0w"
+    description: >
+      Low broad-based participation refers to the persistent failure to cultivate widespread governance 
+      engagement despite operating for over three years. Most token holders and delegates remain passive 
+      observers, with a small active minority conducting governance operations while lacking clear 
+      mandate or accountability to the broader community.
+    hypotheses:
+      - id: "H4.1"
+        title: "High cognitive/time costs — complexity discourages participation"
+        short_title: "H4.1 Complexity"
+        description: >
+          The cognitive cost of parsing a long proposal is only the most visible layer of
+          the participation barrier. Sustained governance engagement requires months of
+          unpaid investment before any formal recognition becomes available, navigation of
+          informal influence networks that operate alongside (and often in place of) formal
+          processes, and the economic flexibility to absorb that speculative time
+          commitment. This creates adverse selection: the barrier is not technical knowledge
+          but economic privilege and schedule availability, selecting for participants with
+          independent wealth or flexible employment over those with relevant expertise or
+          community representation. Long, technically dense proposals suppress marginal
+          participation at the margin, but the deeper barrier is the investment required to
+          gain meaningful standing — direct relationships with stewards, track record
+          through unpaid contributions, and access to the back-channels where substantive
+          decisions form before reaching public votes.
+        visuals: []
+
+  - id: "C3"
+    title: "Communication Fragmentation"
+    short_title: "Communication Fragmentation"
+    doc_url: "https://docs.google.com/document/d/1dEaXfp8FyojyPjQ-BMaX1L5ASfKeD-CZhmHrA2dXzvQ/edit?tab=t.0#heading=h.pgultknrdsrw"
+    description: >
+      Communication fragmentation refers to the condition where ENS DAO stakeholders operate in 
+      isolated communication channels with minimal cross-group coordination. Working groups don't 
+      systematically coordinate with each other, Labs communicates sporadically with the DAO, 
+      service providers lack clear information channels, and critical documentation is scattered, 
+      outdated, or held by specific individuals who can modify interpretations without formal process.
+    hypotheses:
+
+      - id: "H2.2"
+        title: "Coordination on status quo – large actors resist decentralizing reforms"
+        short_title: "Coordination on status quo"
+        description: >
+          By the time proposals reach a formal vote, substantive negotiation has already
+          concluded through informal back-channels. Voting records show few genuinely
+          contested outcomes — most proposals pass by large margins. This "ratification
+          theater" pattern serves insiders who can participate in pre-vote coordination
+          while structurally excluding stakeholders who are unaware those conversations
+          are occurring. Working groups operating as independent silos amplify this: each
+          group's informal coordination is invisible to the others, so cross-group
+          decisions default to whichever party has the strongest informal network.
+        visuals: []
+
+      - id: "H3.2"
+        title: "Information asymmetry — big delegates have richer info than small ones"
+        short_title: "Information asymmetry"
+        description: >
+          Critical governance information — policies, precedents, past decisions — resides
+          in working group stewards rather than accessible documentation. Official sites go
+          outdated while relevant content is buried in forum threads. The most effective
+          information strategy available is direct communication with stewards, who become
+          the de-facto source of truth. This creates asymmetric access: those with existing
+          relationships get timely, consistent answers while others encounter high
+          transaction costs or inconsistent interpretations. The asymmetry is sharpest in
+          competitive selection processes, where evaluation criteria are opaque, reviewers
+          don't consistently follow stated rubrics, and applicants have no appeals mechanism.
+        visuals: []
+
+      - id: "H6.3"
+        title: "Lack of experimentation — few structural trials around delegates"
+        short_title: "Lack of experimentation"
+        description: >
+          ENS DAO is rated favorably relative to DAOs with severe communication
+          dysfunction, but this benchmark obscures how far the current architecture falls
+          short of functional organizations. The three working groups have operated as
+          independent silos since their creation, with low to no systematic cross-group
+          coordination, yet no formal alternatives have been piloted. Without structured
+          experimentation — shared coordination rituals, authoritative documentation
+          systems, cross-working-group briefings — there is no evidence base for
+          evaluating whether reforms would reduce duplication, close coordination gaps,
+          or accelerate execution.
+        visuals: []
+
+  - id: "C4"
+    title: "De-Facto Centralization of Decision Making"
+    short_title: "De-Facto Centralization"
+    doc_url: "https://docs.google.com/document/d/1dEaXfp8FyojyPjQ-BMaX1L5ASfKeD-CZhmHrA2dXzvQ/edit?tab=t.0#heading=h.g0t8338v3x3f"
+    description: >
+      De facto centralization refers to the condition where despite DAO structures designed for distributed 
+      decision-making, real decisions concentrate in small informal groups. Power flows through personal relationships, 
+      behind-the-scenes coordination, and informal gatekeeping rather than transparent governance processes. 
+      This creates divergence between nominal decentralization and actual centralized decision-making.
+    hypotheses:
+      - id: "H2.3"
+        title: "Weak small-holder voice — small holders' preferences rarely affect outcomes"
+        short_title: "Weak small-holder voice"
+        description: >
+          Effective voice in ENS governance requires more than token holdings — it requires
+          navigating informal power networks. Contributors who engage for extended periods
+          encounter evaluation processes that are opaque and apparently arbitrary, with no
+          clear pathway from contribution to formal standing. Simultaneously, those already
+          inside the system face incentives against dissent: proposing bold ideas risks
+          being perceived as threatening to incumbents whose support determines future role
+          appointments. The combined effect is that both peripheral contributors and
+          internal participants self-select toward conformity, concentrating effective
+          voice among a small group of incumbents regardless of the underlying token
+          distribution.
+        visuals: []
+
+      - id: "Hx.1"
+        title: "Outcome robustness — the choice of voter with highest VP usually sides with outcomes"
+        short_title: "Outcome robustness"
+        description: >
+          The delegate with the largest voting power on a given proposal disproportionately
+          sides with the winning outcome — but the causal direction matters. If large
+          delegates merely reflect well-formed consensus, high outcome alignment is benign.
+          If they drive it, the DAO has de facto centralized authority. The C4 evidence
+          points toward the latter: Labs receives continuous funding without reapproval
+          requirements, removing the accountability mechanisms that apply to all other
+          participants; and working group stewards coordinate informally before formal
+          votes, predetermining most outcomes. Outcome robustness may therefore reflect
+          not consensus-formation but pre-coordination among a small number of actors
+          operating outside formal accountability structures.
+        visuals: []
+
+      - id: "Hx.2"
+        title: "Factional politics — informal aligned groups increase centralization of decision making"
+        short_title: "Factional politics"
+        description: >
+          Informal coalitions of aligned delegates coordinate outside formal channels, but
+          their effects extend beyond block voting. When informal power concentrates in
+          small groups, operational continuity depends on the health of interpersonal
+          relationships within those groups. Interview data documents multi-month periods
+          where working group output dropped significantly due to internal tensions — with
+          no formal conflict resolution mechanism to restore function. Long-term
+          contributors describe final periods in their roles as contentious, with external
+          actors providing prescriptive direction without operational context, leading
+          experienced stewards to exit and take institutional knowledge with them.
+          Factionalism creates fragile systems that work when relationships are healthy
+          but break down in ways the formal governance structure cannot repair.
+        visuals: []
+
+
+#  - id: "C5"
+#    title: "Treasury / Institutional Liability Risk"
+#    short_title: "Treasury"
+#    description: >
+#    hypotheses:
+#      - id: "H7.1-H7.3"
+#        title: "Treasury fragmentation, resourcing, tracking"
+#        short_title: "Treasury fragmentation"
+#        description: >
+#        visuals: []
+
+      
+

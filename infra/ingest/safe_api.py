@@ -167,10 +167,8 @@ def _safe_get(url: str, params: dict | None = None, *, retries: int = 3) -> dict
         return {}
 
     if resp.status_code == 422:
-        msg = f"[SAFE] 422 for {url} — not a valid Safe address, skipping"
-        print(msg, flush=True)
-        print(msg, file=sys.stderr, flush=True)
-        logger.warning(msg)
+        # Address is not a valid Safe (may be an EOA or inactive/undeployed contract).
+        logger.warning("422 Unprocessable — %s is not a valid Safe, skipping", url)
         return {}
 
     if not resp.ok:
@@ -178,10 +176,7 @@ def _safe_get(url: str, params: dict | None = None, *, retries: int = 3) -> dict
             err_body = resp.json()
         except Exception:
             err_body = resp.text
-        msg = f"[SAFE] HTTP {resp.status_code} for {url}: {err_body}"
-        print(msg, flush=True)
-        print(msg, file=sys.stderr, flush=True)
-        logger.error(msg)
+        logger.error("[SAFE] HTTP %s for %s: %s", resp.status_code, url, err_body)
 
     resp.raise_for_status()
     return resp.json()
@@ -383,7 +378,7 @@ def _classify_transfer(tx: dict, safe_address: str, all_safe_addresses: set[str]
     return records
 
 
-def fetch_all_safe_transactions() -> list[dict]:
+def fetch_all_safe_transactions(warnings: list[str] | None = None) -> list[dict]:
     """Fetch and classify all multisig transactions across ENS DAO Safe wallets.
 
     Reads enswallets.json for the list of multisig addresses, fetches their
@@ -414,6 +409,12 @@ def fetch_all_safe_transactions() -> list[dict]:
         logger.info("Fetching transactions for %s (%s)", ms["name"], address)
 
         raw_txs = _fetch_safe_transactions(address)
+        if not raw_txs:
+            msg = f"No transactions returned for {ms['name']} ({address}) — skipped (address may not be a valid Safe)"
+            logger.warning(msg)
+            if warnings is not None:
+                warnings.append(msg)
+            continue
         logger.info("Got %d raw transactions for %s", len(raw_txs), ms["name"])
 
         for tx in raw_txs:

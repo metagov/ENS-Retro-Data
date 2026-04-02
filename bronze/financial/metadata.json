@@ -7,7 +7,7 @@
     "safe.global",
     "ens-dashboard"
   ],
-  "collection_status": "complete",
+  "collection_status": "in_progress",
   "notes": "Ledger CSV sourced from ens-ledger.app, annotated by 0xLighthouse (https://github.com/0xLighthouse/ens-ledger-analysis)",
   "files": {
     "ens_ledger_transactions.csv": {
@@ -28,7 +28,7 @@
       "provenance": {
         "source": "ens-ledger.app",
         "collected_by": "manual_upload",
-        "collected_at": "2026-03-24T09:40:04.821101+00:00",
+        "collected_at": "2026-04-02T06:18:55.781562+00:00",
         "covers_period": "2022-03-31 to 2025-11-28",
         "notes": "Raw CSV downloaded from ens-ledger.app, part of 0xLighthouse/ens-ledger-analysis repo. Contains 2,315 annotated transactions across 11 wallets, 449 unique recipients, $264M total USD value. Reports and plots available in docs/references/lighthouse-ledger-analysis/",
         "query_or_method": "sentinel check \u2014 file already on disk"
@@ -56,28 +56,23 @@
         "source": "safe.global",
         "query_or_method": "Safe Transaction Service /balances/usd/ per wallet",
         "collected_by": "safe.global",
-        "collected_at": "2026-03-24T09:40:35.187079+00:00",
+        "collected_at": "2026-04-02T06:19:34.277942+00:00",
         "records": 17
       },
       "actual_records": 17,
       "file_size_bytes": 4783
     },
     "ens_safe_transactions.json": {
-      "status": "present",
+      "status": "pending",
       "description": "Multisig transaction history for all ENS DAO Safe wallets \u2014 tagged with working group, category, direction",
       "schema_hints": {
         "fields": "safe_address, safe_name, safe_ens_name, working_group, tx_hash, direction, token, amount, to_address, from_address, category, description, date, nonce, block_number"
       },
       "provenance": {
         "source": "safe.global",
-        "query_or_method": "Safe Transaction Service /multisig-transactions/ per wallet",
-        "collected_by": "safe.global",
-        "collected_at": "2026-03-24T12:49:37.935349+00:00",
-        "records": 4235
-      },
-      "actual_records": 4235,
-      "file_size_bytes": 2519543
+        "query_or_method": "Safe Transaction Service /multisig-transactions/ per wallet"
+      }
     }
   },
-  "last_indexed_at": "2026-03-24T12:49:37.935349+00:00"
+  "last_indexed_at": "2026-04-02T06:19:34.277942+00:00"
 }

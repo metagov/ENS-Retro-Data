@@ -2,11 +2,11 @@
 -- Reads raw JSON and renames columns to snake_case
 
 select
-    id as post_id,
+    post_id,
     topic_id,
-    author,
-    body,
+    username as author,
+    cooked as body,
     created_at,
-    likes,
+    like_count as likes,
     reply_count
 from {{ source('bronze_forum', 'forum_posts') }}

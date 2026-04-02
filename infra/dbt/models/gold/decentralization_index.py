@@ -9,9 +9,9 @@ import numpy as np
 def model(dbt, session):
     dbt.config(materialized="table")
 
-    token_dist = dbt.ref("clean_token_distribution")
-    delegations = dbt.ref("clean_delegations")
-    scorecard = dbt.ref("delegate_scorecard")
+    token_dist = dbt.ref("clean_token_distribution").df()
+    delegations = dbt.ref("clean_delegations").df()
+    scorecard = dbt.ref("delegate_scorecard").df()
 
     metrics = []
 
