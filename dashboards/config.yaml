@@ -23,7 +23,7 @@ challenges:
     hypotheses:
       - id: "H1.3"
         title: "Legacy distribution — early patterns still dominate"
-        short_title: "Legacy distribution"
+        short_title: "Early power frozen?"
         description: >
           Initial token distribution created a static power structure resistant to change.
           Individuals not present during initial delegate setup or who did not receive tokens
@@ -34,11 +34,29 @@ challenges:
           over sustained performance. Community members report that single messages or votes from
           high-power delegates can dramatically alter individual outcomes, generating feelings of
           animosity within the governance community.
-        visuals: []
+        visuals:
+          - script: "h1_3_legacy_distribution"
+            fn: "render_legacy_distribution"
+            title: "When Was Today's Power Established?"
+            takeaway: >
+              Nearly two-thirds of top-50 delegate voting power was established in a single
+              quarter — Q2 2025 — dwarfing the Q4 2021 launch (15%) and revealing that
+              today's governance structure reflects a recent, concentrated reshuffling rather
+              than the original airdrop. The Q2 2025 spike is driven almost entirely by the
+              Top 20 delegates, leaving the Delegates 21–50 tier largely unchanged.
+          - script: "h1_3_delegation_flow"
+            fn: "render_delegation_flow"
+            title: "Net Delegation Flow — Top 20 Delegates"
+            takeaway: >
+              Top 20 delegates accumulate delegation but almost never lose it — negative
+              values are rare and small across the entire period. The largest surges occurred
+              at launch (Q4'21–Q2'22), but notable mid-cycle spikes (Q4'22, Q1'25) show
+              delegation can shift in concentrated bursts. The overwhelming pattern is
+              one-directional stickiness: once delegated, voting power stays put.
 
       - id: "H2.1"
         title: "Token-weighted democracy paradox — 1T1V leads to concentration"
-        short_title: "Token-weighted paradox"
+        short_title: "Few control the vote"
         description: >
           Despite many token holders, voting power concentrates in a handful of delegates,
           creating a structural gap between token distribution and actual governance influence.
@@ -48,55 +66,80 @@ challenges:
             fn: "render_concentration_curve"
             title: "Concentration Curve — Voting Power vs Delegates"
             takeaway: >
-              A tiny fraction of delegates holds the majority of voting power. The Nakamoto
-              coefficient measures how many delegates are needed to reach 50% — the lower
-              this number, the more oligarchic the effective governance structure.
+              ENS governance has a Gini coefficient of ~0.97 — near-maximum inequality.
+              Just 18 delegates (the Nakamoto coefficient) control more than 50% of all
+              active voting power, while the top 1% of delegates hold roughly 85% of total VP.
+              The concentration curve rises almost vertically before flattening well above
+              the 50% threshold, leaving the vast majority of delegates with negligible influence.
 
       - id: "H3.3"
         title: "Low re-delegation churn — delegations rarely change"
-        short_title: "Low re-delegation"
+        short_title: "Delegations never change"
         description: >
-          Concentration correlates with delegate inactivity. Interview evidence documents cases where
-          top delegates publicly acknowledge non-participation in governance while maintaining significant
-          voting power through sticky delegations. When the airdrop occurred, token holders allocated
-          delegation and then abandoned their wallets or simply never revisited their choices — many
-          delegates hold substantial delegations that are idle or stale, representing voting power
-          controlled by disengaged or absent delegates (governance by ghost votes). The initial airdrop
-          allocation has frozen into permanent voting patterns: governance decisions reflect neither
-          broad community input nor active stakeholder engagement, but rather the legacy of a one-time
-          token distribution event.
-        visuals: []
+          When the airdrop occurred, token holders set their delegation once and then never revisited
+          their choice. Near-zero re-delegation churn means that the initial airdrop allocation has
+          frozen into permanent voting patterns: governance decisions reflect neither broad community
+          input nor active stakeholder engagement, but rather the legacy of a one-time token
+          distribution event. A direct consequence of this stickiness is that even delegates who
+          have publicly acknowledged disengagement from governance retain their voting power.
+        visuals:
+          - script: "h3_3_redelegation_churn"
+            fn: "render_redelegation_churn"
+            title: "Delegator retention — survival curve"
+            takeaway: >
+              Over 98% of delegators have never re-delegated — at month 12, retention is 98.7%
+              for top-20 delegators and 98.2% for smaller delegates, and both curves barely
+              decline through 50 months. Counterintuitively, delegators of top-20 delegates
+              are the least likely to leave, amplifying concentration over time. Delegate size
+              makes no meaningful difference: once delegated, tokens stay put regardless of
+              who holds them.
+          - script: "h3_3_churn_distribution"
+            fn: "render_churn_distribution"
+            title: "Churn count distribution"
+            takeaway: >
+              98.2% of delegators made zero delegate changes over the full study window
+              (Nov 2021 – Mar 2026) — the median is 0 and the mean is just 0.005/yr.
+              On a log scale, the "0 changes" bar (~70,000 addresses) towers over
+              "1 change" (~1,200) — a 60× cliff drop — with each additional change bucket
+              shrinking by another order of magnitude. Re-delegation is not just rare;
+              it is a near-absent behaviour in ENS governance.
 
       - id: "H6.2"
         title: "Reputation lock-in — early delegates keep power despite low activity"
-        short_title: "Reputation lock-in"
+        short_title: "Inactive, still powerful"
         description: >
-          Power concentration correlates with resistance to accountability mechanisms. Data from
-          interviews shows that top grant recipients were the strongest opponents of retrospective
-          accountability reviews — those who received the largest grants were also those who most
-          vocally opposed retrospective evaluation processes. This represents a structural incentive
-          alignment where those with the most to gain from reduced transparency wield sufficient power
-          to prevent transparency measures. The governance retrospective — designed to evaluate capital
-          allocation effectiveness — faced its strongest opposition from its primary subjects.
-          Beneficiaries of the existing system possess both the incentive and the capacity to resist
-          accountability reforms.
+          Voting power in ENS governance is highly sticky. Top delegates retain substantial
+          influence even as their participation rates decline. Token holders who delegated during
+          or shortly after the airdrop rarely revisit those choices, creating a structural lock-in
+          where early movers hold outsized power regardless of ongoing engagement. Delegates in the
+          lock-in zone, high voting power paired with low participation, face no meaningful
+          accountability mechanism: there is no automatic re-delegation trigger, no protocol-level
+          visibility into delegate inactivity, and no social norm that prompts token holders to
+          reassign their delegation. The result is a governance power structure that reflects
+          the delegation choices made at airdrop, not the active stewardship record of the past
+          two years.
         visuals:
-          - script: "h6_2_reputation_lock_in"
+          - script: "h6_2_activity_vs_vp"
             fn: "render_activity_vs_vp"
             title: "Activity vs. Delegated Voting Power"
             takeaway: >
-              A significant share of top delegates maintain substantial voting power despite low
-              participation rates — the lock-in zone. Their delegations persist not because of
-              active engagement, but because token holders rarely revisit their delegation choices
-              after the initial airdrop.
+              Multiple high-VP delegates sit deep in the lock-in zone — sub-50% participation
+              over the past 12 months — with several holding 50K–180K delegated VP. The
+              distribution is bimodal: delegates cluster near 0–40% participation or near
+              80–100%, with few in between. Notably, the two highest-VP delegates (~250K each)
+              are fully active at 100%, but the lock-in zone still controls a substantial share
+              of total governance weight with no accountability mechanism to trigger
+              re-delegation.
           - script: "h6_2_inactivity_gaps"
             fn: "render_inactivity_gaps"
             title: "Inactivity Gaps vs Delegation Retention"
             takeaway: >
-              Delegates with long inactive gaps continue to hold delegation through the entire
-              24-month window. The absence of re-delegation — even for delegates who visibly
-              stop voting — is the clearest evidence of delegation stickiness and the structural
-              lock-in that prevents governance power from redistributing to more active participants.
+              Several top delegates — most visibly imtoken.eth and one hex address — show
+              near-continuous inactivity gaps across the full 2024–2025 window, with only
+              occasional voting activity. Others (slobo.eth, brantly.eth, avsa.eth) are
+              consistently active throughout the same period. Despite this visible contrast,
+              both groups retain their delegation: inactive delegates face no re-delegation
+              pressure, making inactivity a structurally costless choice in ENS governance.
 
   - id: "C2"
     title: "Low Broad-Based Participation"
@@ -110,7 +153,7 @@ challenges:
     hypotheses:
       - id: "H4.1"
         title: "High cognitive/time costs — complexity discourages participation"
-        short_title: "H4.1 Complexity"
+        short_title: "Complexity blocks entry"
         description: >
           The cognitive cost of parsing a long proposal is only the most visible layer of
           the participation barrier. Sustained governance engagement requires months of
@@ -125,7 +168,13 @@ challenges:
           gain meaningful standing — direct relationships with stewards, track record
           through unpaid contributions, and access to the back-channels where substantive
           decisions form before reaching public votes.
-        visuals: []
+        visuals:
+          - script: "c2_participation_variance"
+            fn: "render_participation_variance"
+            title: "Participation Variance Across Proposals (Snapshot & Tally)"
+          - script: "h4_1_complexity_vs_turnout"
+            fn: "render_complexity_vs_turnout"
+            title: "Proposal Complexity vs Voter Turnout"
 
   - id: "C3"
     title: "Communication Fragmentation"
@@ -141,7 +190,7 @@ challenges:
 
       - id: "H2.2"
         title: "Coordination on status quo – large actors resist decentralizing reforms"
-        short_title: "Coordination on status quo"
+        short_title: "Insiders resist reform"
         description: >
           By the time proposals reach a formal vote, substantive negotiation has already
           concluded through informal back-channels. Voting records show few genuinely
@@ -151,11 +200,21 @@ challenges:
           are occurring. Working groups operating as independent silos amplify this: each
           group's informal coordination is invisible to the others, so cross-group
           decisions default to whichever party has the strongest informal network.
-        visuals: []
+        visuals:
+          - script: "c3_structural_reforms"
+            fn: "render_h2_2_resistance"
+            title: "Do Large Actors Resist Decentralizing Reforms?"
+            takeaway: >
+              Routine proposals pass with near-unanimous support — the vast majority
+              cluster at 90–100% "for" votes. Decentralizing reforms show the opposite
+              pattern: outcomes scatter across the full range, with several outright
+              rejected (near 0%) and the rest unevenly distributed. The contrast
+              reveals that reform proposals face genuine contestation while routine
+              operations sail through unchallenged.
 
       - id: "H3.2"
         title: "Information asymmetry — big delegates have richer info than small ones"
-        short_title: "Information asymmetry"
+        short_title: "Information gatekeeping"
         description: >
           Critical governance information — policies, precedents, past decisions — resides
           in working group stewards rather than accessible documentation. Official sites go
@@ -170,7 +229,7 @@ challenges:
 
       - id: "H6.3"
         title: "Lack of experimentation — few structural trials around delegates"
-        short_title: "Lack of experimentation"
+        short_title: "No structural trials"
         description: >
           ENS DAO is rated favorably relative to DAOs with severe communication
           dysfunction, but this benchmark obscures how far the current architecture falls
@@ -181,7 +240,17 @@ challenges:
           systems, cross-working-group briefings — there is no evidence base for
           evaluating whether reforms would reduce duplication, close coordination gaps,
           or accelerate execution.
-        visuals: []
+        visuals:
+          - script: "c3_structural_reforms"
+            fn: "render_h6_3_experimentation"
+            title: "How Often Does ENS DAO Attempt Structural Experiments?"
+            takeaway: >
+              Routine operations dominate the proposal landscape: working group funding,
+              treasury, and service provider proposals recur densely every year. Structural
+              experiments — structural_reform, delegate_structure, meta_governance — appear
+              only a handful of times across four years, with meta_governance generating
+              just a single proposal. The DAO consistently re-funds existing structures
+              rather than experimenting with alternatives.
 
   - id: "C4"
     title: "De-Facto Centralization of Decision Making"
@@ -195,7 +264,7 @@ challenges:
     hypotheses:
       - id: "H2.3"
         title: "Weak small-holder voice — small holders' preferences rarely affect outcomes"
-        short_title: "Weak small-holder voice"
+        short_title: "Small holders shut out"
         description: >
           Effective voice in ENS governance requires more than token holdings — it requires
           navigating informal power networks. Contributors who engage for extended periods
@@ -207,11 +276,32 @@ challenges:
           internal participants self-select toward conformity, concentrating effective
           voice among a small group of incumbents regardless of the underlying token
           distribution.
-        visuals: []
+        visuals:
+          - script: "h2_3_supply_vs_voice"
+            fn: "render_supply_vs_voice"
+            title: "Supply vs Voice — What Small Holders Hold vs What They Exercise"
+            takeaway: >
+              Small holders represent a large share of total ENS supply but exercise a
+              disproportionately small share of on-chain voting weight. They are numerous
+              by headcount but near-silent by governance impact.
+          - script: "h2_3_counterfactual_flip"
+            fn: "render_counterfactual_flip"
+            title: "Counterfactual Analysis — Would Removing Small-Holder Votes Change Outcomes?"
+            takeaway: >
+              Removing all small-holder votes from every on-chain proposal changes zero
+              (or near-zero) outcomes. Their combined weight is consistently overwhelmed
+              by large-holder blocs, confirming they have no decisive influence.
+          - script: "h2_3_small_holder_alignment"
+            fn: "render_small_holder_alignment"
+            title: "Small-Holder Vote Coherence — Do They Vote as a Bloc?"
+            takeaway: >
+              Small-holder votes are distributed across the full alignment spectrum with
+              no strong clustering. They do not function as a coordinated coalition,
+              ruling out the one mechanism by which small actors could punch above their weight.
 
       - id: "Hx.1"
         title: "Outcome robustness — the choice of voter with highest VP usually sides with outcomes"
-        short_title: "Outcome robustness"
+        short_title: "One whale, many outcomes"
         description: >
           The delegate with the largest voting power on a given proposal disproportionately
           sides with the winning outcome — but the causal direction matters. If large
@@ -223,11 +313,21 @@ challenges:
           votes, predetermining most outcomes. Outcome robustness may therefore reflect
           not consensus-formation but pre-coordination among a small number of actors
           operating outside formal accountability structures.
-        visuals: []
+        visuals:
+          - script: "hx_1_outcome_robustness"
+            fn: "render_outcome_robustness"
+            title: "Outcome Robustness — Does the Top Whale Drive the Vote?"
+            takeaway: >
+              On the majority of ENS proposals, the single highest-VP delegate voted for
+              the winning outcome. Removing the top voter counterfactually flips results
+              on a meaningful subset of proposals — the clearest quantitative evidence
+              that de facto governance authority concentrates in a handful of actors whose
+              alignment with the outcome reflects coordination rather than
+              consensus-formation.
 
       - id: "Hx.2"
         title: "Factional politics — informal aligned groups increase centralization of decision making"
-        short_title: "Factional politics"
+        short_title: "Informal blocs coordinate"
         description: >
           Informal coalitions of aligned delegates coordinate outside formal channels, but
           their effects extend beyond block voting. When informal power concentrates in
@@ -240,7 +340,15 @@ challenges:
           experienced stewards to exit and take institutional knowledge with them.
           Factionalism creates fragile systems that work when relationships are healthy
           but break down in ways the formal governance structure cannot repair.
-        visuals: []
+        visuals:
+          - script: "hx_2_vote_alignment"
+            fn: "render_vote_alignment"
+            title: "Delegate Vote Alignment — Faction Detection"
+            takeaway: >
+              Top delegates cluster into distinct voting blocs that persist across proposal
+              types, consistent with informal coordination outside formal channels. High
+              within-cluster alignment on contested proposals — where genuine disagreement
+              exists — is the strongest quantitative signal of pre-vote factional coordination.
 
 
 #  - id: "C5"
