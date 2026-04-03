@@ -86,8 +86,8 @@ Models live in `infra/dbt/models/staging/` and `infra/dbt/models/silver/`.
 | `stg_token_distribution` | bronze_onchain.token_distribution | address, balance_wei, percentage, snapshot_block |
 | `stg_treasury_flows` | bronze_onchain.treasury_flows | tx_hash, from_address, to_address, value_raw, token, block_number, timestamp_unix, category |
 | `stg_ens_ledger` | bronze_financial.ens_ledger | tx_hash, tx_date, quarter, source_entity, destination, category, amount, asset, value_usd |
-| `stg_compensation` | bronze_financial.compensation | recipient_address, amount, token, period, working_group, role |
-| `stg_grants` | bronze_grants.grants | grant_id, title, applicant, amount_requested (null), amount_awarded, token, status, working_group, description |
+| `stg_compensation` | bronze_financial.compensation | id, recipient_address, amount, token, value_usd, period, date, working_group, role, category |
+| `stg_grants` | bronze_grants.grants | grant_id, title, applicant, amount_requested (null), amount_awarded, token, value_usd, status, working_group, description, date, quarter |
 | `stg_forum_posts` | bronze_forum.forum_posts | post_id, topic_id, author, body, created_at, likes, reply_count |
 | `stg_delegate_profiles` | bronze_governance.tally_delegates | address, name (ens_name or name), role (null), interview_date (null), key_themes (statement_summary), summary (bio) |
 | `stg_oso_ens_repos` | bronze_github.oso_ens_repos | artifact_id, artifact_name, artifact_namespace, artifact_source, project_id, project_name |
@@ -100,15 +100,15 @@ Models live in `infra/dbt/models/staging/` and `infra/dbt/models/silver/`.
 |---|---|---|
 | `clean_snapshot_proposals` | unix→datetime, lowercase address, distinct on proposal_id | proposal_id, title, body, author_address, status, proposal_type, choices, scores, scores_total, vote_count, start_date, end_date, source |
 | `clean_snapshot_votes` | choice_index→for/against/abstain/unknown, lowercase voter | vote_id, voter, proposal_id, vote_choice, voting_power, created_at, source |
-| `clean_tally_proposals` | wei→ether, lowercase proposer, distinct on proposal_id | proposal_id, title, body, proposer_address, status, for_votes, against_votes, abstain_votes, start_block, end_block, source |
+| `clean_tally_proposals` | wei→ether, lowercase proposer, distinct on proposal_id, ISO 8601 timestamps cast to datetime | proposal_id, title, body, proposer_address, status, for_votes, against_votes, abstain_votes, start_block, end_block, start_date, end_date, voter_count, source |
 | `clean_tally_votes` | support_code→vote_choice, wei→ether, lowercase voter | vote_id, voter, proposal_id, vote_choice, weight, reason, created_at, source |
 | `clean_tally_delegates` | wei→ether, dedup by address | address, name, ens_name, twitter, bio, voting_power, delegators_count, statement, statement_summary, is_seeking_delegation, participation_rate, voted_proposals_count, source |
 | `clean_delegations` | unix→datetime, wei→ether, lowercase addresses | delegator, delegate, block_number, delegated_at, token_balance |
 | `clean_token_distribution` | wei→ether, recalculate %, lowercase address | address, balance, percentage, snapshot_block |
 | `clean_ens_ledger` | lowercase entities, add flow_type (inflow/outflow/internal), filter null value_usd | tx_hash, tx_date, quarter, source_entity, destination, category, amount, asset, value_usd, flow_type |
 | `clean_treasury_flows` | token-aware decimal conversion (USDC/USDT÷1e6, others÷1e18), unix→datetime, lowercase addresses, **whitelist ETH/ENS/USDC/USDT/WETH only** | tx_hash, from_address, to_address, value_ether, token, block_number, transacted_at, category |
-| `clean_compensation` | lowercase fields, distinct on full row | recipient_address, amount, token, period, working_group, role |
-| `clean_grants` | lowercase status/working_group, distinct on grant_id | grant_id, title, applicant, amount_requested, amount_awarded, token, status, working_group, description |
+| `clean_compensation` | lowercase fields, dedup on (recipient, amount, token, period, wg, role, date) | id, recipient_address, amount, token, value_usd, period, date, working_group, role, category |
+| `clean_grants` | lowercase status/working_group, SELECT DISTINCT on all columns | grant_id, title, applicant, amount_requested, amount_awarded, token, value_usd, status, working_group, description, date, quarter |
 | `clean_oso_ens_code_metrics` | dedup by last_commit_date, cast counts to int | artifact_id, artifact_name, artifact_namespace, star_count, fork_count, contributor_count, commit_count_6m, merged_PR_count_6m, opened_issue_count_6m, first_commit_date, last_commit_date, source |
 | `clean_oso_ens_timeseries` | dedup on (artifact_id, event_type, event_time) | artifact_id, artifact_name, event_type, amount, event_time, source |
 | `address_crosswalk` | Union of tally/snapshot/delegation addresses | address, ens_name, primary_source |
@@ -137,9 +137,11 @@ Models live in `infra/dbt/models/gold/`.
 - **Addresses:** Lowercased uniformly across all layers
 - **Tally data:** Historical snapshot only — Tally.xyz shut down, no re-indexing
 - **Pending data:** `oso_ens_code_metrics`, `oso_ens_timeseries`, `ens_safe_transactions` not yet collected
-- **Grants:** `large_grants.json` records actual disbursements only — `amount_requested` is always null
+- **Grants:** `large_grants.json` records actual disbursements only — `amount_requested` is always null. `grant_id` is not unique (one grant can have multiple payment rows). 421 rows post-dedup.
+- **Compensation:** 598 rows (599 bronze - 1 true duplicate). Monthly payments correctly preserved via date-inclusive dedup key. `category` field added (Salaries/Stream/Fellowship).
 - **Delegations:** `token_balance` is null by design — join with `token_distribution` for balances
 - **Period coverage:** Ledger/financial data spans 2022-03-31 to 2025-11-28
+- **Tally governance timestamps:** All 66 Tally proposals in `governance_activity` now have `start_date` / `end_date` / `voter_count` wired from bronze ISO 8601 timestamps (fixed 2026-04-03).
 
 ---
 
