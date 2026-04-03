@@ -111,8 +111,35 @@ models:
           - unique:
               severity: warn
 
+  - name: clean_ens_ledger
+    description: "Cleaned ENS Foundation ledger with flow_type classification (inflow/outflow/internal)"
+    columns:
+      - name: tx_hash
+        tests:
+          - not_null
+      - name: tx_date
+        tests:
+          - not_null
+      - name: category
+        tests:
+          - not_null
+      - name: flow_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['inflow', 'outflow', 'internal']
+      - name: asset
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['ETH', 'ENS', 'USDC', 'USDT', 'WETH']
+              severity: warn
+      - name: value_usd
+        tests:
+          - not_null
+
   - name: clean_treasury_flows
-    description: "Cleaned treasury flows with normalized addresses (placeholder until on-chain data collected)"
+    description: "Cleaned on-chain treasury flows — legitimate tokens only, token-correct decimal conversion"
     columns:
       - name: tx_hash
         tests:

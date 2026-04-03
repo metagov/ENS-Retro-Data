@@ -8,7 +8,10 @@ select
     amount_requested,
     amount_awarded,
     token,
+    value_usd,
     status,
     working_group,
-    description
+    description,
+    date,
+    quarter
 from {{ source('bronze_grants', 'grants') }}

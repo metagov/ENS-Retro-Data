@@ -46,12 +46,16 @@ sources:
           external_location: "read_json_auto('../../bronze/on-chain/treasury_flows.json')"
 
   - name: bronze_financial
-    description: "Raw financial data: compensation records"
+    description: "Raw financial data: compensation records and ENS Foundation ledger"
     tables:
       - name: compensation
         description: "Steward and contributor compensation records (JSON)"
         meta:
           external_location: "read_json_auto('../../bronze/financial/compensation.json')"
+      - name: ens_ledger
+        description: "ENS Foundation labeled transaction ledger with categories and USD values (CSV)"
+        meta:
+          external_location: "read_csv_auto('../../bronze/financial/ens_ledger_transactions.csv')"
 
   - name: bronze_grants
     description: "Raw grants program data"

@@ -803,7 +803,7 @@ def ens_safe_transactions(context: AssetExecutionContext) -> None:
 # ============================================================================
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_github", compute_kind="api")
 def oso_ens_repos(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
     """Fetch all ENS GitHub repositories registered in Open Source Observer.
 
@@ -833,7 +833,7 @@ def oso_ens_repos(context: AssetExecutionContext, oso_config: OsoApiConfig) -> N
     context.log.info(f"[BRONZE] ✓ oso_ens_repos COMPLETE — {len(repos)} repos written")
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_github", compute_kind="api")
 def oso_ens_code_metrics(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
     """Fetch per-repo code health metrics for ENS GitHub repositories from OSO.
 
@@ -866,13 +866,13 @@ def oso_ens_code_metrics(context: AssetExecutionContext, oso_config: OsoApiConfi
     )
 
 
-@asset(group_name="bronze", compute_kind="api")
+@asset(group_name="bronze_github", compute_kind="api")
 def oso_ens_timeseries(context: AssetExecutionContext, oso_config: OsoApiConfig) -> None:
     """Fetch daily GitHub event history for ENS repos from OSO (incremental append).
 
     DATA: All GitHub event types (COMMIT_CODE, PULL_REQUEST_MERGED, ISSUE_OPENED, etc.)
           one row per (repo, event_type, day). Incrementally appended on reruns.
-    API: OSO data lake via pyoso (timeseries_events_by_artifact_v0)
+    API: OSO data lake via pyoso (timeseries_metrics_by_artifact_v0 + metrics_v0)
     OUTPUT: bronze/github/oso_ens_timeseries.json
 
     STRATEGY: Incremental append — reads existing JSON to find max(time), fetches
@@ -895,7 +895,7 @@ def oso_ens_timeseries(context: AssetExecutionContext, oso_config: OsoApiConfig)
         with open(path) as f:
             existing = json.load(f)
         if existing:
-            since = max(str(r.get("time", "")) for r in existing if r.get("time"))
+            since = max(str(r.get("event_time", "")) for r in existing if r.get("event_time"))
             context.log.info(
                 f"[BRONZE] Found {len(existing)} existing rows — fetching since {since}"
             )
@@ -919,8 +919,8 @@ def oso_ens_timeseries(context: AssetExecutionContext, oso_config: OsoApiConfig)
         context,
         source="opensource.observer",
         method=(
-            f"pyoso SQL: timeseries_events_by_artifact_v0 "
-            f"WHERE artifact_namespace='ensdomains' AND time > '{since}'"
+            f"pyoso SQL: timeseries_metrics_by_artifact_v0 + metrics_v0 "
+            f"WHERE artifact_namespace='ensdomains' AND sample_date >= '{since}'"
         ),
     )
 

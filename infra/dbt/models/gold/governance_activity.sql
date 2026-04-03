@@ -24,8 +24,9 @@ tally as (
         for_votes,
         against_votes,
         abstain_votes,
-        null as start_date,
-        null as end_date
+        voter_count,
+        start_date,
+        end_date
     from {{ ref('clean_tally_proposals') }}
 ),
 
@@ -65,7 +66,7 @@ select
     t.title,
     t.status,
     null as vote_count,
-    null as voter_count,
+    t.voter_count,
     case when t.vote_total > 0 then round(t.for_votes / t.vote_total * 100, 2) else null end as for_pct,
     case when t.vote_total > 0 then round(t.against_votes / t.vote_total * 100, 2) else null end as against_pct,
     case when t.vote_total > 0 then round(t.abstain_votes / t.vote_total * 100, 2) else null end as abstain_pct,

@@ -8,8 +8,11 @@ select distinct
     amount_requested,
     amount_awarded,
     token,
+    value_usd,
     lower(status) as status,
     lower(working_group) as working_group,
-    description
+    description,
+    try_cast(date as date) as date,
+    quarter
 from {{ ref('stg_grants') }}
 where grant_id is not null

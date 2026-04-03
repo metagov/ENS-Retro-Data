@@ -29,12 +29,26 @@ models:
           - not_null
 
   - name: treasury_summary
-    description: "Treasury flows aggregated by month and category (placeholder until on-chain data collected)"
+    description: "Treasury flows aggregated by month and category, sourced from ENS Foundation labeled ledger (2022–2025). Amounts in USD."
     columns:
       - name: period
         tests:
-          - not_null:
-              severity: warn
+          - not_null
+      - name: category
+        tests:
+          - not_null
+      - name: inflows_usd
+        tests:
+          - not_null
+      - name: outflows_usd
+        tests:
+          - not_null
+      - name: net_usd
+        tests:
+          - not_null
+      - name: internal_transfer_usd
+        tests:
+          - not_null
 
   - name: participation_index
     description: "Composite participation metrics including Gini coefficient"
