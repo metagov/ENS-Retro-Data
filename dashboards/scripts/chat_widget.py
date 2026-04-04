@@ -8,10 +8,29 @@ Page context (current challenge + hypothesis) is injected into the
 ChatKit session so the agent knows what the user is looking at.
 """
 
+import html
+import re
+import time
+
 import streamlit as st
 import streamlit.components.v1 as components
 
 from scripts.chat_session import create_chatkit_session, is_configured
+
+# Prompt injection guard: strip control characters and common injection patterns
+# from the page context before it is sent to the model as metadata.
+_CTX_STRIP = re.compile(r"[\x00-\x1f\x7f]|(\bignore\b.*\binstructions?\b)", re.IGNORECASE)
+_MAX_CTX_LEN = 200
+
+# TTL for the cached client_secret (seconds). ChatKit sessions are short-lived;
+# re-use within 5 minutes to avoid hammering the sessions API on every Streamlit rerun.
+_SECRET_TTL = 300
+
+
+def _sanitize_context(raw: str) -> str:
+    """Strip control characters and potential prompt-injection text."""
+    cleaned = _CTX_STRIP.sub("", raw)
+    return cleaned[:_MAX_CTX_LEN]
 
 
 def get_page_context() -> str:
@@ -19,10 +38,26 @@ def get_page_context() -> str:
     challenge = st.session_state.get("current_challenge", "")
     hypothesis = st.session_state.get("current_hypothesis", "")
     if challenge and hypothesis:
-        return f"Challenge: {challenge} | Hypothesis: {hypothesis}"
-    if challenge:
-        return f"Challenge: {challenge}"
-    return "ENS DAO Governance Dashboard"
+        raw = f"Challenge: {challenge} | Hypothesis: {hypothesis}"
+    elif challenge:
+        raw = f"Challenge: {challenge}"
+    else:
+        raw = "ENS DAO Governance Dashboard"
+    return _sanitize_context(raw)
+
+
+def _get_cached_secret(page_context: str) -> str | None:
+    """Return a cached client_secret if still within TTL, else mint a fresh one."""
+    now = time.monotonic()
+    cached = st.session_state.get("_chatkit_secret")
+    cached_at = st.session_state.get("_chatkit_secret_ts", 0.0)
+    if cached and (now - cached_at) < _SECRET_TTL:
+        return cached
+    secret = create_chatkit_session(page_context=page_context)
+    if secret:
+        st.session_state["_chatkit_secret"] = secret
+        st.session_state["_chatkit_secret_ts"] = now
+    return secret
 
 
 def render_chat_widget() -> None:
@@ -37,7 +72,7 @@ def render_chat_widget() -> None:
         return
 
     page_context = get_page_context()
-    client_secret = create_chatkit_session(page_context=page_context)
+    client_secret = _get_cached_secret(page_context=page_context)
 
     if not client_secret:
         return
@@ -45,9 +80,16 @@ def render_chat_widget() -> None:
     # ENS brand colours
     ENS_BLUE = "#3B4EC8"
     ENS_BLUE_HOVER = "#2D3DAF"
-    ENS_LIGHT = "#F0F4FF"
+    ENS_LIGHT = "#F0F4FF"  # noqa: F841
 
-    html = f"""
+    # Escape values that appear in HTML/JS context to prevent XSS.
+    # page_context goes into an HTML text node; client_secret goes into a JS string literal.
+    safe_context = html.escape(page_context)
+    # JSON-encode the secret so any special chars are safely escaped in the JS string
+    import json as _json
+    safe_secret = _json.dumps(client_secret)  # produces a quoted JS string literal
+
+    html_doc = f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -162,7 +204,7 @@ def render_chat_widget() -> None:
   <div id="chat-header">
     <div id="chat-header-left">
       <span id="chat-title">ENS Data Assistant</span>
-      <span id="chat-context">{page_context}</span>
+      <span id="chat-context">{safe_context}</span>
     </div>
     <button id="close-btn" onclick="toggleChat()">×</button>
   </div>
@@ -195,7 +237,7 @@ def render_chat_widget() -> None:
     const container = document.getElementById('chatkit-container');
     if (window.ChatKit) {{
       window.ChatKit.mount(container, {{
-        getClientSecret: async () => '{client_secret}',
+        getClientSecret: async () => {safe_secret},
         style: {{
           height: '100%',
           borderRadius: '0',
@@ -212,4 +254,4 @@ def render_chat_widget() -> None:
 """
 
     # Render as a fixed-position overlay — height 0 so it takes no page space
-    components.html(html, height=0, scrolling=False)
+    components.html(html_doc, height=0, scrolling=False)

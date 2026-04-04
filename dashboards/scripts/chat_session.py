@@ -22,6 +22,26 @@ load_dotenv(Path(__file__).parent.parent.parent / ".env")
 # ---------------------------------------------------------------------------
 WORKFLOW_ID = "TODO_INSERT_WORKFLOW_ID_HERE"
 
+# Maximum number of ChatKit session tokens minted per Streamlit browser session.
+# Prevents a single session from looping and burning tokens in case of a bug.
+_SESSION_TOKEN_CAP = 10
+
+
+def _get_session_id() -> str:
+    """Return the Streamlit browser session ID for use as the ChatKit user field.
+
+    Falls back to a static string if the runtime context is unavailable
+    (e.g., during unit tests).
+    """
+    try:
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+        ctx = get_script_run_ctx()
+        if ctx:
+            return ctx.session_id
+    except Exception:
+        pass
+    return "ens-dashboard-user"
+
 
 def create_chatkit_session(page_context: str = "") -> str | None:
     """Generate a ChatKit client secret for the current user session.
@@ -33,6 +53,8 @@ def create_chatkit_session(page_context: str = "") -> str | None:
     Returns:
         client_secret string, or None if generation fails.
     """
+    import streamlit as st
+
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         return None
@@ -40,13 +62,21 @@ def create_chatkit_session(page_context: str = "") -> str | None:
     if WORKFLOW_ID == "TODO_INSERT_WORKFLOW_ID_HERE":
         return None
 
+    # Rate-limit: cap token mints per Streamlit session
+    mint_count = st.session_state.get("_chatkit_mint_count", 0)
+    if mint_count >= _SESSION_TOKEN_CAP:
+        return None
+    st.session_state["_chatkit_mint_count"] = mint_count + 1
+
+    session_id = _get_session_id()
+
     try:
         from openai import OpenAI
         client = OpenAI(api_key=api_key)
 
         session = client.chatkit.sessions.create({
             "workflow": {"id": WORKFLOW_ID},
-            "user": "ens-dashboard-user",
+            "user": session_id,
             **({"metadata": {"page_context": page_context}} if page_context else {}),
         })
         return session.client_secret

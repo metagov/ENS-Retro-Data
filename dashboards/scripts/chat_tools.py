@@ -5,17 +5,32 @@ These functions are called by the ChatKit agent backend (via the session
 context) to answer data questions from the chat widget.
 """
 
+import re
 from pathlib import Path
 
 import duckdb
 
 _DB_PATH = Path(__file__).parent.parent.parent / "warehouse" / "ens_retro.duckdb"
 
-_BLOCKED = ("insert", "update", "delete", "drop", "create", "alter", "truncate", "replace")
+# Allowlist: only SELECT and WITH (CTEs) are permitted entry points.
+_ALLOWED_START = re.compile(r"^\s*(select|with)\b", re.IGNORECASE)
+
+# Secondary guard: catch dangerous keywords anywhere in the query, including
+# comment-escaped variants like `sel/**/ect` or stacked statements via semicolons.
+_UNSAFE_PATTERNS = re.compile(
+    r"(;|--|\binsert\b|\bupdate\b|\bdelete\b|\bdrop\b|\bcreate\b"
+    r"|\balter\b|\btruncate\b|\breplace\b|\bcopy\b|\battach\b|\bdetach\b"
+    r"|\bpragma\b|\bload\b|\binstall\b)",
+    re.IGNORECASE,
+)
 
 
 def _get_conn() -> duckdb.DuckDBPyConnection:
-    return duckdb.connect(str(_DB_PATH), read_only=True)
+    conn = duckdb.connect(str(_DB_PATH), read_only=True)
+    # Constrain resource usage per query
+    conn.execute("SET threads TO 1")
+    conn.execute("SET memory_limit='128MB'")
+    return conn
 
 
 def query_duckdb(sql: str) -> str:
@@ -24,10 +39,14 @@ def query_duckdb(sql: str) -> str:
     Returns results as a markdown table (max 50 rows).
     Returns an error string if the query fails or is unsafe.
     """
-    sql_lower = sql.strip().lower()
-    for blocked in _BLOCKED:
-        if sql_lower.startswith(blocked) or f" {blocked} " in sql_lower:
-            return f"Error: {blocked.upper()} statements are not allowed. Only SELECT queries are permitted."
+    if not sql or not sql.strip():
+        return "Error: Empty query."
+
+    if not _ALLOWED_START.match(sql):
+        return "Error: Only SELECT queries are permitted."
+
+    if _UNSAFE_PATTERNS.search(sql):
+        return "Error: Query contains disallowed keywords or syntax."
 
     try:
         conn = _get_conn()
@@ -37,7 +56,7 @@ def query_duckdb(sql: str) -> str:
             return "Query returned no results."
         if len(df) > 50:
             df = df.head(50)
-            note = f"\n\n*Results truncated to 50 rows.*"
+            note = "\n\n*Results truncated to 50 rows.*"
         else:
             note = ""
         return df.to_markdown(index=False) + note
@@ -61,14 +80,16 @@ def list_tables() -> str:
 
         lines = []
         for _, row in tables.iterrows():
-            schema = row["table_schema"]
-            table = row["table_name"]
-            cols = conn.execute(f"""
-                SELECT column_name, data_type
-                FROM information_schema.columns
-                WHERE table_schema = '{schema}' AND table_name = '{table}'
-                ORDER BY ordinal_position
-            """).fetchdf()
+            schema = str(row["table_schema"])
+            table = str(row["table_name"])
+            # Use parameterized query — no f-string interpolation into SQL
+            cols = conn.execute(
+                "SELECT column_name, data_type "
+                "FROM information_schema.columns "
+                "WHERE table_schema = ? AND table_name = ? "
+                "ORDER BY ordinal_position",
+                [schema, table],
+            ).fetchdf()
             col_str = ", ".join(
                 f"{r['column_name']} ({r['data_type']})" for _, r in cols.iterrows()
             )
