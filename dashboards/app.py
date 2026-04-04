@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from scripts.config import load_config, resolve_render_fn  # noqa: E402
 from scripts.db import get_connection  # noqa: E402
+from scripts.chat_widget import render_chat_widget  # noqa: E402
 
 st.set_page_config(
     page_title="ENS DAO Governance Retrospective",
@@ -124,6 +125,10 @@ for c_tab, challenge in zip(challenge_tabs, config.challenges):
 
         for h_tab, hyp in zip(hyp_tabs, challenge.hypotheses):
             with h_tab:
+                # Track current context for chat widget
+                st.session_state["current_challenge"] = challenge.title
+                st.session_state["current_hypothesis"] = hyp.title
+
                 # Hypothesis badge + title
                 st.markdown(
                     f"""
@@ -156,3 +161,9 @@ for c_tab, challenge in zip(challenge_tabs, config.challenges):
                         else:
                             if visual.takeaway:
                                 _render_takeaway(visual.takeaway)
+
+# ---------------------------------------------------------------------------
+# Chat widget — rendered last so session_state context is fully populated
+# ---------------------------------------------------------------------------
+
+render_chat_widget()
