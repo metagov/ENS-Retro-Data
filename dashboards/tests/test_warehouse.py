@@ -381,6 +381,29 @@ def test_grants_awarded_positive(con):
     assert neg == 0, f"{neg} grants have non-positive amount_awarded"
 
 
+def test_grants_amount_requested_is_null(con):
+    """amount_requested is structurally null across all grant records — this is expected.
+
+    ENS uses a layered funding model:
+    - Small grants: funding amount is preset per round; winners are chosen by token-weighted
+      vote on Snapshot. There is no individual "requested" amount — applicants submit project
+      descriptions, not funding asks.
+    - Large/strategic grants: stewards negotiate directly with applicants; the awarded amount
+      IS the agreed amount. A separate "requested" figure is not tracked in the source data.
+
+    If this test starts failing, it means amount_requested was backfilled from a new source
+    (e.g., Karma, Notion DB, or forum posts) and the test_grants_awarded_positive test above
+    should be extended to cover the requested vs awarded relationship.
+    """
+    non_null = con.execute(
+        "SELECT COUNT(*) FROM main_silver.clean_grants WHERE amount_requested IS NOT NULL"
+    ).fetchone()[0]
+    assert non_null == 0, (
+        f"{non_null} grants have a non-null amount_requested — "
+        "update this test if a new source has been wired in"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Silver: clean_token_distribution
 # ---------------------------------------------------------------------------
