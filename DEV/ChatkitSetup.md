@@ -55,11 +55,8 @@
 ### Design
 
 ```
-[User Message + page_context metadata]
-          │
-          ▼
-   [Set State]
-   state.context ← metadata.page_context
+[User Message]
+   (page_context arrives as session metadata — no Set State needed)
           │
           ▼
      [Guardrail]
@@ -75,19 +72,22 @@
                   [End]
 ```
 
-This is the guardrail-first template. One capable agent handles all question types —
-data queries, governance explanations, cross-cutting analysis — by choosing the right
-tool. No classifier needed.
+3 nodes total. `page_context` is passed as session metadata from `chat_session.py`
+and referenced directly in the agent system prompt — no Set State node needed.
 
 ### Components to place in the IDE
 
 | Node | Type | Config |
 |------|------|--------|
-| Entry | Set State | `state.context ← metadata.page_context` |
 | Filter | Guardrail | Blocks unsafe inputs — see rules below |
 | Fail path | End | Output: refusal message |
 | Main | ENS Analyst Agent | GPT-4o + File Search + HTTP tools |
 | Terminal | End | Normal response |
+
+> **Note on Set State:** It exists under the **Data** category in the component panel.
+> We don't need it here because `page_context` is already in the session metadata and
+> accessible as a template variable in the agent prompt. Only use Set State if you need
+> to pass data *between* nodes mid-workflow.
 
 ---
 
@@ -125,7 +125,8 @@ Tool rules:
 - Return query results as markdown tables, max 20 rows
 - If a query fails, explain why and suggest a fix
 
-Current dashboard context: {{state.context}}
+Current dashboard context: {{metadata.page_context}}
+(check the variables panel in Agent Builder — it may show as {{session.metadata.page_context}} or {{page_context}})
 
 Key facts (April 2026):
 - 37,892 delegates, Nakamoto coefficient = 18
