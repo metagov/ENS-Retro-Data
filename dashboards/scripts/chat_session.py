@@ -16,11 +16,13 @@ from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).parent.parent.parent / ".env")
 
-# ---------------------------------------------------------------------------
-# TODO: Insert your Agent Builder workflow ID here once you have it.
-# Get it from: platform.openai.com/agents → your agent → copy workflow ID
-# ---------------------------------------------------------------------------
-WORKFLOW_ID = "TODO_INSERT_WORKFLOW_ID_HERE"
+# Read workflow ID from environment — set WORKFLOW_ID in .env or as a Fly secret.
+# Falls back to the OPENAI_WORKFLOWS_API_KEY env var (same value, different name).
+WORKFLOW_ID = (
+    os.environ.get("WORKFLOW_ID")
+    or os.environ.get("OPENAI_WORKFLOWS_API_KEY")
+    or ""
+)
 
 # Maximum number of ChatKit session tokens minted per Streamlit browser session.
 # Prevents a single session from looping and burning tokens in case of a bug.
@@ -59,7 +61,7 @@ def create_chatkit_session(page_context: str = "") -> str | None:
     if not api_key:
         return None
 
-    if WORKFLOW_ID == "TODO_INSERT_WORKFLOW_ID_HERE":
+    if not WORKFLOW_ID:
         return None
 
     # Rate-limit: cap token mints per Streamlit session
@@ -86,7 +88,4 @@ def create_chatkit_session(page_context: str = "") -> str | None:
 
 def is_configured() -> bool:
     """Return True if both the API key and workflow ID are set."""
-    return (
-        bool(os.environ.get("OPENAI_API_KEY"))
-        and WORKFLOW_ID != "TODO_INSERT_WORKFLOW_ID_HERE"
-    )
+    return bool(os.environ.get("OPENAI_API_KEY")) and bool(WORKFLOW_ID)
