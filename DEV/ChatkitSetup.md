@@ -16,9 +16,9 @@
 - [x] Dagster sensor wired — auto-refreshes vector store after every gold materialization
 - [x] `OPENAI_API_KEY` in `.env`
 - [x] `OPENAI_WORKFLOWS_API_KEY` in `.env`
-- [ ] **Create workflow in Agent Builder** ← you are here
-- [ ] **Insert `WORKFLOW_ID` into `chat_session.py:23`**
-- [ ] Smoke test widget locally
+- [x] Workflow created in Agent Builder
+- [x] `WORKFLOW_ID` wired — reads from `OPENAI_WORKFLOWS_API_KEY` in `.env` automatically
+- [ ] **Smoke test widget locally** ← you are here (`streamlit run app.py` → look for 💬 bubble)
 - [ ] `fly secrets set OPENAI_API_KEY=<key>` + `fly deploy`
 - [ ] Build `/api/query` + `/api/tables` HTTP endpoints on Fly.io
 - [ ] Register HTTP tools in Agent Builder (enables live DB queries)
