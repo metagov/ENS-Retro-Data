@@ -12,15 +12,36 @@
     height: 100%;
     background: white;
     font-family: system-ui, -apple-system, sans-serif;
+    overflow: hidden;
   }
   openai-chatkit {
     display: block;
     width: 100%;
     height: 100%;
   }
+  #back-link {
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    z-index: 100;
+    color: #718096;
+    text-decoration: none;
+    font-size: 13px;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+  }
+  #back-link:hover {
+    color: #3B4EC8;
+    background: rgba(255,255,255,0.95);
+  }
 </style>
 </head>
 <body>
+<a id="back-link" href="/" target="_top">&larr; Dashboard</a>
 <script>
 (function () {
   var secret = window.location.hash.substring(1);
