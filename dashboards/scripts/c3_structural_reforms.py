@@ -3,7 +3,7 @@ C3 — H2.2 and H6.3: Structural Reform Resistance and Experimentation Scarcity
 
 H2.2: Do large actors resist decentralizing reforms?
        Identifies proposals that would reduce governance concentration and tracks
-       how the top-10 power-holders vote on them vs. routine proposals.
+       how the top-30 power-holders vote on them vs. routine proposals.
 
 H6.3: Lack of experimentation — few structural trials around delegates.
        Maps all proposals that attempted to change delegate or working-group
@@ -11,7 +11,7 @@ H6.3: Lack of experimentation — few structural trials around delegates.
 
 Shared data layer:
   _load_proposals()       — all proposals + classification via proposal_type.py
-  _load_delegate_votes()  — top-10 VP-holder votes (Snapshot only; Tally
+  _load_delegate_votes()  — top-30 VP-holder votes (Snapshot only; Tally
                             vote_choice = 'unknown' in silver)
 
 Entry points:
@@ -27,35 +27,35 @@ import streamlit as st
 from scripts.db import get_connection
 from scripts.proposal_type import classify_proposals
 
-TOP_N = 10
+TOP_N = 30
 
-# Category display order and colors for the timeline
+# Category display order and colors for the timeline (DAOIP-4 type strings)
 _CAT_ORDER = [
-    "election",
-    "working_group_funding",
-    "service_provider",
-    "treasury",
-    "ecosystem_protocol",
-    "structural_reform",
-    "delegate_structure",
-    "meta_governance",
-    "routine_executable",
-    "airdrop_legacy",
-    "general",
+    "metagov/delegate-governance",
+    "treasury/budget",
+    "treasury/grant",
+    "treasury/investment",
+    "protocol/major-change",
+    "protocol/small-change",
+    "metagov/major-change",
+    "metagov/small-change",
+    "protocol/other",
+    "treasury/other",
+    "metagov/other",
 ]
 
 _CAT_COLORS = {
-    "election":             "#8172B3",
-    "working_group_funding":"#64B5CD",
-    "service_provider":     "#4C72B0",
-    "treasury":             "#937860",
-    "ecosystem_protocol":   "#55A868",
-    "structural_reform":    "#C44E52",
-    "delegate_structure":   "#DD8452",
-    "meta_governance":      "#DA8BC3",
-    "routine_executable":   "#CBD5E0",
-    "airdrop_legacy":       "#B5B867",
-    "general":              "#A8A8A8",
+    "metagov/delegate-governance": "#8172B3",
+    "treasury/budget":             "#64B5CD",
+    "treasury/grant":              "#4C72B0",
+    "treasury/investment":         "#937860",
+    "protocol/major-change":       "#55A868",
+    "metagov/major-change":        "#C44E52",
+    "metagov/small-change":        "#DA8BC3",
+    "protocol/small-change":       "#CBD5E0",
+    "protocol/other":              "#CBD5E0",
+    "treasury/other":              "#B5B867",
+    "metagov/other":               "#A8A8A8",
 }
 
 # Vote encoding for heatmap: for=0, against=1, abstain=2, no-vote=3
@@ -142,7 +142,7 @@ def _load_proposals() -> pd.DataFrame:
 @st.cache_data
 def _load_delegate_votes() -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Top-10 delegate profiles + their Snapshot votes (Tally excluded:
+    Top-30 delegate profiles + their Snapshot votes (Tally excluded:
     vote_choice = 'unknown' in clean_tally_votes).
     """
     con = get_connection()
@@ -509,7 +509,7 @@ def _delegate_reform_heatmap(
 
     fig.update_layout(
         title=dict(
-            text="Top-10 delegate votes on decentralizing reform proposals (Snapshot)",
+            text="Top-30 delegate votes on decentralizing reform proposals (Snapshot)",
             font=dict(size=17, color="#2D3748"), x=0, xanchor="left",
         ),
         plot_bgcolor="white", paper_bgcolor="white",
@@ -664,7 +664,7 @@ def render_h2_2_resistance() -> None:
         "<p style='color:#718096; font-size:14px; margin-bottom:16px;'>"
         "Decentralizing reforms — proposals that cap voting power, introduce alternative "
         "voting mechanisms, or reduce governance concentration — are compared to routine "
-        "proposals. The delegate heatmap shows how the top-10 VP-holders voted on each "
+        "proposals. The delegate heatmap shows how the top-30 VP-holders voted on each "
         "reform proposal (Snapshot only; Tally individual vote choices are not available "
         "in the current data).</p>",
         unsafe_allow_html=True,
@@ -684,7 +684,7 @@ def render_h2_2_resistance() -> None:
         st.plotly_chart(heatmap, use_container_width=True)
     else:
         st.info(
-            "No reform proposals with top-10 delegate votes found on Snapshot. "
+            "No reform proposals with top-30 delegate votes found on Snapshot. "
             "This may indicate that identified reform proposals were primarily on Tally, "
             "where individual vote choices are not available."
         )
@@ -693,7 +693,7 @@ def render_h2_2_resistance() -> None:
 
     st.caption(
         "Decentralizing reform flag: keyword matching on title + body (proposal_type.py). "
-        "Top-10 delegates ranked by current voting power from delegate_scorecard. "
+        "Top-30 delegates ranked by current voting power from delegate_scorecard. "
         "Delegate heatmap: Snapshot proposals only. "
         "Tally aggregate outcomes included in pass-rate cards. "
         "Sources: Snapshot · Tally · warehouse/ens_retro.duckdb"

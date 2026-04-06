@@ -1,0 +1,1628 @@
+{
+  "0xf0ad5ad5a1ee353a65424a83e74f2b8846b16885a4be99af26b5162bfa78c644": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "anti_concentration",
+      "new_delegate_mech",
+      "pilot_program"
+    ],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0x7b603c5ada65cfcdbdfec9a33352edf731615fe96fbcc09daa7aa97b327e15ce": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xc689edd77def6b9f6be6ca7fa1729e597c85ee12ae96e134d995a8b9fd78a21f": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xa9c47b281667a85f80e0cc9be5904438c9205e123352779cbb69b0ecf583307c": {
+    "proposal_category": "metagov/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "pilot_program"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 3,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "0x60c95ab69a427ce263f4c3c950df8da1134e96a3e76d139c8dac366271009530": {
+    "proposal_category": "metagov/small-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 5,
+    "time_to_evaluate": 4
+  },
+  "0x0cca1cf36731203e235b0e2de9041be3a16d9cdeadff6e15e1f1215c611e12ef": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 1,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0x5067725bef9cde0de0024adedb653a7a1752aefa726adf628b77048d85821a6d": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x88de13f2f088390262d1d5e7db9ddff5a74d0b878fedf590a0448c32692078ba": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [
+      "new_delegate_mech"
+    ],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x0f906ef744da4aace051305dff824fe7b000814f23af36f037f0dd23a1a94f98": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x1f328fd1fda5f3cabfdace3e521403def7ad41b0b0582e27334c135cd23c511d": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xf3a4673fe04a3ecfed4a2f066f6ced1539a5466d61630428333360b843653c54": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "anti_concentration",
+      "governance_reform",
+      "pilot_program",
+      "security_council"
+    ],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0xd3437f1c9ece8a309da116be5bffaf31fa40df5361e04e43f9c913970a8746ee": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x00bd3f6c317331cb20e8123d9423538ddde87e74d4caa54becb50ef56f999561": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x6ba81cd2997288cc49ae1b95921ec8f107e8ffb9733321d53d488e2b30710b86": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "new_body"
+    ],
+    "cognitive_load": 4,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0xa1a41a0a1d0588502cd8a3e0c1d0d6e0ad82b2c7af21a1a4999ff7f617a01ac9": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "0xdaff050d30c77fe469da7eaa5b5bae0cb892f91a89c119367e47faf370667240": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x1ab7ef84f6e904582d5b5b921944b5b1a8e36dbff1f1248fde87fef02b046816": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "0x46c7294aca8d70ae8213e8e8c6915697c7be1aab731fbb7e534276f7eb0ef2b9": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x056dd964a9fb8da60cfc46d82c3770b09b22212c030c81321df7de9015053082": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xe07284156fb063d5fba6b9fed50cc74fad36ea02c2ede0207434db476884104b": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": false,
+    "reform_tags": [
+      "delegation_reform",
+      "governance_reform"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "0x104eb11d42813fadc2b408856e8fa2c10e34dbb4a87abaa2f089ece124263f16": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "wg_creation"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 3,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "0x29040b3196c4d7109fdb7b55b8bfd5e85dd074d3cb22266e0d94cc42cfad1eb2": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x9ab53c76cee40d58cb27b244dfa5f9f2763bd8b97b1b4be1dd0f0bf706818fb4": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 2
+  },
+  "0xd810c4cf2f09737a6f833f1ec51eaa5504cbc0afeeb883a21a7e1c91c8a597e4": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": false,
+    "reform_tags": [
+      "governance_reform",
+      "proposal_barrier"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 2,
+    "context_dependency": 2,
+    "time_to_evaluate": 3
+  },
+  "0xf0c3a2fe4bd085ea74a072cafb830aaadb4830b557a3d122eab36058a17c1860": {
+    "proposal_category": "metagov/small-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 5,
+    "time_to_evaluate": 4
+  },
+  "0xb33e76201100b32a09f8aa367ad564e910f45b845318715439fee7e4978efd6b": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x7618fde568697109bfd69d95ef83e2c23d4acdbf82e1cc541b4f4ef2f55c0e61": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xfa54ff2b55f0495c96ec2d8645241bcff48ca6afe1f4925fb51f29c4667252df": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "governance_reform",
+      "pilot_program"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "0xafb1325f49057dd20fabf2908531da93565172525309a0a3a914daa7f773b0c6": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xfe303865510b5ef7fabee2bcbd5081afa01f276195f57e1561ff27c477459984": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x66d355555c24ed0d2fed0aee89e4fe009e2925c84144c4edc707d33e7c19e554": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x0a7bec3cd182dadbd043e77cf7a610a6e33c5228fabe407cb89c632b578b83a9": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x5c0d103911aaaa64ee33fc35aa30bffd7c1ca04ac2df85fb274414732c45a6f9": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x12a2abca291496c7e990d099240b4c995099dc0fb85767e04f22b9496e953799": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x5788bf0f52ce82a1d3f7750a80f3001671ded49e4e0239dbbafd154275c78f8b": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x5c96e490f3e28d8269e8fc7e929491fb8fa5e4bd04d3379f0c4f4bb1a42dc23e": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xa64ec8b446e509cb4b75092c4a714897790b70e2711fc3d6afa969c250e7eb92": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "wg_dissolution"
+    ],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x3fa1a972b7d40510f5c1fb0d1c43e41960866a35db75a1541572451fa96f7eab": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x1b1ed675d08dd689148133c5be076e78997500d1969894d980759ba38c358c3d": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x718c496b04017fb82749b68570d12f32c839f59b9f9433df127f48bf99121eb7": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x42605fa85d059459f7072aeaeea4cd14ada78e15d9aa1998fe99634a75f9f5a6": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xfbf3672c52618816a0a7a759e25476b69b86357d500f19ba714030aebacbb225": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "QmfLwPbo5UwnyvkXo7emsSMDMFCr8UtJ76n87v9Rf7gEuH": {
+    "proposal_category": "metagov/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 1,
+    "time_to_evaluate": 1
+  },
+  "QmbLws8nx6smvU3rxGPiYkQ5dbvrmGQFnjWHYia1AHLoAw": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "0xf06f3ad61f9f77c8ed362dd54913cc44d030841eebebfffce4dd6605b1b0e6f3": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 2,
+    "context_dependency": 2,
+    "time_to_evaluate": 3
+  },
+  "0x2c07add832383dc6900077406b4241a34dc4923ba209e2d07d1a4243a18fcdef": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x2c56d8776c8be3a824d010f94f00108716acaa31ede92cd03692e779af8a051d": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xd06e971e596ea5d9704372184503fdacbbe69c9ee7aa9e6af1acba4355b5954f": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xfa1fdf0cfb94eabecf613ccd6b0c3a9247c21e64047cf330c000760970a02536": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x92af8549061a4bba3a7b6e35718458d719be0d541652044b67964504e32c16cd": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "0x6ebef8ee7169fd81bd87691e8dad852e2fa677bd52eedf0fd2da3623f489cd3d": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x5748982aed143f51333befbc6cc490116648b85a2b0212fdfaf3ab848932c7ae": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "new_body",
+      "pilot_program"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "0xed7bbde7c1136cbb5b9090a0abd48438c97a020b9e8a1e8f6257a46d068aa2e0": {
+    "proposal_category": "protocol/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "0x3585235855fd484251e01820c8cbf3e69174c0176496823b7b54be7a6b68b86c": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "0xe2435d6d84f3a1cfc49a3579a2e613a0dc59b5ede9b1d3f62328777894e845bd": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x41b3509b88e15677aa15680f48278517f794822fb9a79b9c621def53f1866be7": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xa245dc7264ae072620434996e1c66d82c64cefc5a2edde5114d691a8559d0b5f": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "0x4a1aedbd9d22295f358dc4028b5a3f0a602bb5f1089dabdc2b63bf2bcce45834": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 3,
+    "time_to_evaluate": 4
+  },
+  "0x3742c2d352f92260e2c827767266a88fd214d2cd309ee4a65d739272cf0357a9": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xdf7e59e58ab0cf5ee0a591bd65369db3ee5091ae3b7ca696a0d31c2eac9959f5": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x8c05add423e7ab5900113b203326286763d402f88300ebbe65c278ed2488b8d1": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x90a5f884d59a647a5a78aad8023cf0c00d9efb8499bced7009c60ad90b5e2041": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x899ead1d9b9b98f63f6a60dc0939bef55dbe365e78c6a550f07be969a47f148b": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "governance_reform",
+      "new_delegate_mech",
+      "wg_creation"
+    ],
+    "cognitive_load": 4,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 4
+  },
+  "0xcf77c74696cab1d939936ae8684c0007297bed641f60896ad186354f036d725f": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "QmW5qrWwivELsMdLViGMTmH27QQYjyqGM2PMqVwpYxL2UN": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "0x8d16992852893f05b23b0e26de27c9e6b2a8de1193c991e14f81ef13cd943517": {
+    "proposal_category": "metagov/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "pilot_program"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0xbc44d9714ee818da49c25998cabdbe745f939fef74923255c3571a00e8977e5d": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "new_body",
+      "wg_dissolution",
+      "wg_restructure"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "0x9b3f5463e52aadc35155e686f8416297b24e6c7e30cb527747e61cf17b42a5f6": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x98c65ac02f738ddb430fcd723ea5852a45168550b3daf20f75d5d508ecf28aa1": {
+    "proposal_category": "metagov/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 1,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0xd42e261f9bf298bb5a793ee230a5f1a164db6c47e9656aaa83cf2ad4c4798832": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x085a1e40c264ffd44567b6dce889f5943e72cfa8442eaeb81819261a38f0bd0a": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0xca27ce450e2a404b51d7ec7979639561dc5d8302949b3a29e4dfef2a8993f018": {
+    "proposal_category": "protocol/small-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": false,
+    "reform_tags": [
+      "governance_reform",
+      "proposal_barrier"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "0xa0b1bfadf6853b5b0d59d3c4d73c434fc6389339887d05de805361372eb17c3a": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "pilot_program",
+      "security_council"
+    ],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "0x456ccb438eed5d189cbe51e5e36a88d2bb4dc0c61f12f6d9e310a7ba4798d5fc": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x8e3c8812bd52d1760eb2bbf8dc603d68860741f80d489dc051017e863151a242": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": false,
+    "reform_tags": [
+      "governance_reform",
+      "power_transfer"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0x5867a23b1b607344bde89a733e195ba07480cd53d490c73002725ee0e430dd40": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x26a5c8dec547837495707e70446d1e7cd874a91f75753c602998f6e70083a266": {
+    "proposal_category": "metagov/small-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x3c6b192eb2e990d74125d82ef886a1ec9e7373f4f768ed5b4adc23a03c26d649": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xd7eff781be059513b5cd64d79e709abbbc653944c9a8c621dc051e7b42a405cb": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xa714c25d0f6bcb108635c1ea5a79bd5ef1c0a1c6e7fb13d62b9ab1fa83a68ff8": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0x97265786d808280adc788e6744dd07afd3ff7e2776527d18f4e19abe1bd6c1a5": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xc7186cf8bebe47600f8d847e76f7971ea97b48bc04eda1e07780aff91fb6410d": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "new_body",
+      "wg_restructure"
+    ],
+    "cognitive_load": 4,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "0xe040bdae812af4bd5b3b6e3f46ed1ff4701986c338b827ac8f05807c2b9b9d73": {
+    "proposal_category": "protocol/small-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0x8b68ebc34b590488000bd5a73c7fe1e66e7d405ab26eda7c0c8191230363d4d0": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "0xc4bc562d32e59a528dec301261e8d2b3b0c6880c2b782201c2e9f1ff3979d165": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "0xa9a2dc5a52ea54b478c4c5fea88540622dff7ad5000f8d146dff482c6e6b6055": {
+    "proposal_category": "metagov/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xaf4b603825288bd4a6aa3c4d4e3949334064e0ae4f7baa9f7068daf293d91f57": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xff480a86ea2a08bb50999f22d96de77c3da1eb03c5b082c6265f365c8f9c9274": {
+    "proposal_category": "metagov/delegate-governance",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xf854140e16ab96eaed7bbd783f31b441ff5122efc8c002632396df9b7d20342d": {
+    "proposal_category": "protocol/small-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "0xfe73d1b06675d6bc1cc074f440c347274d13c55b513ea02ec950efe639adbbb0": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": false,
+    "reform_tags": [
+      "governance_reform",
+      "power_transfer"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2729564643990177078": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "2697430371380757582": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 1,
+    "time_to_evaluate": 1
+  },
+  "2689519495495550443": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2577070112469157163": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2577051386554353176": {
+    "proposal_category": "protocol/small-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2480500565067433574": {
+    "proposal_category": "protocol/major-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": false,
+    "reform_tags": [
+      "power_transfer"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "2465430835612878792": {
+    "proposal_category": "metagov/other",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "governance_reform",
+      "pilot_program"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "2451224834969962271": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "2450963767329031650": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2401604476453521344": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2362654011020018823": {
+    "proposal_category": "protocol/small-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2187947042205074931": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2161706354966791727": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 4,
+    "time_to_evaluate": 2
+  },
+  "1856884641718338730": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "1759708562222745026": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 4,
+    "time_to_evaluate": 2
+  },
+  "2800331310839629175": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "2746027444409468820": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2705526220803540540": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "pilot_program"
+    ],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2636784931094660603": {
+    "proposal_category": "protocol/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 5,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2622864556984109021": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 3,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "2597261424044541194": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2515518299983316940": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "2485131686526846075": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 3,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "2465415640488346987": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "2298721906653661035": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2161707373167642160": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2028948412304459482": {
+    "proposal_category": "protocol/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 5,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "1988035057008248378": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "1836295481643239098": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "1815835368071628216": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "pilot_program"
+    ],
+    "cognitive_load": 3,
+    "technical_depth": 3,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "1779288509043967754": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "2809688187364967429": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 2,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "2790714538897442592": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "2790047678174594448": {
+    "proposal_category": "protocol/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "2787172295146210684": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2779038904580310743": {
+    "proposal_category": "metagov/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 1,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "2748560757745518030": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2708179808130434396": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2669874815220844517": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2622938301270591091": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 3,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "2577519828545831958": {
+    "proposal_category": "protocol/small-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": false,
+    "reform_tags": [
+      "power_transfer"
+    ],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2515447293360997938": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 3,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "2485129129754625620": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2362490434430699416": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2242849835524818437": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "new_body"
+    ],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2242768263199065598": {
+    "proposal_category": "protocol/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 3,
+    "time_to_evaluate": 3
+  },
+  "2187812374973515248": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2006768162174928894": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "1988041036953290299": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 1
+  },
+  "1758981539653223861": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 4,
+    "time_to_evaluate": 2
+  },
+  "1746481831051527275": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 2
+  },
+  "2800133654548841876": {
+    "proposal_category": "protocol/small-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 5,
+    "context_dependency": 3,
+    "time_to_evaluate": 4
+  },
+  "2672662866296833907": {
+    "proposal_category": "metagov/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2648158528950241087": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 3,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2633422110508189170": {
+    "proposal_category": "protocol/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 4,
+    "technical_depth": 5,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2597324630620374576": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2450964493505659931": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2424859285725906509": {
+    "proposal_category": "treasury/grant",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 1,
+    "technical_depth": 1,
+    "context_dependency": 2,
+    "time_to_evaluate": 2
+  },
+  "2375149154558018636": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": true,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "anti_concentration",
+      "governance_reform",
+      "pilot_program",
+      "security_council"
+    ],
+    "cognitive_load": 4,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "2298764182973056879": {
+    "proposal_category": "treasury/budget",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 1,
+    "context_dependency": 3,
+    "time_to_evaluate": 2
+  },
+  "2116013502593238174": {
+    "proposal_category": "treasury/investment",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 3,
+    "technical_depth": 4,
+    "context_dependency": 4,
+    "time_to_evaluate": 4
+  },
+  "1856835861685994664": {
+    "proposal_category": "metagov/major-change",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": true,
+    "reform_tags": [
+      "wg_dissolution"
+    ],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "1784336180297336675": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  },
+  "1758991408003286454": {
+    "proposal_category": "protocol/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 5,
+    "time_to_evaluate": 4
+  },
+  "1746481799980123240": {
+    "proposal_category": "treasury/other",
+    "is_decentralizing_reform": false,
+    "is_structural_experiment": false,
+    "reform_tags": [],
+    "cognitive_load": 2,
+    "technical_depth": 2,
+    "context_dependency": 4,
+    "time_to_evaluate": 3
+  }
+}

@@ -35,6 +35,7 @@ class HypothesisConfig:
     title: str
     short_title: str
     description: str
+    verdict: str = ""
     visuals: list[VisualConfig] = field(default_factory=list)
 
 
@@ -77,6 +78,7 @@ def _parse_config(path: Path) -> PortalConfig:
                 title=h["title"],
                 short_title=h.get("short_title", h["id"]),
                 description=h.get("description", ""),
+                verdict=h.get("verdict", ""),
                 visuals=visuals,
             ))
         challenges.append(ChallengeConfig(

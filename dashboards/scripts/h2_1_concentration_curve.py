@@ -26,15 +26,22 @@ def _load_data() -> tuple[pd.DataFrame, int, float]:
         ORDER BY voting_power DESC
     """).df()
 
-    # Read pre-computed metrics from the gold decentralization index (single source of truth)
+    # Read Nakamoto coefficient from pre-computed gold model
     idx = con.execute("""
         SELECT metric, value
         FROM main_gold.decentralization_index
-        WHERE metric IN ('nakamoto_coefficient', 'voting_power_gini')
+        WHERE metric = 'nakamoto_coefficient'
     """).df().set_index("metric")["value"]
 
     nakamoto = int(idx["nakamoto_coefficient"])
-    gini = round(float(idx["voting_power_gini"]), 4)
+
+    # Compute Gini coefficient from voting power distribution
+    arr = np.sort(vp_df["voting_power"].to_numpy())
+    n = len(arr)
+    gini = round(
+        float((2 * np.sum(np.arange(1, n + 1) * arr) / (n * arr.sum())) - (n + 1) / n),
+        4,
+    )
 
     return vp_df, nakamoto, gini
 

@@ -12,6 +12,8 @@ authority rather than consensus-reflection — the whale does not merely predict
 outcome, they materially determine it.
 """
 
+from pathlib import Path
+
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -21,6 +23,11 @@ from scripts.db import get_connection
 # Academic benchmark from Goldberg & Schär (2023): VP.1 matched VP.ALL in 94.8% of proposals
 PAPER_BENCHMARK = 94.8
 
+# Raw JSON path — bypasses the broken vote_choice mapping in the silver model
+_TALLY_VOTES_JSON = str(
+    Path(__file__).parent.parent.parent / "bronze" / "governance" / "tally_votes.json"
+)
+
 
 # ---------------------------------------------------------------------------
 # Data loading
@@ -28,14 +35,26 @@ PAPER_BENCHMARK = 94.8
 
 @st.cache_data
 def _load_data() -> pd.DataFrame:
-    """Load per-proposal outcome robustness metrics for Snapshot and Tally."""
+    """Load per-proposal outcome robustness metrics for Tally on-chain proposals."""
     con = get_connection()
 
-    tally_sql = """
+    sql = f"""
         WITH votes AS (
-            SELECT voter, proposal_id, vote_choice, weight
-            FROM main_silver.clean_tally_votes
-            WHERE vote_choice IN ('for', 'against', 'abstain')
+            SELECT
+                voter,
+                proposal_id,
+                support                             AS vote_choice,
+                CAST(weight AS DOUBLE) / 1e18       AS weight
+            FROM read_json(
+                '{_TALLY_VOTES_JSON}',
+                columns = {{
+                    voter:       'VARCHAR',
+                    proposal_id: 'VARCHAR',
+                    support:     'VARCHAR',
+                    weight:      'VARCHAR'
+                }}
+            )
+            WHERE support IN ('for', 'against', 'abstain')
         ),
         proposal_vp AS (
             SELECT
@@ -93,7 +112,7 @@ def _load_data() -> pd.DataFrame:
             p.proposal_id,
             tp.title,
             t.top_voter,
-            COALESCE(NULLIF(cw.ens_name, ''), LEFT(t.top_voter, 10) || '…') AS top_voter_label,
+            COALESCE(NULLIF(cw.ens_name, ''), LEFT(LOWER(t.top_voter), 10) || '…') AS top_voter_label,
             t.top_choice,
             t.top_vp,
             p.total_vp,
@@ -104,102 +123,16 @@ def _load_data() -> pd.DataFrame:
             p.winning_choice,
             (t.top_choice = p.winning_choice) AS vp1_matched,
             c.vp2up_outcome,
-            (c.vp2up_outcome IS NOT NULL AND c.vp2up_outcome != p.winning_choice) AS vp2up_flipped,
-            'tally' AS source
+            (c.vp2up_outcome IS NOT NULL AND c.vp2up_outcome != p.winning_choice) AS vp2up_flipped
         FROM vp_all p
         JOIN top_voter t USING (proposal_id)
         JOIN cf_outcome c USING (proposal_id)
         JOIN main_silver.clean_tally_proposals tp USING (proposal_id)
-        LEFT JOIN main_silver.address_crosswalk cw ON t.top_voter = cw.address
+        LEFT JOIN main_silver.address_crosswalk cw ON LOWER(t.top_voter) = cw.address
         WHERE tp.status IN ('executed', 'defeated')
     """
 
-    snap_sql = """
-        WITH votes AS (
-            SELECT voter, proposal_id, vote_choice, voting_power AS weight
-            FROM main_silver.clean_snapshot_votes
-            WHERE vote_choice IN ('for', 'against', 'abstain')
-        ),
-        proposal_vp AS (
-            SELECT
-                proposal_id,
-                SUM(CASE WHEN vote_choice = 'for'     THEN weight ELSE 0 END) AS for_vp,
-                SUM(CASE WHEN vote_choice = 'against'  THEN weight ELSE 0 END) AS against_vp,
-                SUM(CASE WHEN vote_choice = 'abstain'  THEN weight ELSE 0 END) AS abstain_vp,
-                SUM(weight) AS total_vp,
-                COUNT(DISTINCT voter) AS n_voters
-            FROM votes
-            GROUP BY proposal_id
-        ),
-        vp_all AS (
-            SELECT
-                proposal_id, for_vp, against_vp, abstain_vp, total_vp, n_voters,
-                CASE
-                    WHEN for_vp >= against_vp AND for_vp >= abstain_vp THEN 'for'
-                    WHEN against_vp > for_vp AND against_vp >= abstain_vp THEN 'against'
-                    ELSE 'abstain'
-                END AS winning_choice
-            FROM proposal_vp
-            WHERE total_vp > 0
-        ),
-        ranked_votes AS (
-            SELECT proposal_id, voter, vote_choice, weight,
-                ROW_NUMBER() OVER (PARTITION BY proposal_id ORDER BY weight DESC) AS rn
-            FROM votes
-        ),
-        top_voter AS (
-            SELECT proposal_id, voter AS top_voter, vote_choice AS top_choice, weight AS top_vp
-            FROM ranked_votes WHERE rn = 1
-        ),
-        cf_vp AS (
-            SELECT
-                v.proposal_id,
-                SUM(CASE WHEN v.vote_choice = 'for'    AND v.voter != t.top_voter THEN v.weight ELSE 0 END) AS cf_for,
-                SUM(CASE WHEN v.vote_choice = 'against' AND v.voter != t.top_voter THEN v.weight ELSE 0 END) AS cf_against,
-                SUM(CASE WHEN v.vote_choice = 'abstain' AND v.voter != t.top_voter THEN v.weight ELSE 0 END) AS cf_abstain
-            FROM votes v
-            JOIN top_voter t USING (proposal_id)
-            GROUP BY v.proposal_id
-        ),
-        cf_outcome AS (
-            SELECT
-                proposal_id,
-                CASE
-                    WHEN (cf_for + cf_against + cf_abstain) = 0 THEN NULL
-                    WHEN cf_for >= cf_against AND cf_for >= cf_abstain THEN 'for'
-                    WHEN cf_against > cf_for AND cf_against >= cf_abstain THEN 'against'
-                    ELSE 'abstain'
-                END AS vp2up_outcome
-            FROM cf_vp
-        )
-        SELECT
-            p.proposal_id,
-            sp.title,
-            t.top_voter,
-            COALESCE(NULLIF(cw.ens_name, ''), LEFT(t.top_voter, 10) || '…') AS top_voter_label,
-            t.top_choice,
-            t.top_vp,
-            p.total_vp,
-            p.for_vp,
-            p.against_vp,
-            p.abstain_vp,
-            p.n_voters,
-            p.winning_choice,
-            (t.top_choice = p.winning_choice) AS vp1_matched,
-            c.vp2up_outcome,
-            (c.vp2up_outcome IS NOT NULL AND c.vp2up_outcome != p.winning_choice) AS vp2up_flipped,
-            'snapshot' AS source
-        FROM vp_all p
-        JOIN top_voter t USING (proposal_id)
-        JOIN cf_outcome c USING (proposal_id)
-        JOIN main_silver.clean_snapshot_proposals sp USING (proposal_id)
-        LEFT JOIN main_silver.address_crosswalk cw ON t.top_voter = cw.address
-        WHERE sp.status = 'closed'
-    """
-
-    tally_df = con.execute(tally_sql).df()
-    snap_df = con.execute(snap_sql).df()
-    df = pd.concat([tally_df, snap_df], ignore_index=True)
+    df = con.execute(sql).df()
 
     # Compute per-row margin and top-voter share
     def _runner_up(row):
@@ -225,24 +158,19 @@ def _load_data() -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 
 def _compute_stats(df: pd.DataFrame) -> dict:
-    """Aggregate outcome robustness metrics per platform and combined."""
-    stats = {}
-    for src in ["tally", "snapshot", "combined"]:
-        subset = df if src == "combined" else df[df.source == src]
-        n = len(subset)
-        if n == 0:
-            stats[src] = {"n": 0, "agreement_pct": None, "flip_pct": None, "flip_n": 0}
-            continue
-        agreement = subset.vp1_matched.sum() / n * 100
-        flip_n = subset.vp2up_flipped.sum()
-        flip_pct = flip_n / n * 100
-        stats[src] = {
-            "n": n,
-            "agreement_pct": round(agreement, 1),
-            "flip_n": int(flip_n),
-            "flip_pct": round(flip_pct, 1),
-        }
-    return stats
+    """Aggregate outcome robustness metrics."""
+    n = len(df)
+    if n == 0:
+        return {"n": 0, "agreement_pct": None, "flip_pct": None, "flip_n": 0}
+    agreement = df.vp1_matched.sum() / n * 100
+    flip_n    = df.vp2up_flipped.sum()
+    flip_pct  = flip_n / n * 100
+    return {
+        "n": n,
+        "agreement_pct": round(agreement, 1),
+        "flip_n": int(flip_n),
+        "flip_pct": round(flip_pct, 1),
+    }
 
 
 def _top_whales(df: pd.DataFrame, top_n: int = 5) -> pd.DataFrame:
@@ -264,34 +192,31 @@ def _top_whales(df: pd.DataFrame, top_n: int = 5) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 
 def _chart_agreement_rate(stats: dict) -> go.Figure:
-    """Grouped bar: VP.1 agreement rate and VP.2UP flip rate, Snapshot vs Tally."""
-    platforms = ["Snapshot", "Tally"]
-    src_keys  = ["snapshot", "tally"]
-    agreement_vals = [stats[k]["agreement_pct"] or 0 for k in src_keys]
-    flip_vals      = [stats[k]["flip_pct"] or 0 for k in src_keys]
+    """Bar chart: VP.1 agreement rate and VP.2UP flip rate for Tally on-chain proposals."""
+    metrics = ["VP.1 agreement with outcome", "VP.2UP counterfactual flip rate"]
+    values  = [stats["agreement_pct"] or 0, stats["flip_pct"] or 0]
+    colors  = ["#3B4EC8", "#E07B54"]
 
     fig = go.Figure()
 
-    # VP.1 agreement bars (blue)
     fig.add_trace(go.Bar(
         name="VP.1 agreement with outcome (VP.ALL)",
-        x=platforms,
-        y=agreement_vals,
+        x=["VP.1 Agreement"],
+        y=[stats["agreement_pct"] or 0],
         marker_color="#3B4EC8",
-        text=[f"{v:.1f}%" for v in agreement_vals],
+        text=[f"{stats['agreement_pct']:.1f}%"],
         textposition="outside",
         textfont=dict(size=13, color="#2D3748"),
         width=0.3,
         offsetgroup=0,
     ))
 
-    # VP.2UP flip rate bars (orange)
     fig.add_trace(go.Bar(
         name="VP.2UP counterfactual flip rate",
-        x=platforms,
-        y=flip_vals,
+        x=["VP.2UP Flip Rate"],
+        y=[stats["flip_pct"] or 0],
         marker_color="#E07B54",
-        text=[f"{v:.1f}%" for v in flip_vals],
+        text=[f"{stats['flip_pct']:.1f}%"],
         textposition="outside",
         textfont=dict(size=13, color="#2D3748"),
         width=0.3,
@@ -315,8 +240,10 @@ def _chart_agreement_rate(stats: dict) -> go.Figure:
             font=dict(size=18, color="#2D3748"), x=0, xanchor="left",
         ),
         barmode="group",
-        xaxis=dict(title=dict(text="Platform", font=dict(size=13, color="#4A5568")),
-                   tickfont=dict(size=13, color="#4A5568"), gridcolor="#E2E8F0"),
+        xaxis=dict(
+            tickfont=dict(size=13, color="#4A5568"),
+            gridcolor="#E2E8F0",
+        ),
         yaxis=dict(
             title=dict(text="% of proposals", font=dict(size=13, color="#4A5568")),
             tickfont=dict(size=12, color="#4A5568"),
@@ -337,46 +264,36 @@ def _chart_per_proposal(df: pd.DataFrame) -> go.Figure:
     """Scatter: per-proposal top-voter VP share vs winning margin, colored by VP.1 match."""
     fig = go.Figure()
 
-    platform_styles = {
-        "tally":    {"color_match": "#3B4EC8", "color_miss": "#E07B54", "symbol": "circle", "name": "Tally"},
-        "snapshot": {"color_match": "#2D8A6E", "color_miss": "#C44E52", "symbol": "diamond", "name": "Snapshot"},
-    }
+    for matched, color, label in [
+        (True,  "#3B4EC8", "Sided with outcome"),
+        (False, "#E07B54", "Opposed outcome"),
+    ]:
+        grp = df[df.vp1_matched == matched]
+        if grp.empty:
+            continue
 
-    for src, style in platform_styles.items():
-        subset = df[df.source == src]
-        for matched, color, suffix in [
-            (True,  style["color_match"], "— sided with outcome"),
-            (False, style["color_miss"],  "— opposed outcome"),
-        ]:
-            mask = subset.vp1_matched == matched
-            grp = subset[mask]
-            if grp.empty:
-                continue
-
-            short_title = grp.title.apply(lambda t: (t[:50] + "…") if len(str(t)) > 50 else str(t))
-            hover = (
+        short_title = grp.title.apply(lambda t: (t[:50] + "…") if len(str(t)) > 50 else str(t))
+        fig.add_trace(go.Scatter(
+            x=grp.top_vp_share_pct,
+            y=grp.margin_pct,
+            mode="markers",
+            name=label,
+            marker=dict(
+                color=color,
+                symbol="circle",
+                size=9,
+                opacity=0.75,
+                line=dict(color="white", width=0.8),
+            ),
+            customdata=list(zip(short_title, grp.top_voter_label, grp.top_choice, grp.winning_choice)),
+            hovertemplate=(
                 "<b>%{customdata[0]}</b><br>"
                 "Top voter: %{customdata[1]}<br>"
                 "Their vote: %{customdata[2]} | Outcome: %{customdata[3]}<br>"
                 "VP share: %{x:.1f}% | Margin: %{y:.1f}%"
                 "<extra></extra>"
-            )
-
-            fig.add_trace(go.Scatter(
-                x=grp.top_vp_share_pct,
-                y=grp.margin_pct,
-                mode="markers",
-                name=f"{style['name']} {suffix}",
-                marker=dict(
-                    color=color,
-                    symbol=style["symbol"],
-                    size=9,
-                    opacity=0.75,
-                    line=dict(color="white", width=0.8),
-                ),
-                customdata=list(zip(short_title, grp.top_voter_label, grp.top_choice, grp.winning_choice)),
-                hovertemplate=hover,
-            ))
+            ),
+        ))
 
     # Quadrant annotation: decisive whale zone
     fig.add_annotation(
@@ -441,11 +358,9 @@ def _render_cards(stats: dict, whales: pd.DataFrame) -> None:
     """
     st.markdown(card_css, unsafe_allow_html=True)
 
-    combined = stats["combined"]
-    flip_n   = combined["flip_n"]
-    total_n  = combined["n"]
+    flip_n  = stats["flip_n"]
+    total_n = stats["n"]
 
-    # Card 3: top whale names
     whale_lines = "".join(
         f"<span class='sc-v' style='color:#2D8A6E;'>{row.top_voter_label}</span>"
         f" &nbsp;·&nbsp; {int(row.proposals)} proposals &nbsp;·&nbsp; {row.alignment_pct:.0f}% aligned<br>"
@@ -454,7 +369,7 @@ def _render_cards(stats: dict, whales: pd.DataFrame) -> None:
 
     c1, c2, c3 = st.columns(3)
     with c1:
-        val = combined["agreement_pct"]
+        val   = stats["agreement_pct"]
         color = "#2D8A6E" if (val or 0) >= PAPER_BENCHMARK else "#C44E52"
         st.markdown(f"""
         <div class="sc">
@@ -462,7 +377,7 @@ def _render_cards(stats: dict, whales: pd.DataFrame) -> None:
             <div class="sc-r">
                 <span class="sc-v" style="color:{color}; font-size:22px;">{val:.1f}%</span>
                 of proposals matched by the top voter<br>
-                <span style="color:#718096;">Paper benchmark: {PAPER_BENCHMARK}% (Goldberg & Schär 2023)</span>
+                <span style="color:#718096;">Paper benchmark: {PAPER_BENCHMARK}% (Goldberg &amp; Schär 2023)</span>
             </div>
         </div>""", unsafe_allow_html=True)
     with c2:
@@ -473,7 +388,7 @@ def _render_cards(stats: dict, whales: pd.DataFrame) -> None:
                 <span class="sc-v" style="color:#E07B54; font-size:22px;">{flip_n}</span>
                 of {total_n} proposals would have a different outcome
                 if the top voter had not voted<br>
-                <span style="color:#718096;">({combined["flip_pct"]:.1f}% flip rate)</span>
+                <span style="color:#718096;">({stats["flip_pct"]:.1f}% flip rate)</span>
             </div>
         </div>""", unsafe_allow_html=True)
     with c3:
@@ -493,7 +408,7 @@ def _render_cards(stats: dict, whales: pd.DataFrame) -> None:
 def render_outcome_robustness() -> None:
     st.markdown(
         "<p style='color:#718096; font-size:14px; margin-bottom:16px;'>"
-        "Applies the outcome robustness framework of Goldberg &amp; Schär (2023) to ENS governance. "
+        "Applies the outcome robustness framework of Goldberg &amp; Schär (2023) to ENS on-chain governance. "
         "VP.1 agreement measures how often the single highest-VP voter sides with the final outcome. "
         "VP.2UP counterfactuals recompute each proposal's outcome after removing the top voter's weight — "
         "if the result flips, that voter was decisive. High agreement plus frequent flips signals de facto "
@@ -521,12 +436,10 @@ def render_outcome_robustness() -> None:
     with tab2:
         st.plotly_chart(_chart_per_proposal(df), use_container_width=True)
 
-    n_snap   = stats["snapshot"]["n"]
-    n_tally  = stats["tally"]["n"]
     st.caption(
-        f"Sources: ENS Snapshot ({n_snap} closed proposals) + Tally on-chain ({n_tally} finalized proposals). "
+        f"Sources: ENS Tally on-chain governance ({stats['n']} finalized proposals: executed or defeated). "
         f"VP.ALL = winning choice by total VP-weighted votes. VP.1 = top voter's choice per proposal. "
         f"VP.2UP = recomputed outcome excluding top voter's weight. "
-        f"Vote choice standardized to for/against/abstain (Snapshot choices >3 excluded). "
+        f"Vote weights read from raw Tally JSON; vote_choice standardized to for/against/abstain. "
         f"Methodology after Goldberg &amp; Schär, Journal of Business Research 160 (2023) 113764."
     )
