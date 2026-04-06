@@ -14,6 +14,7 @@ from infra.dbt_assets import ens_dbt_assets
 from infra.dbt_project import dbt_project
 from infra.ingest import assets as ingest_assets
 from infra.resources import EtherscanApiConfig, OsoApiConfig
+from infra.sensors import vector_store_sync_sensor
 from infra.validate import checks as check_modules
 
 bronze_assets = load_assets_from_modules([ingest_assets])
@@ -22,6 +23,7 @@ asset_checks = load_asset_checks_from_modules([check_modules])
 defs = Definitions(
     assets=[*bronze_assets, ens_dbt_assets],
     asset_checks=[*asset_checks],
+    sensors=[vector_store_sync_sensor],
     resources={
         "dbt": DbtCliResource(project_dir=os.fspath(dbt_project.project_dir)),
         "etherscan_config": EtherscanApiConfig(api_key=os.environ.get("ETHERSCAN_API_KEY", "")),

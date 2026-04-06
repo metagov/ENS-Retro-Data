@@ -26,7 +26,9 @@ def _load_data() -> tuple[pd.DataFrame, int, float]:
         ORDER BY voting_power DESC
     """).df()
 
-    # Read Nakamoto coefficient from pre-computed gold model
+    # Read Nakamoto coefficient from the pre-computed decentralization index.
+    # voting_power_gini is not stored in the index table, so compute it inline
+    # from the already-loaded vp_df (same data, no extra query needed).
     idx = con.execute("""
         SELECT metric, value
         FROM main_gold.decentralization_index
@@ -35,13 +37,12 @@ def _load_data() -> tuple[pd.DataFrame, int, float]:
 
     nakamoto = int(idx["nakamoto_coefficient"])
 
-    # Compute Gini coefficient from voting power distribution
-    arr = np.sort(vp_df["voting_power"].to_numpy())
-    n = len(arr)
+    vp = np.sort(vp_df["voting_power"].dropna().astype(float).to_numpy())
+    n = len(vp)
     gini = round(
-        float((2 * np.sum(np.arange(1, n + 1) * arr) / (n * arr.sum())) - (n + 1) / n),
+        float((2 * np.sum(np.arange(1, n + 1) * vp) - (n + 1) * vp.sum()) / (n * vp.sum())),
         4,
-    )
+    ) if n > 0 and vp.sum() > 0 else 0.0
 
     return vp_df, nakamoto, gini
 
@@ -241,7 +242,7 @@ def render_concentration_curve() -> None:
     top1 = _top1_share(curve_df)
 
     fig = _build_chart(curve_df, nakamoto, gini)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     _render_cards(top1, nakamoto, gini)
 

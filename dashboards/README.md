@@ -26,7 +26,11 @@ streamlit run dashboards/app.py
 
 The app opens at `http://localhost:8501` by default. Streamlit theme and server settings are pre-configured in [dashboards/.streamlit/config.toml](.streamlit/config.toml).
 
-## Project structure
+## Project structure I don't have an OpenAI key. Is this possible via Claude Code tool somehow, or do I not pay for an OpenAI key? Can I still get one?
+
+Another one is the agent builder workflow. No, I do want to include the agent builder workflow. In the dashboard, I don't want a dedicated page; I just want a small widget on the page in the bottom right corner, a floating widget on every page. Whenever they see something, whenever they see a chat, they should be able to ask a question. I also want the chat widget to send which component they're looking at, or which page they're on, or which tab they're on when they ask that question, so that they have more context on this.
+
+Another one is querying DuckDB and DuckDB Warehouse. DuckDB Warehouse is really, really good, but we also have bronze data, I suppose, since all the dashboard and all the charts are built with clean data, which is silver and gold models, which I assume are inductively, so it would be easier to just access DuckDB. Would there be any need to access the raw data itself? 
 
 ```
 dashboards/

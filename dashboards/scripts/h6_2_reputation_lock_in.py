@@ -219,7 +219,7 @@ def render_activity_vs_vp() -> None:
     lock_in_count = (df_classified["category"] == "Lock-in zone (high VP, <50% participation)").sum()
     total_count = len(df_classified)
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     st.caption(
         f"**{lock_in_count} of {total_count} top delegates** fall in the lock-in zone "
