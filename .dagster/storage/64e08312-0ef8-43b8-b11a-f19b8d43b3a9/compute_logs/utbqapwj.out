@@ -1,2 +1,0 @@
-[OSO] Fetching ENS timeseries events since 2019-01-01 (namespace='ensdomains')
-[OSO] ERROR fetching timeseries: 400 Client Error: Bad Request for url: https://www.oso.xyz/api/v1/async-sql?id=07e0ec64-0ddc-4c31-a38c-79c1b4cee3d5 - USER_ERROR: TABLE_NOT_FOUND - line 1:264: Table 'iceberg.oso.timeseries_events_by_artifact_v0' does not exist

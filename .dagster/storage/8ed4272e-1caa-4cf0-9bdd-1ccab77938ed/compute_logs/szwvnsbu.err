@@ -1,7 +1,0 @@
-[32m2026-04-02 11:48:56 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71346 - LOGS_CAPTURED - Started capturing logs in process (pid: 71346).
-[32m2026-04-02 11:49:00 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71346 - delegations - STEP_START - Started execution of step "delegations".
-[32m2026-04-02 11:49:01 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - delegations - [BRONZE] Already on disk: delegations.json (122,974 records, 26,931,308 bytes)
-[32m2026-04-02 11:49:02 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - delegations - [BRONZE] Skipping fetch — delete the file to force a re-fetch.
-[32m2026-04-02 11:49:02 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71346 - delegations - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
-[32m2026-04-02 11:49:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71346 - delegations - ASSET_MATERIALIZATION - Materialized value delegations.
-[32m2026-04-02 11:49:05 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71346 - delegations - STEP_SUCCESS - Finished execution of step "delegations" in 3.9s.

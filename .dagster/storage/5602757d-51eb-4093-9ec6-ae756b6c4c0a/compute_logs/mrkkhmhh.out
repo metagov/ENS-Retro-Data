@@ -1,7 +1,0 @@
-Running with dbt=1.11.6
-Registered adapter: duckdb=1.10.1
-[[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
-There are 1 unused configuration paths:
-- seeds.ens_retro
-Found 34 models, 105 data tests, 16 sources, 596 macros
-Nothing to do. Try checking your model configs and model specification args

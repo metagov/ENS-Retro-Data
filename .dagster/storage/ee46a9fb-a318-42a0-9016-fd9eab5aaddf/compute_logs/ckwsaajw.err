@@ -1,7 +1,0 @@
-[32m2026-04-02 12:09:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97410 - LOGS_CAPTURED - Started capturing logs in process (pid: 97410).
-[32m2026-04-02 12:09:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97410 - treasury_flows - STEP_START - Started execution of step "treasury_flows".
-[32m2026-04-02 12:09:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - treasury_flows - [BRONZE] Already on disk: treasury_flows.json (619 records, 214,679 bytes)
-[32m2026-04-02 12:09:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - treasury_flows - [BRONZE] Skipping fetch — delete the file to force a re-fetch.
-[32m2026-04-02 12:09:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97410 - treasury_flows - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
-[32m2026-04-02 12:09:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97410 - treasury_flows - ASSET_MATERIALIZATION - Materialized value treasury_flows.
-[32m2026-04-02 12:09:42 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97410 - treasury_flows - STEP_SUCCESS - Finished execution of step "treasury_flows" in 2.37s.

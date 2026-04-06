@@ -1,2 +1,0 @@
-[OSO] Fetching ENS code metrics (artifact_namespace='ensdomains')
-[OSO] ERROR fetching key metrics: 500 Server Error: Internal Server Error for url: https://www.oso.xyz/api/v1/async-sql?id=61e8d8e4-d6c2-4c0d-acbe-e40f80a4d779 - Query execution failed for unknown reasons. Contact support.

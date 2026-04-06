@@ -1,7 +1,0 @@
-[32m2026-04-02 11:48:55 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71687 - LOGS_CAPTURED - Started capturing logs in process (pid: 71687).
-[32m2026-04-02 11:48:55 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71687 - forum_topics - STEP_START - Started execution of step "forum_topics".
-[32m2026-04-02 11:48:57 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - forum_topics - [BRONZE] Already on disk: forum_topics.json (2,474 records, 1,227,077 bytes)
-[32m2026-04-02 11:48:57 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - forum_topics - [BRONZE] Skipping fetch — delete the file to force a re-fetch.
-[32m2026-04-02 11:48:57 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71687 - forum_topics - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
-[32m2026-04-02 11:48:59 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71687 - forum_topics - ASSET_MATERIALIZATION - Materialized value forum_topics.
-[32m2026-04-02 11:49:01 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71687 - forum_topics - STEP_SUCCESS - Finished execution of step "forum_topics" in 4.06s.
