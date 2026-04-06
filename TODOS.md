@@ -61,3 +61,25 @@ full investigation notes.
 **Depends on:** Fly.io deployment (`fly secrets set AGENT_API_KEY=<key> OPENAI_API_KEY=<key>` + `fly deploy`).
 
 ---
+
+## Add query concurrency limiter to prevent OOM on Fly.io
+
+**What:** Add an `asyncio.Semaphore` (max 2 concurrent queries) around the DuckDB execution
+path in `api.py` to prevent two simultaneous 1GB queries from OOM-killing the 2GB Fly.io machine.
+
+**Why:** Each `_get_conn()` sets `memory_limit=1GB`. Two concurrent queries = 2GB claimed =
+machine limit. A third request could trigger OOM kill.
+
+**Pros:** Prevents server crash under concurrent load; requests queue instead of crash.
+
+**Cons:** Adds ~5 lines of async wrapper code. Queued requests may timeout at the client side
+if the queue grows.
+
+**Context:** Traffic is expected to be low (internal dashboard, single agent). But a user
+refreshing the page while the agent is mid-query creates 2 concurrent requests easily.
+Add an `asyncio.Semaphore(2)` wrapping `_get_conn()` + `conn.execute()` in both
+`api_agent_query()` and `_run_query()`.
+
+**Depends on:** Nothing — can be done independently.
+
+---
