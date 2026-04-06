@@ -201,10 +201,10 @@
   bubble.addEventListener('click', toggle);
   document.getElementById('ens-close').addEventListener('click', toggle);
 
-  // ---- 4. Expand ----
+  // ---- 4. Expand — pass same secret so ChatKit resumes the thread ----
   document.getElementById('ens-expand').addEventListener('click', function () {
     var base = window.parent ? window.parent.location.origin : window.location.origin;
-    window.open(base + '/Chat', '_blank');
+    window.open(base + '/app/static/chatpage.html#' + secret, '_blank');
   });
 
   // ---- 5. Mount ChatKit ----
