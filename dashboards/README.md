@@ -35,15 +35,28 @@ Another one is querying DuckDB and DuckDB Warehouse. DuckDB Warehouse is really,
 ```
 dashboards/
 ├── app.py                  # Entry point — renders tabs, loads config
+├── api.py                  # FastAPI + MCP server for ChatKit agent tool calls
 ├── config.yaml             # Navigation: challenges → hypotheses → visuals
 ├── requirements.txt        # Python dependencies
 ├── .streamlit/
 │   └── config.toml         # Theme (light, ENS blue) and server settings
-└── scripts/
-    ├── __init__.py
-    ├── config.py           # Loads config.yaml into typed dataclasses
-    ├── db.py               # Cached DuckDB connection (read-only)
-    └── h*.py               # One file per visualization
+├── pages/
+│   └── Chat.py             # Full-viewport dedicated chat page
+├── scripts/
+│   ├── __init__.py
+│   ├── config.py           # Loads config.yaml into typed dataclasses
+│   ├── db.py               # Cached DuckDB connection (read-only)
+│   ├── chat_session.py     # ChatKit session token minting
+│   ├── chat_widget.py      # Floating chat widget embedding
+│   └── h*.py               # One file per visualization
+├── static/
+│   ├── chat.html           # Floating bubble + panel chat widget
+│   └── chatpage.html       # Full-page ChatKit embed
+└── tests/
+    ├── test_api.py          # API server + chat widget tests
+    ├── test_computations.py # Dashboard computation tests
+    ├── test_config.py       # Config loading tests
+    └── test_warehouse.py    # Warehouse data quality tests
 ```
 
 The warehouse lives outside this folder:

@@ -455,15 +455,52 @@ Then restart Streamlit.
 
 ---
 
-## Widget Integration — Paused (2026-04-06)
+## Widget Integration Status (2026-04-06)
 
-ChatKit widget was stripped from the Streamlit dashboard. The backend pieces (session tokens, workflow, vector store, MCP server) all work. The frontend embedding in Streamlit's iframe sandbox does not — `chatkit.js` requires a real `window.location.href` to construct API URLs, and Streamlit's `srcdoc` iframe gives it `about:srcdoc` which crashes the URL constructor.
+### What works
 
-**What works:** Session token minting, Agent Builder workflow, vector store, MCP server.
+| Component | Status | Notes |
+|-----------|--------|-------|
+| ChatKit hosted UI | ✅ Working | Static file approach (`/app/static/chat.html`) gives chatkit.js a real URL — bypasses the `about:srcdoc` crash |
+| Floating bubble | ✅ Working | Custom bubble + panel in `chat.html`, ChatKit renders inside via `<openai-chatkit>` |
+| Dedicated `/Chat` page | ✅ Working | Full-page chat via `pages/Chat.py` + `static/chatpage.html` |
+| Session token minting | ✅ Working | `POST /v1/chatkit/sessions` returns 200 + `client_secret` (prefix `ek_`) |
+| Agent Builder workflow | ✅ Working | Guardrail → Classifier → ENS Data Analyst Agent → End (Human Approval removed) |
+| Sidebar collapsed | ✅ Working | `initial_sidebar_state="collapsed"` in `app.py` |
+| FastAPI + MCP server | ✅ Working locally | `api.py` serves `/mcp/` correctly, `tools/list` returns `query_duckdb` + `list_tables` |
 
-**What doesn't work:** Embedding ChatKit's `<openai-chatkit>` web component inside Streamlit. The root cause is `new URL(path, 'about:srcdoc')` throwing in chatkit.js. Parent-page injection partially worked (UI loaded) but the agent returned empty responses — likely a workflow config issue in Agent Builder.
+### What does NOT work
 
-**Next steps when revisiting:**
-1. Test the workflow directly in Agent Builder UI first (before any Streamlit integration)
-2. Consider a standalone chat page (not embedded in Streamlit) served by FastAPI alongside the MCP server
-3. Or wait for OpenAI to ship a ChatKit SDK that doesn't require the web component
+**MCP server connection from Agent Builder** — the agent cannot call `query_duckdb` or `list_tables` via MCP. Without MCP, the agent only has File Search (static gold table exports in the vector store). It can explain concepts but cannot run live SQL queries against the warehouse.
+
+### CRITICAL BUG: Agent Builder cannot connect to MCP server
+
+**Symptom:** Agent Builder UI shows `Error retrieving tool list from MCP server: 'ENS_Retro_DB'. Http status code: 424 (Failed Dependency)` when configuring the MCP tool. The agent falls back to File Search only.
+
+**What we verified:**
+- `curl POST /mcp/` with MCP JSON-RPC `initialize` → 200 OK, returns tools ✅
+- `curl POST /mcp/` with `tools/list` (with session ID) → 200 OK, returns `query_duckdb` + `list_tables` ✅
+- Cloudflare tunnel is live and accessible ✅
+- Server logs show **zero requests from Agent Builder** — it never connects
+
+**Possible causes (to investigate after Fly.io deploy):**
+
+1. **Tunnel URL not trusted** — Agent Builder may block temporary tunnel domains (`trycloudflare.com`). OpenAI docs show examples with real domains (`mcp.example.com`). A production Fly.io URL may work.
+
+2. **MCP transport mismatch** — Agent Builder auto-detects transport (Streamable HTTP vs SSE). Our server returns `406 Not Acceptable` on GET probe (Agent Builder may probe with GET first to detect transport). FastMCP 3.x only supports Streamable HTTP — if Agent Builder probes with GET and gets 406, it may abort.
+
+3. **JSON-RPC schema expectations** — Agent Builder may expect a specific response schema from `initialize` or `tools/list` that differs from what FastMCP 3.x returns. The `outputSchema` field with `x-fastmcp-wrap-result` is non-standard.
+
+4. **307 redirect on `/mcp` vs `/mcp/`** — FastAPI redirects `/mcp` → `/mcp/`. Agent Builder may not follow redirects. Fixed with `_TrailingSlashMiddleware` in `api.py`, but the URL in Agent Builder must match exactly.
+
+5. **Known Agent Builder platform bug** — multiple OpenAI community threads report the same 424 error with MCP servers that work perfectly via curl and the Agents SDK. Documented workarounds: delete and re-add the MCP config, use "Authorization Header" auth type, or bypass Agent Builder UI entirely using the OpenAI Agents SDK (Python/Node).
+
+6. **Not a fully deployed URL** — the tunnel is temporary and ephemeral. Once deployed to Fly.io with a stable URL (`https://ens-retro-data.fly.dev/mcp`), the connection may succeed.
+
+**Impact:** Without MCP, the agent cannot query the DuckDB warehouse. It answers from static vector store snapshots only — no live counts, rankings, trends, or cross-table joins. This makes it a documentation assistant, not a data analyst. **MCP is critical for the core value proposition.**
+
+**Next steps:**
+1. Deploy `api.py` to Fly.io → test with production URL
+2. If still 424: test with the OpenAI Agents SDK directly (bypasses Agent Builder UI)
+3. If SDK works but UI doesn't: file a bug with OpenAI support
+4. As a last resort: replace MCP with REST tool calls (Agent Builder also supports HTTP tools)

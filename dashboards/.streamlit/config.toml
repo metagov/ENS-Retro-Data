@@ -1,5 +1,6 @@
 [server]
 headless = true
+enableStaticServing = true
 
 [theme]
 base = "light"
