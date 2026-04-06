@@ -33,13 +33,17 @@ def _get_session_id() -> str:
     """Return the Streamlit browser session ID for use as the ChatKit user field.
 
     Falls back to a static string if the runtime context is unavailable
-    (e.g., during unit tests).
+    (e.g., during unit tests). Sanitised to alphanumeric + hyphens only
+    since the ChatKit API rejects arbitrary strings.
     """
     try:
         from streamlit.runtime.scriptrunner import get_script_run_ctx
         ctx = get_script_run_ctx()
         if ctx:
-            return ctx.session_id
+            raw = ctx.session_id
+            # Keep only safe chars — strip anything the API might reject
+            import re
+            return re.sub(r"[^a-zA-Z0-9\-]", "", raw)[:64] or "ens-dashboard-user"
     except Exception:
         pass
     return "ens-dashboard-user"
@@ -73,16 +77,32 @@ def create_chatkit_session(page_context: str = "") -> str | None:
     session_id = _get_session_id()
 
     try:
-        from openai import OpenAI
-        client = OpenAI(api_key=api_key)
+        import httpx
 
-        session = client.chatkit.sessions.create({
-            "workflow": {"id": WORKFLOW_ID},
-            "user": session_id,
-            **({"metadata": {"page_context": page_context}} if page_context else {}),
-        })
-        return session.client_secret
-    except Exception:
+        payload: dict = {"workflow": {"id": WORKFLOW_ID}, "user": session_id}
+        # Note: 'metadata' is not yet supported by the ChatKit sessions API (returns 400).
+        # page_context is baked into the agent system prompt directly for now.
+
+        r = httpx.post(
+            "https://api.openai.com/v1/chatkit/sessions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "OpenAI-Beta": "chatkit_beta=v1",
+            },
+            json=payload,
+            timeout=10,
+        )
+        if r.status_code != 200:
+            import logging
+            logging.getLogger(__name__).error(
+                "ChatKit session %s: %s", r.status_code, r.text
+            )
+            return None
+        return r.json()["client_secret"]
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error("ChatKit session error: %s", e, exc_info=True)
         return None
 
 

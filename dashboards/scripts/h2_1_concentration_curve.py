@@ -242,7 +242,7 @@ def render_concentration_curve() -> None:
     top1 = _top1_share(curve_df)
 
     fig = _build_chart(curve_df, nakamoto, gini)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     _render_cards(top1, nakamoto, gini)
 

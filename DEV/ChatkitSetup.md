@@ -451,4 +451,19 @@ Once you have the ID from Agent Builder (looks like `wf_...`):
 WORKFLOW_ID = "wf_..."   # ← replace TODO_INSERT_WORKFLOW_ID_HERE
 ```
 
-Then restart Streamlit — the 💬 bubble will appear bottom-right.
+Then restart Streamlit.
+
+---
+
+## Widget Integration — Paused (2026-04-06)
+
+ChatKit widget was stripped from the Streamlit dashboard. The backend pieces (session tokens, workflow, vector store, MCP server) all work. The frontend embedding in Streamlit's iframe sandbox does not — `chatkit.js` requires a real `window.location.href` to construct API URLs, and Streamlit's `srcdoc` iframe gives it `about:srcdoc` which crashes the URL constructor.
+
+**What works:** Session token minting, Agent Builder workflow, vector store, MCP server.
+
+**What doesn't work:** Embedding ChatKit's `<openai-chatkit>` web component inside Streamlit. The root cause is `new URL(path, 'about:srcdoc')` throwing in chatkit.js. Parent-page injection partially worked (UI loaded) but the agent returned empty responses — likely a workflow config issue in Agent Builder.
+
+**Next steps when revisiting:**
+1. Test the workflow directly in Agent Builder UI first (before any Streamlit integration)
+2. Consider a standalone chat page (not embedded in Streamlit) served by FastAPI alongside the MCP server
+3. Or wait for OpenAI to ship a ChatKit SDK that doesn't require the web component
