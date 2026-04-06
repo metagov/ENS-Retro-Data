@@ -15,9 +15,8 @@ Security layers on all query paths (applied in order):
     3. sqlglot AST parse      — must be a single SELECT; DML/DDL nodes rejected
                                 even when buried inside CTEs or subqueries
     4. Table allowlist        — only main_gold and main_silver schemas permitted
-    5. Regex fallback         — catches edge cases if sqlglot parse fails
-    6. DuckDB read_only=True  — OS-level write block, unconditional last defence
-    7. Resource limits        — 4 threads, 1GB memory, 500-row result cap
+    5. DuckDB read_only=True  — OS-level write block, unconditional last defence
+    6. Resource limits        — 4 threads, 1GB memory, 30s timeout, 500-row result cap
 
 Run locally:
     uvicorn dashboards.api:app --reload --port 8001
@@ -27,8 +26,8 @@ Register in Agent Builder:
     Access token    → value of AGENT_API_KEY env var
 """
 
+import logging
 import os
-import re
 from pathlib import Path
 from typing import Any
 
@@ -86,17 +85,10 @@ def _check_auth(creds: HTTPAuthorizationCredentials | None) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Layer 2–5: SQL validation
+# Layer 2–4: SQL validation
 # ---------------------------------------------------------------------------
 
-# Regex fallback — used when sqlglot parse fails
-_UNSAFE_RE = re.compile(
-    r"(;|--|\binsert\b|\bupdate\b|\bdelete\b|\bdrop\b|\bcreate\b"
-    r"|\balter\b|\btruncate\b|\breplace\b|\bcopy\b|\battach\b|\bdetach\b"
-    r"|\bpragma\b|\bload\b|\binstall\b|\bexec\b|\bexecute\b)",
-    re.IGNORECASE,
-)
-_SELECT_RE = re.compile(r"^\s*(select|with)\b", re.IGNORECASE)
+_log = logging.getLogger(__name__)
 
 # DML/DDL node types that must never appear anywhere in the AST
 _BLOCKED_AST_TYPES: tuple = ()  # populated lazily after sqlglot import
@@ -108,7 +100,7 @@ def _get_blocked_ast_types() -> tuple:
         import sqlglot.expressions as exp
         _BLOCKED_AST_TYPES = (
             exp.Insert, exp.Update, exp.Delete, exp.Drop, exp.Create,
-            exp.AlterTable, exp.Command, exp.Use, exp.Transaction,
+            exp.Alter, exp.Command, exp.Use, exp.Transaction,
             exp.Commit, exp.Rollback, exp.LoadData,
         )
     return _BLOCKED_AST_TYPES
@@ -176,23 +168,15 @@ def _validate_sql(sql: str) -> str:
 
     except HTTPException:
         raise
-    except Exception:
-        # sqlglot unavailable or parse failed — apply regex fallback (Layer 5)
-        _fallback_validate(sql)
+    except Exception as exc:
+        # sqlglot unavailable or parse failed — reject rather than downgrade security
+        _log.warning("SQL validation failed (sqlglot error): %s", exc)
+        raise HTTPException(
+            status_code=400,
+            detail="Query could not be validated. Ensure it is a valid SELECT statement.",
+        ) from exc
 
     return sql
-
-
-def _fallback_validate(sql: str) -> None:
-    """Regex guard used when sqlglot is unavailable or fails to parse."""
-    if not _SELECT_RE.match(sql):
-        raise HTTPException(
-            status_code=400, detail="Only SELECT queries are permitted."
-        )
-    if _UNSAFE_RE.search(sql):
-        raise HTTPException(
-            status_code=400, detail="Query contains disallowed syntax."
-        )
 
 
 # ---------------------------------------------------------------------------
@@ -208,6 +192,8 @@ def _get_conn():
     # 1GB: complex queries (percentile, Gini, multi-join aggregations) need room.
     # Fly.io shared-2x machine has 2GB total — 1GB leaves headroom for the app.
     conn.execute("SET memory_limit='1GB'")
+    # 30s timeout: prevent runaway queries from hanging the server.
+    conn.execute("SET timeout='30000ms'")
     return conn
 
 
@@ -237,39 +223,18 @@ def api_tables(
     """Return all permitted tables with column names and types."""
     _check_auth(creds)
     try:
-        conn = _get_conn()
-        tables = conn.execute("""
-            SELECT table_schema, table_name
-            FROM information_schema.tables
-            WHERE table_schema NOT IN ('information_schema', 'pg_catalog')
-            ORDER BY table_schema, table_name
-        """).fetchdf()
-
-        result = []
-        for _, row in tables.iterrows():
-            schema = str(row["table_schema"])
-            if schema not in _ALLOWED_SCHEMAS:
-                continue
-            table = str(row["table_name"])
-            cols = conn.execute(
-                "SELECT column_name, data_type "
-                "FROM information_schema.columns "
-                "WHERE table_schema = ? AND table_name = ? "
-                "ORDER BY ordinal_position",
-                [schema, table],
-            ).fetchdf()
-            result.append({
-                "schema": schema,
-                "table": table,
-                "columns": [
-                    {"name": r["column_name"], "type": r["data_type"]}
-                    for _, r in cols.iterrows()
-                ],
-            })
-        conn.close()
-        return {"tables": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        table_data = _fetch_tables()
+    except Exception:
+        _log.exception("Failed to list tables")
+        raise HTTPException(status_code=500, detail="Internal error listing tables.")
+    return {"tables": [
+        {
+            "schema": t["schema"],
+            "table": t["table"],
+            "columns": [{"name": c[0], "type": c[1]} for c in t["columns"]],
+        }
+        for t in table_data
+    ]}
 
 
 @app.post("/api/agent-query", response_model=QueryResponse)
@@ -277,9 +242,9 @@ def api_agent_query(
     body: QueryRequest,
     creds: HTTPAuthorizationCredentials | None = Security(_bearer),
 ):
-    """Execute a validated SELECT query. Enforces 7 security layers.
+    """Execute a validated SELECT query. Enforces security layers.
 
-    Returns up to 100 rows as a JSON array. Sets truncated=true if capped.
+    Returns up to 500 rows as a JSON array. Sets truncated=true if capped.
     On query error returns error string with empty result (does not raise 500).
     """
     _check_auth(creds)
@@ -287,10 +252,13 @@ def api_agent_query(
 
     try:
         conn = _get_conn()
-        df = conn.execute(sql).fetchdf()
-        conn.close()
-    except Exception as e:
-        return QueryResponse(result=[], row_count=0, truncated=False, error=str(e))
+        try:
+            df = conn.execute(sql).fetchdf()
+        finally:
+            conn.close()
+    except Exception:
+        _log.exception("Query execution failed")
+        return QueryResponse(result=[], row_count=0, truncated=False, error="Query execution failed.")
 
     truncated = len(df) > _MAX_ROWS
     if truncated:
@@ -321,6 +289,44 @@ def api_agent_query(
 
 
 # ---------------------------------------------------------------------------
+# Shared table listing (used by REST + MCP)
+# ---------------------------------------------------------------------------
+
+def _fetch_tables() -> list[dict]:
+    """Return all permitted tables with columns as structured data.
+
+    Each entry: {"schema": str, "table": str, "columns": [(name, type), ...]}.
+    Single query for all columns — no N+1.
+    """
+    conn = _get_conn()
+    try:
+        df = conn.execute("""
+            SELECT c.table_schema, c.table_name, c.column_name, c.data_type
+            FROM information_schema.columns c
+            JOIN information_schema.tables t
+              ON c.table_schema = t.table_schema AND c.table_name = t.table_name
+            WHERE c.table_schema NOT IN ('information_schema', 'pg_catalog')
+            ORDER BY c.table_schema, c.table_name, c.ordinal_position
+        """).fetchdf()
+    finally:
+        conn.close()
+
+    tables: list[dict] = []
+    current_key = None
+    for _, row in df.iterrows():
+        schema = str(row["table_schema"])
+        if schema not in _ALLOWED_SCHEMAS:
+            continue
+        table = str(row["table_name"])
+        key = (schema, table)
+        if key != current_key:
+            tables.append({"schema": schema, "table": table, "columns": []})
+            current_key = key
+        tables[-1]["columns"].append((str(row["column_name"]), str(row["data_type"])))
+    return tables
+
+
+# ---------------------------------------------------------------------------
 # MCP server — primary integration for Agent Builder
 # ---------------------------------------------------------------------------
 # Agent Builder config:
@@ -344,8 +350,10 @@ def _run_query(sql: str) -> str:
     sql = _validate_sql_mcp(sql)
     try:
         conn = _get_conn()
-        df = conn.execute(sql).fetchdf()
-        conn.close()
+        try:
+            df = conn.execute(sql).fetchdf()
+        finally:
+            conn.close()
     except Exception as e:
         return f"Query error: {e}"
 
@@ -363,32 +371,11 @@ def _run_query(sql: str) -> str:
 def _run_list_tables() -> str:
     """Return all permitted tables with column names — markdown formatted."""
     try:
-        conn = _get_conn()
-        tables = conn.execute("""
-            SELECT table_schema, table_name
-            FROM information_schema.tables
-            WHERE table_schema NOT IN ('information_schema', 'pg_catalog')
-            ORDER BY table_schema, table_name
-        """).fetchdf()
-
+        tables = _fetch_tables()
         lines = []
-        for _, row in tables.iterrows():
-            schema = str(row["table_schema"])
-            if schema not in _ALLOWED_SCHEMAS:
-                continue
-            table = str(row["table_name"])
-            cols = conn.execute(
-                "SELECT column_name, data_type "
-                "FROM information_schema.columns "
-                "WHERE table_schema = ? AND table_name = ? "
-                "ORDER BY ordinal_position",
-                [schema, table],
-            ).fetchdf()
-            col_str = ", ".join(
-                f"{r['column_name']} ({r['data_type']})" for _, r in cols.iterrows()
-            )
-            lines.append(f"**{schema}.{table}**: {col_str}")
-        conn.close()
+        for t in tables:
+            col_str = ", ".join(f"{name} ({dtype})" for name, dtype in t["columns"])
+            lines.append(f"**{t['schema']}.{t['table']}**: {col_str}")
         return "\n".join(lines)
     except Exception as e:
         return f"Error listing tables: {e}"

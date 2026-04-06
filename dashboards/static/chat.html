@@ -178,6 +178,10 @@
     document.getElementById('ens-bubble').style.display = 'none';
     return;
   }
+  // Strip secret from URL bar + browser history
+  if (window.history && window.history.replaceState) {
+    window.history.replaceState(null, '', window.location.pathname);
+  }
 
   // ---- 3. Toggle ----
   var panel = document.getElementById('ens-panel');
