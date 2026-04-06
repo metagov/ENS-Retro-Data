@@ -1,0 +1,13 @@
+[32m2026-04-02 11:48:57 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71686 - LOGS_CAPTURED - Started capturing logs in process (pid: 71686).
+[32m2026-04-02 11:48:58 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71686 - ens_wallet_balances - STEP_START - Started execution of step "ens_wallet_balances".
+[32m2026-04-02 11:48:58 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - ens_wallet_balances - ============================================================
+[32m2026-04-02 11:48:59 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - ens_wallet_balances - [BRONZE] Starting: ens_wallet_balances
+[32m2026-04-02 11:48:59 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - ens_wallet_balances - [BRONZE] Source: Safe Transaction Service API
+[32m2026-04-02 11:48:59 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - ens_wallet_balances - [BRONZE] Output: bronze/financial/ens_wallet_balances.json
+[32m2026-04-02 11:49:00 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - ens_wallet_balances - [BRONZE] Fetching current balances for all ENS DAO Safe wallets...
+[32m2026-04-02 11:49:34 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - ens_wallet_balances - [BRONZE] ✓ Fetched balances for 17 wallet/token combinations
+[32m2026-04-02 11:49:34 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - ens_wallet_balances - Wrote 17 records to /home/torch/ENS-Retro-Data/bronze/financial/ens_wallet_balances.json (4,783 bytes)
+[32m2026-04-02 11:49:34 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - ens_wallet_balances - [BRONZE] ✓ ens_wallet_balances COMPLETE - 17 records written
+[32m2026-04-02 11:49:34 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71686 - ens_wallet_balances - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-04-02 11:49:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71686 - ens_wallet_balances - ASSET_MATERIALIZATION - Materialized value ens_wallet_balances.
+[32m2026-04-02 11:49:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 71686 - ens_wallet_balances - STEP_SUCCESS - Finished execution of step "ens_wallet_balances" in 38.5s.

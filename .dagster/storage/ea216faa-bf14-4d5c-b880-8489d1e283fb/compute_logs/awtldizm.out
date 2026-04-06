@@ -1,0 +1,37 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+[[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 1 unused configuration paths:
+- seeds.ens_retro
+Found 36 models, 123 data tests, 17 sources, 597 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 10 START sql table model main_silver.clean_oso_ens_code_metrics ........... [RUN]
+1 of 10 ERROR creating sql table model main_silver.clean_oso_ens_code_metrics .. [[31mERROR[0m in 2.84s]
+2 of 10 START sql table model main_silver.clean_oso_ens_timeseries ............. [RUN]
+2 of 10 OK created sql table model main_silver.clean_oso_ens_timeseries ........ [[32mOK[0m in 4.92s]
+3 of 10 SKIP test accepted_values_clean_oso_ens_code_metrics_source__oso ....... [[33mSKIP[0m]
+4 of 10 SKIP test not_null_clean_oso_ens_code_metrics_artifact_id .............. [[33mSKIP[0m]
+5 of 10 SKIP test not_null_clean_oso_ens_code_metrics_artifact_name ............ [[33mSKIP[0m]
+6 of 10 SKIP test unique_clean_oso_ens_code_metrics_artifact_id ................ [[33mSKIP[0m]
+7 of 10 START test accepted_values_clean_oso_ens_timeseries_source__oso ........ [RUN]
+7 of 10 PASS accepted_values_clean_oso_ens_timeseries_source__oso .............. [[32mPASS[0m in 0.08s]
+8 of 10 START test not_null_clean_oso_ens_timeseries_artifact_id ............... [RUN]
+8 of 10 PASS not_null_clean_oso_ens_timeseries_artifact_id ..................... [[32mPASS[0m in 0.04s]
+9 of 10 START test not_null_clean_oso_ens_timeseries_event_time ................ [RUN]
+9 of 10 PASS not_null_clean_oso_ens_timeseries_event_time ...................... [[32mPASS[0m in 0.03s]
+10 of 10 START test not_null_clean_oso_ens_timeseries_event_type ............... [RUN]
+10 of 10 PASS not_null_clean_oso_ens_timeseries_event_type ..................... [[32mPASS[0m in 0.04s]
+
+Finished running 2 table models, 8 data tests in 0 hours 0 minutes and 8.36 seconds (8.36s).
+
+[31mCompleted with 1 error, 0 partial successes, and 0 warnings:[0m
+
+[31mFailure in model clean_oso_ens_code_metrics (models/silver/clean_oso_ens_code_metrics.sql)[0m
+  Runtime Error in model clean_oso_ens_code_metrics (models/silver/clean_oso_ens_code_metrics.sql)
+  Binder Error: Column "contributor_count_6_months" referenced that exists in the SELECT clause - but this column cannot be referenced before it is defined
+
+  compiled code at target/ens_dbt_assets-ea216fa-90d602a/compiled/ens_retro/models/silver/clean_oso_ens_code_metrics.sql
+
+Done. PASS=5 WARN=0 ERROR=1 SKIP=4 NO-OP=0 TOTAL=10

@@ -1,0 +1,48 @@
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - 209225 - LOGS_CAPTURED - Started capturing logs in process (pid: 209225).
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - 209225 - tally_votes - STEP_START - Started execution of step "tally_votes".
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - tally_votes - ============================================================
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - tally_votes - [BRONZE] Starting: tally_votes (depends on tally_proposals)
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - tally_votes - [BRONZE] Source: tally.xyz GraphQL API
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - tally_votes - [BRONZE] Output: bronze/governance/tally_votes.json
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - tally_votes - [BRONZE] Found 64 proposals from previous asset
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - tally_votes - [BRONZE] Fetching on-chain votes for 64 proposals...
+[32m2026-03-20 05:21:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - tally_votes - [BRONZE] This may take 2-4 minutes (pagination + rate limiting)
+[32m2026-03-20 05:23:18 +0530[0m - dagster - [34mERROR[0m - [31m__ASSET_JOB - fe0783c5-e38c-438b-b086-c3c87d49fce4 - 209225 - tally_votes - STEP_FAILURE - Execution of step "tally_votes" failed.
+
+dagster._core.errors.DagsterExecutionInterruptedError
+
+Stack Trace:
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_core/execution/plan/execute_plan.py", line 247, in dagster_event_sequence_for_step
+    yield from check.generator(step_events)
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_core/execution/plan/execute_step.py", line 505, in core_dagster_event_sequence_for_step
+    for user_event in _step_output_error_checked_user_event_sequence(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_core/execution/plan/execute_step.py", line 184, in _step_output_error_checked_user_event_sequence
+    for user_event in user_event_sequence:
+                      ^^^^^^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_core/execution/plan/execute_step.py", line 88, in _process_asset_results_to_events
+    for user_event in user_event_sequence:
+                      ^^^^^^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_core/execution/plan/compute.py", line 188, in execute_core_compute
+    for step_output in _yield_compute_results(step_context, inputs, compute_fn, compute_context):
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_core/execution/plan/compute.py", line 157, in _yield_compute_results
+    for event in iterate_with_context(
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_utils/__init__.py", line 394, in iterate_with_context
+    next_output = next(iterator)
+                  ^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_core/execution/plan/compute_generator.py", line 135, in _coerce_op_compute_fn_to_iterator
+    result = invoke_compute_fn(
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_core/execution/plan/compute_generator.py", line 115, in invoke_compute_fn
+    return fn(context, **args_to_pass) if context_arg_provided else fn(**args_to_pass)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/infra/ingest/assets.py", line 366, in tally_votes
+    raw_votes = fetch_tally_votes(flat_proposals, tally_config.api_key)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/torch/ENS-Retro-Data/infra/ingest/tally_api.py", line 266, in fetch_tally_votes
+    time.sleep(1)
+  File "/home/torch/ENS-Retro-Data/.venv/lib/python3.12/site-packages/dagster/_utils/interrupts.py", line 81, in _new_signal_handler
+    raise error_cls()
+[0m

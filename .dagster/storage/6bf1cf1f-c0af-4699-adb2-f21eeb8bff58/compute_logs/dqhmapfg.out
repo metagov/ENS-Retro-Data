@@ -1,0 +1,28 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+[[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 1 unused configuration paths:
+- seeds.ens_retro
+Found 34 models, 105 data tests, 16 sources, 596 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 3 START sql view model main_bronze.stg_grants ............................. [RUN]
+1 of 3 ERROR creating sql view model main_bronze.stg_grants .................... [[31mERROR[0m in 0.13s]
+2 of 3 SKIP test not_null_stg_grants_grant_id .................................. [[33mSKIP[0m]
+3 of 3 SKIP test unique_stg_grants_grant_id .................................... [[33mSKIP[0m]
+
+Finished running 2 data tests, 1 view model in 0 hours 0 minutes and 0.40 seconds (0.40s).
+
+[31mCompleted with 1 error, 0 partial successes, and 0 warnings:[0m
+
+[31mFailure in model stg_grants (models/staging/stg_grants.sql)[0m
+  Runtime Error in model stg_grants (models/staging/stg_grants.sql)
+  IO Error: No files found that match the pattern "../../bronze/grants/grants.json"
+  
+  LINE 18: from read_json_auto('../../bronze/grants/grants.json')
+                ^
+
+  compiled code at target/ens_dbt_assets-6bf1cf1-874c380/compiled/ens_retro/models/staging/stg_grants.sql
+
+Done. PASS=0 WARN=0 ERROR=1 SKIP=2 NO-OP=0 TOTAL=3

@@ -1,0 +1,57 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+[[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 1 unused configuration paths:
+- seeds.ens_retro
+Found 34 models, 105 data tests, 16 sources, 596 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 11 START sql table model main_silver.clean_compensation ................... [RUN]
+1 of 11 OK created sql table model main_silver.clean_compensation .............. [[32mOK[0m in 0.91s]
+2 of 11 START sql table model main_silver.clean_grants ......................... [RUN]
+2 of 11 OK created sql table model main_silver.clean_grants .................... [[32mOK[0m in 0.18s]
+3 of 11 START sql table model main_silver.clean_treasury_flows ................. [RUN]
+3 of 11 OK created sql table model main_silver.clean_treasury_flows ............ [[32mOK[0m in 0.26s]
+4 of 11 START test accepted_values_clean_compensation_role__delegate__steward__contributor__token_holder__service_provider__multisig_signer__working_group_lead__dao_officer  [RUN]
+4 of 11 WARN 1 accepted_values_clean_compensation_role__delegate__steward__contributor__token_holder__service_provider__multisig_signer__working_group_lead__dao_officer  [[33mWARN 1[0m in 0.13s]
+5 of 11 START test accepted_values_clean_compensation_working_group__meta_governance__ens_ecosystem__public_goods__providers  [RUN]
+5 of 11 WARN 4 accepted_values_clean_compensation_working_group__meta_governance__ens_ecosystem__public_goods__providers  [[33mWARN 4[0m in 0.03s]
+6 of 11 START test not_null_clean_compensation_recipient_address ............... [RUN]
+6 of 11 PASS not_null_clean_compensation_recipient_address ..................... [[32mPASS[0m in 0.04s]
+7 of 11 START test accepted_values_clean_grants_working_group__meta_governance__ens_ecosystem__public_goods__providers  [RUN]
+7 of 11 WARN 2 accepted_values_clean_grants_working_group__meta_governance__ens_ecosystem__public_goods__providers  [[33mWARN 2[0m in 0.03s]
+8 of 11 START test not_null_clean_grants_grant_id .............................. [RUN]
+8 of 11 PASS not_null_clean_grants_grant_id .................................... [[32mPASS[0m in 0.03s]
+9 of 11 START test unique_clean_grants_grant_id ................................ [RUN]
+9 of 11 WARN 54 unique_clean_grants_grant_id ................................... [[33mWARN 54[0m in 0.03s]
+10 of 11 START test not_null_clean_treasury_flows_tx_hash ...................... [RUN]
+10 of 11 PASS not_null_clean_treasury_flows_tx_hash ............................ [[32mPASS[0m in 0.03s]
+11 of 11 START test unique_clean_treasury_flows_tx_hash ........................ [RUN]
+11 of 11 PASS unique_clean_treasury_flows_tx_hash .............................. [[32mPASS[0m in 0.03s]
+
+Finished running 3 table models, 8 data tests in 0 hours 0 minutes and 1.98 seconds (1.98s).
+
+[33mCompleted with 4 warnings:[0m
+
+[33mWarning in test accepted_values_clean_compensation_role__delegate__steward__contributor__token_holder__service_provider__multisig_signer__working_group_lead__dao_officer (models/silver/_silver.yml)[0m
+Got 1 result, configured to warn if != 0
+
+  compiled code at target/ens_dbt_assets-df91362-893bc57/compiled/ens_retro/models/silver/_silver.yml/accepted_values_clean_compensa_fd4d1c411377e300d55e2bd0a056c98a.sql
+
+[33mWarning in test accepted_values_clean_compensation_working_group__meta_governance__ens_ecosystem__public_goods__providers (models/silver/_silver.yml)[0m
+Got 4 results, configured to warn if != 0
+
+  compiled code at target/ens_dbt_assets-df91362-893bc57/compiled/ens_retro/models/silver/_silver.yml/accepted_values_clean_compensa_67a079fbc16a2a42f4b7f871b0502ac5.sql
+
+[33mWarning in test accepted_values_clean_grants_working_group__meta_governance__ens_ecosystem__public_goods__providers (models/silver/_silver.yml)[0m
+Got 2 results, configured to warn if != 0
+
+  compiled code at target/ens_dbt_assets-df91362-893bc57/compiled/ens_retro/models/silver/_silver.yml/accepted_values_clean_grants_6319527dd9898b434240718f7a55d0e1.sql
+
+[33mWarning in test unique_clean_grants_grant_id (models/silver/_silver.yml)[0m
+Got 54 results, configured to warn if != 0
+
+  compiled code at target/ens_dbt_assets-df91362-893bc57/compiled/ens_retro/models/silver/_silver.yml/unique_clean_grants_grant_id.sql
+
+Done. PASS=7 WARN=4 ERROR=0 SKIP=0 NO-OP=0 TOTAL=11

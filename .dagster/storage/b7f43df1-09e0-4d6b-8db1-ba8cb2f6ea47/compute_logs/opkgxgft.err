@@ -1,0 +1,6 @@
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131123 - LOGS_CAPTURED - Started capturing logs in process (pid: 131123).
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131123 - ens_ledger_transactions - STEP_START - Started execution of step "ens_ledger_transactions".
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - ens_ledger_transactions - Found /home/torch/ENS-Retro-Data/bronze/financial/ens_ledger_transactions.csv (317,677 bytes)
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131123 - ens_ledger_transactions - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131123 - ens_ledger_transactions - ASSET_MATERIALIZATION - Materialized value ens_ledger_transactions.
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131123 - ens_ledger_transactions - STEP_SUCCESS - Finished execution of step "ens_ledger_transactions" in 155ms.

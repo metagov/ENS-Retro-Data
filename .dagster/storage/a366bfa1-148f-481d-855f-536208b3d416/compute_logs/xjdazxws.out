@@ -1,0 +1,100 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+[[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 1 unused configuration paths:
+- seeds.ens_retro
+Found 34 models, 105 data tests, 16 sources, 596 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 34 START sql view model main_bronze.stg_delegate_profiles ................. [RUN]
+1 of 34 OK created sql view model main_bronze.stg_delegate_profiles ............ [[32mOK[0m in 2.30s]
+2 of 34 START sql view model main_bronze.stg_delegations ....................... [RUN]
+2 of 34 OK created sql view model main_bronze.stg_delegations .................. [[32mOK[0m in 0.56s]
+3 of 34 START sql view model main_bronze.stg_oso_ens_code_metrics .............. [RUN]
+3 of 34 ERROR creating sql view model main_bronze.stg_oso_ens_code_metrics ..... [[31mERROR[0m in 0.05s]
+4 of 34 START sql view model main_bronze.stg_oso_ens_repos ..................... [RUN]
+4 of 34 OK created sql view model main_bronze.stg_oso_ens_repos ................ [[32mOK[0m in 0.27s]
+5 of 34 START sql view model main_bronze.stg_oso_ens_timeseries ................ [RUN]
+5 of 34 ERROR creating sql view model main_bronze.stg_oso_ens_timeseries ....... [[31mERROR[0m in 0.04s]
+6 of 34 START sql view model main_bronze.stg_snapshot_proposals ................ [RUN]
+6 of 34 OK created sql view model main_bronze.stg_snapshot_proposals ........... [[32mOK[0m in 0.33s]
+7 of 34 START sql view model main_bronze.stg_snapshot_votes .................... [RUN]
+7 of 34 OK created sql view model main_bronze.stg_snapshot_votes ............... [[32mOK[0m in 0.43s]
+8 of 34 START sql view model main_bronze.stg_tally_delegates ................... [RUN]
+8 of 34 OK created sql view model main_bronze.stg_tally_delegates .............. [[32mOK[0m in 0.53s]
+9 of 34 START sql view model main_bronze.stg_tally_proposals ................... [RUN]
+9 of 34 OK created sql view model main_bronze.stg_tally_proposals .............. [[32mOK[0m in 1.30s]
+10 of 34 START test not_null_stg_delegate_profiles_address ..................... [RUN]
+10 of 34 PASS not_null_stg_delegate_profiles_address ........................... [[32mPASS[0m in 0.39s]
+11 of 34 START test not_null_stg_delegations_delegate .......................... [RUN]
+11 of 34 PASS not_null_stg_delegations_delegate ................................ [[32mPASS[0m in 0.18s]
+12 of 34 START test not_null_stg_delegations_delegator ......................... [RUN]
+12 of 34 PASS not_null_stg_delegations_delegator ............................... [[32mPASS[0m in 0.17s]
+13 of 34 SKIP test not_null_stg_oso_ens_code_metrics_artifact_id ............... [[33mSKIP[0m]
+14 of 34 SKIP test not_null_stg_oso_ens_code_metrics_artifact_name ............. [[33mSKIP[0m]
+15 of 34 SKIP test unique_stg_oso_ens_code_metrics_artifact_id ................. [[33mSKIP[0m]
+16 of 34 START test not_null_stg_oso_ens_repos_artifact_id ..................... [RUN]
+16 of 34 PASS not_null_stg_oso_ens_repos_artifact_id ........................... [[32mPASS[0m in 0.05s]
+17 of 34 START test not_null_stg_oso_ens_repos_artifact_name ................... [RUN]
+17 of 34 PASS not_null_stg_oso_ens_repos_artifact_name ......................... [[32mPASS[0m in 0.05s]
+18 of 34 START test unique_stg_oso_ens_repos_artifact_id ....................... [RUN]
+18 of 34 FAIL 150 unique_stg_oso_ens_repos_artifact_id ......................... [[31mFAIL 150[0m in 0.05s]
+19 of 34 SKIP test not_null_stg_oso_ens_timeseries_artifact_id ................. [[33mSKIP[0m]
+20 of 34 SKIP test not_null_stg_oso_ens_timeseries_event_time .................. [[33mSKIP[0m]
+21 of 34 SKIP test not_null_stg_oso_ens_timeseries_event_type .................. [[33mSKIP[0m]
+22 of 34 START test not_null_stg_snapshot_proposals_author_address ............. [RUN]
+22 of 34 PASS not_null_stg_snapshot_proposals_author_address ................... [[32mPASS[0m in 0.04s]
+23 of 34 START test not_null_stg_snapshot_proposals_proposal_id ................ [RUN]
+23 of 34 PASS not_null_stg_snapshot_proposals_proposal_id ...................... [[32mPASS[0m in 0.04s]
+24 of 34 START test not_null_stg_snapshot_proposals_status ..................... [RUN]
+24 of 34 PASS not_null_stg_snapshot_proposals_status ........................... [[32mPASS[0m in 0.04s]
+25 of 34 START test unique_stg_snapshot_proposals_proposal_id .................. [RUN]
+25 of 34 PASS unique_stg_snapshot_proposals_proposal_id ........................ [[32mPASS[0m in 0.04s]
+26 of 34 START test not_null_stg_snapshot_votes_proposal_id .................... [RUN]
+26 of 34 PASS not_null_stg_snapshot_votes_proposal_id .......................... [[32mPASS[0m in 0.13s]
+27 of 34 START test not_null_stg_snapshot_votes_vote_id ........................ [RUN]
+27 of 34 PASS not_null_stg_snapshot_votes_vote_id .............................. [[32mPASS[0m in 0.15s]
+28 of 34 START test not_null_stg_snapshot_votes_voter .......................... [RUN]
+28 of 34 PASS not_null_stg_snapshot_votes_voter ................................ [[32mPASS[0m in 0.14s]
+29 of 34 START test unique_stg_snapshot_votes_vote_id .......................... [RUN]
+29 of 34 PASS unique_stg_snapshot_votes_vote_id ................................ [[32mPASS[0m in 0.17s]
+30 of 34 START test not_null_stg_tally_delegates_address ....................... [RUN]
+30 of 34 PASS not_null_stg_tally_delegates_address ............................. [[32mPASS[0m in 0.38s]
+31 of 34 START test unique_stg_tally_delegates_address ......................... [RUN]
+31 of 34 PASS unique_stg_tally_delegates_address ............................... [[32mPASS[0m in 0.36s]
+32 of 34 START test not_null_stg_tally_proposals_proposal_id ................... [RUN]
+32 of 34 PASS not_null_stg_tally_proposals_proposal_id ......................... [[32mPASS[0m in 0.04s]
+33 of 34 START test not_null_stg_tally_proposals_status ........................ [RUN]
+33 of 34 PASS not_null_stg_tally_proposals_status .............................. [[32mPASS[0m in 0.05s]
+34 of 34 START test unique_stg_tally_proposals_proposal_id ..................... [RUN]
+34 of 34 PASS unique_stg_tally_proposals_proposal_id ........................... [[32mPASS[0m in 0.04s]
+
+Finished running 25 data tests, 9 view models in 0 hours 0 minutes and 10.88 seconds (10.88s).
+
+[31mCompleted with 3 errors, 0 partial successes, and 0 warnings:[0m
+
+[31mFailure in model stg_oso_ens_code_metrics (models/staging/stg_oso_ens_code_metrics.sql)[0m
+  Runtime Error in model stg_oso_ens_code_metrics (models/staging/stg_oso_ens_code_metrics.sql)
+  IO Error: No files found that match the pattern "../../bronze/github/oso_ens_code_metrics.json"
+  
+  LINE 27: from read_json_auto('../../bronze/github/oso_ens_code_metrics...
+                ^
+
+  compiled code at target/ens_dbt_assets-a366bfa-e7627b4/compiled/ens_retro/models/staging/stg_oso_ens_code_metrics.sql
+
+[31mFailure in model stg_oso_ens_timeseries (models/staging/stg_oso_ens_timeseries.sql)[0m
+  Runtime Error in model stg_oso_ens_timeseries (models/staging/stg_oso_ens_timeseries.sql)
+  IO Error: No files found that match the pattern "../../bronze/github/oso_ens_timeseries.json"
+  
+  LINE 20: from read_json_auto('../../bronze/github/oso_ens_timeseries.json...
+                ^
+
+  compiled code at target/ens_dbt_assets-a366bfa-e7627b4/compiled/ens_retro/models/staging/stg_oso_ens_timeseries.sql
+
+[31mFailure in test unique_stg_oso_ens_repos_artifact_id (models/staging/_staging.yml)[0m
+  Got 150 results, configured to fail if != 0
+
+  compiled code at target/ens_dbt_assets-a366bfa-e7627b4/compiled/ens_retro/models/staging/_staging.yml/unique_stg_oso_ens_repos_artifact_id.sql
+
+Done. PASS=25 WARN=0 ERROR=3 SKIP=6 NO-OP=0 TOTAL=34

@@ -1,0 +1,15 @@
+[32m2026-04-03 10:21:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - 744263 - LOGS_CAPTURED - Started capturing logs in process (pid: 744263).
+[32m2026-04-03 10:21:37 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - 744263 - oso_ens_timeseries - STEP_START - Started execution of step "oso_ens_timeseries".
+[32m2026-04-03 10:21:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - oso_ens_timeseries - ============================================================
+[32m2026-04-03 10:21:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - oso_ens_timeseries - [BRONZE] Starting: oso_ens_timeseries (incremental)
+[32m2026-04-03 10:21:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - oso_ens_timeseries - [BRONZE] Output: bronze/github/oso_ens_timeseries.json
+[32m2026-04-03 10:21:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - oso_ens_timeseries - [BRONZE] No existing file — fetching full history since 2019-01-01
+[OSO] Fetching ENS activity metrics snapshot (namespace='ensdomains')
+[OSO] ✓ Fetched 1077 activity metric rows
+[32m2026-04-03 10:24:08 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - oso_ens_timeseries - [BRONZE] ✓ Received 1077 new event rows from OSO
+[32m2026-04-03 10:24:08 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - oso_ens_timeseries - [BRONZE] Merged: 0 existing + 1077 new = 1077 total
+[32m2026-04-03 10:24:08 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - oso_ens_timeseries - Wrote 1077 records to /home/torch/ENS-Retro-Data/bronze/github/oso_ens_timeseries.json (305,270 bytes)
+[32m2026-04-03 10:24:08 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - oso_ens_timeseries - [BRONZE] ✓ oso_ens_timeseries COMPLETE — 1077 total rows written
+[32m2026-04-03 10:24:09 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - 744263 - oso_ens_timeseries - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-04-03 10:24:10 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - 744263 - oso_ens_timeseries - ASSET_MATERIALIZATION - Materialized value oso_ens_timeseries.
+[32m2026-04-03 10:24:10 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0dbfae39-7c7c-4198-99bf-cfe19cb3efa7 - 744263 - oso_ens_timeseries - STEP_SUCCESS - Finished execution of step "oso_ens_timeseries" in 2m33s.

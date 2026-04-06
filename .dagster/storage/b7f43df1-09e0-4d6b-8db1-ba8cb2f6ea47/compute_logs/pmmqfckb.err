@@ -1,0 +1,16 @@
+[32m2026-03-24 15:10:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133557 - LOGS_CAPTURED - Started capturing logs in process (pid: 133557).
+[32m2026-03-24 15:10:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133557 - tally_proposals - STEP_START - Started execution of step "tally_proposals".
+[32m2026-03-24 15:10:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - ============================================================
+[32m2026-03-24 15:10:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] Starting: tally_proposals
+[32m2026-03-24 15:10:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] Source: tally.xyz GraphQL API
+[32m2026-03-24 15:10:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] Output: bronze/governance/tally_proposals.json
+[32m2026-03-24 15:10:38 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] Fetching ENS organization from Tally...
+[32m2026-03-24 15:10:44 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] ✓ Connected to Tally org: ENS (id=2206072050458560426)
+[32m2026-03-24 15:10:44 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] Fetching proposals with vote stats, quorum, proposer info...
+[32m2026-03-24 15:10:57 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] Flattening nested GraphQL response...
+[32m2026-03-24 15:10:57 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] ✓ Flattened 66 tally proposals
+[32m2026-03-24 15:10:57 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - Wrote 66 records to /home/torch/ENS-Retro-Data/bronze/governance/tally_proposals.json (306,356 bytes)
+[32m2026-03-24 15:10:57 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - tally_proposals - [BRONZE] ✓ tally_proposals COMPLETE - 66 records written
+[32m2026-03-24 15:10:57 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133557 - tally_proposals - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-24 15:10:57 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133557 - tally_proposals - ASSET_MATERIALIZATION - Materialized value tally_proposals.
+[32m2026-03-24 15:10:57 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133557 - tally_proposals - STEP_SUCCESS - Finished execution of step "tally_proposals" in 14.68s.

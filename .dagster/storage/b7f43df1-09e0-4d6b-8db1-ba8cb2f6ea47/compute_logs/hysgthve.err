@@ -1,0 +1,6 @@
+[32m2026-03-24 15:10:58 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 134490 - LOGS_CAPTURED - Started capturing logs in process (pid: 134490).
+[32m2026-03-24 15:10:58 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 134490 - votingpower_delegates - STEP_START - Started execution of step "votingpower_delegates".
+[32m2026-03-24 15:10:58 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - votingpower_delegates - Found /home/torch/ENS-Retro-Data/bronze/governance/votingpower-xyz/ens-delegates-2026-02-20.csv (6,171 bytes)
+[32m2026-03-24 15:10:58 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 134490 - votingpower_delegates - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-24 15:10:58 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 134490 - votingpower_delegates - ASSET_MATERIALIZATION - Materialized value votingpower_delegates.
+[32m2026-03-24 15:10:58 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 134490 - votingpower_delegates - STEP_SUCCESS - Finished execution of step "votingpower_delegates" in 74ms.

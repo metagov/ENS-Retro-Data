@@ -1,0 +1,2 @@
+[OSO] Fetching ENS activity metrics snapshot (namespace='ensdomains')
+[OSO] ERROR fetching activity metrics: 500 Server Error: Internal Server Error for url: https://www.oso.xyz/api/v1/async-sql?id=fb945990-915f-472e-9c9b-2d71130af505 - Query execution failed for unknown reasons. Contact support.

@@ -1,0 +1,7 @@
+[32m2026-04-02 11:49:30 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 72639 - LOGS_CAPTURED - Started capturing logs in process (pid: 72639).
+[32m2026-04-02 11:49:30 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 72639 - snapshot_proposals - STEP_START - Started execution of step "snapshot_proposals".
+[32m2026-04-02 11:49:31 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - snapshot_proposals - [BRONZE] Already on disk: snapshot_proposals.json (90 records, 455,031 bytes)
+[32m2026-04-02 11:49:32 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - snapshot_proposals - [BRONZE] Skipping fetch — delete the file to force a re-fetch.
+[32m2026-04-02 11:49:32 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 72639 - snapshot_proposals - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-04-02 11:49:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 72639 - snapshot_proposals - ASSET_MATERIALIZATION - Materialized value snapshot_proposals.
+[32m2026-04-02 11:49:33 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 72639 - snapshot_proposals - STEP_SUCCESS - Finished execution of step "snapshot_proposals" in 2.92s.

@@ -1,0 +1,36 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+[[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 1 unused configuration paths:
+- seeds.ens_retro
+Found 34 models, 105 data tests, 16 sources, 596 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 7 START sql view model main_bronze.stg_compensation ....................... [RUN]
+1 of 7 OK created sql view model main_bronze.stg_compensation .................. [[32mOK[0m in 1.33s]
+2 of 7 START sql view model main_bronze.stg_delegate_profiles .................. [RUN]
+2 of 7 OK created sql view model main_bronze.stg_delegate_profiles ............. [[32mOK[0m in 0.74s]
+3 of 7 START sql view model main_bronze.stg_grants ............................. [RUN]
+3 of 7 ERROR creating sql view model main_bronze.stg_grants .................... [[31mERROR[0m in 1.04s]
+4 of 7 START test not_null_stg_compensation_recipient_address .................. [RUN]
+4 of 7 PASS not_null_stg_compensation_recipient_address ........................ [[32mPASS[0m in 0.18s]
+5 of 7 START test not_null_stg_delegate_profiles_address ....................... [RUN]
+5 of 7 PASS not_null_stg_delegate_profiles_address ............................. [[32mPASS[0m in 0.46s]
+6 of 7 SKIP test not_null_stg_grants_grant_id .................................. [[33mSKIP[0m]
+7 of 7 SKIP test unique_stg_grants_grant_id .................................... [[33mSKIP[0m]
+
+Finished running 4 data tests, 3 view models in 0 hours 0 minutes and 4.11 seconds (4.11s).
+
+[31mCompleted with 1 error, 0 partial successes, and 0 warnings:[0m
+
+[31mFailure in model stg_grants (models/staging/stg_grants.sql)[0m
+  Runtime Error in model stg_grants (models/staging/stg_grants.sql)
+  IO Error: No files found that match the pattern "../../bronze/grants/grants.json"
+  
+  LINE 18: from read_json_auto('../../bronze/grants/grants.json')
+                ^
+
+  compiled code at target/ens_dbt_assets-fb3a125-ee44eef/compiled/ens_retro/models/staging/stg_grants.sql
+
+Done. PASS=4 WARN=0 ERROR=1 SKIP=2 NO-OP=0 TOTAL=7

@@ -1,0 +1,7 @@
+[32m2026-04-02 11:50:32 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 74597 - LOGS_CAPTURED - Started capturing logs in process (pid: 74597).
+[32m2026-04-02 11:50:32 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 74597 - smallgrants_votes - STEP_START - Started execution of step "smallgrants_votes".
+[32m2026-04-02 11:50:33 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - smallgrants_votes - [BRONZE] Already on disk: smallgrants_votes.json (1,562 records, 562,855 bytes)
+[32m2026-04-02 11:50:33 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - smallgrants_votes - [BRONZE] Skipping fetch — delete the file to force a re-fetch.
+[32m2026-04-02 11:50:34 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 74597 - smallgrants_votes - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-04-02 11:50:35 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 74597 - smallgrants_votes - ASSET_MATERIALIZATION - Materialized value smallgrants_votes.
+[32m2026-04-02 11:50:37 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 74597 - smallgrants_votes - STEP_SUCCESS - Finished execution of step "smallgrants_votes" in 2.85s.

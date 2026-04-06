@@ -1,0 +1,15 @@
+[32m2026-03-24 15:10:24 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - 132522 - LOGS_CAPTURED - Started capturing logs in process (pid: 132522).
+[32m2026-03-24 15:10:24 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - 132522 - forum_topics - STEP_START - Started execution of step "forum_topics".
+[32m2026-03-24 15:10:24 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - ============================================================
+[32m2026-03-24 15:10:24 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - [BRONZE] Starting: forum_topics
+[32m2026-03-24 15:10:24 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - [BRONZE] Source: discuss.ens.domains Discourse API
+[32m2026-03-24 15:10:24 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - [BRONZE] Output: bronze/forum/forum_topics.json & forum_posts.json
+[32m2026-03-24 15:10:24 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - [BRONZE] Fetching ENS Governance Forum topics and posts...
+[32m2026-03-24 15:10:24 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - [BRONZE] This may take 15-25 minutes (~2,400 topics + all posts)
+[32m2026-03-24 16:35:36 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - [BRONZE] ✓ Received 2489 topics and 21747 posts
+[32m2026-03-24 16:35:36 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - Wrote 2489 records to /home/torch/ENS-Retro-Data/bronze/forum/forum_topics.json (1,234,622 bytes)
+[32m2026-03-24 16:35:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - Wrote 21747 records to /home/torch/ENS-Retro-Data/bronze/forum/forum_posts.json (49,098,992 bytes)
+[32m2026-03-24 16:35:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - forum_topics - [BRONZE] ✓ forum_topics COMPLETE - 2489 topics, 21747 posts written
+[32m2026-03-24 16:35:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - 132522 - forum_topics - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-24 16:35:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - 132522 - forum_topics - ASSET_MATERIALIZATION - Materialized value forum_topics.
+[32m2026-03-24 16:35:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 3cf657c5-2016-4b3f-ba95-bd4a74ab9da9 - 132522 - forum_topics - STEP_SUCCESS - Finished execution of step "forum_topics" in 1h16m.

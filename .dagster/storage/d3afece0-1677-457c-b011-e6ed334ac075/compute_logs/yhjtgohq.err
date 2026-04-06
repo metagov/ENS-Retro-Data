@@ -1,0 +1,29 @@
+[32m2026-04-02 16:40:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - d3afece0-1677-457c-b011-e6ed334ac075 - 433695 - LOGS_CAPTURED - Started capturing logs in process (pid: 433695).
+[32m2026-04-02 16:40:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - d3afece0-1677-457c-b011-e6ed334ac075 - 433695 - oso_ens_timeseries - STEP_START - Started execution of step "oso_ens_timeseries".
+[32m2026-04-02 16:40:36 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - d3afece0-1677-457c-b011-e6ed334ac075 - oso_ens_timeseries - ============================================================
+[32m2026-04-02 16:40:36 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - d3afece0-1677-457c-b011-e6ed334ac075 - oso_ens_timeseries - [BRONZE] Starting: oso_ens_timeseries (incremental)
+[32m2026-04-02 16:40:36 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - d3afece0-1677-457c-b011-e6ed334ac075 - oso_ens_timeseries - [BRONZE] Output: bronze/github/oso_ens_timeseries.json
+[32m2026-04-02 16:40:36 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - d3afece0-1677-457c-b011-e6ed334ac075 - oso_ens_timeseries - [BRONZE] No existing file — fetching full history since 2019-01-01
+[OSO] Fetching ENS timeseries events since 2019-01-01 (namespace='ensdomains')
+[32m2026-04-02 16:40:36 +0530[0m - dagster - [34mERROR[0m - [31m__ASSET_JOB - d3afece0-1677-457c-b011-e6ed334ac075 - 433695 - oso_ens_timeseries - STEP_FAILURE - Execution of step "oso_ens_timeseries" failed.
+
+dagster._core.errors.DagsterExecutionStepExecutionError: Error occurred while executing op "oso_ens_timeseries"::
+
+ModuleNotFoundError: No module named 'pyoso'
+
+Stack Trace:
+  File "/home/torch/.local/lib/python3.10/site-packages/dagster/_core/execution/plan/utils.py", line 57, in op_execution_error_boundary
+    yield
+  File "/home/torch/.local/lib/python3.10/site-packages/dagster/_utils/__init__.py", line 394, in iterate_with_context
+    next_output = next(iterator)
+  File "/home/torch/.local/lib/python3.10/site-packages/dagster/_core/execution/plan/compute_generator.py", line 135, in _coerce_op_compute_fn_to_iterator
+    result = invoke_compute_fn(
+  File "/home/torch/.local/lib/python3.10/site-packages/dagster/_core/execution/plan/compute_generator.py", line 115, in invoke_compute_fn
+    return fn(context, **args_to_pass) if context_arg_provided else fn(**args_to_pass)
+  File "/home/torch/ENS-Retro-Data/infra/ingest/assets.py", line 907, in oso_ens_timeseries
+    new_rows = fetch_ens_timeseries(oso_config.api_key, since=since)
+  File "/home/torch/ENS-Retro-Data/infra/ingest/oso_api.py", line 137, in fetch_ens_timeseries
+    client = _make_client(api_key)
+  File "/home/torch/ENS-Retro-Data/infra/ingest/oso_api.py", line 30, in _make_client
+    from pyoso import Client  # lazy import — not installed until pyproject.toml dep added
+[0m

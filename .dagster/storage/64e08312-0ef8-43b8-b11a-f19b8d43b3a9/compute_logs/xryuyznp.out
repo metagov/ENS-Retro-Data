@@ -1,0 +1,2 @@
+[OSO] Fetching ENS code metrics (artifact_namespace='ensdomains')
+[OSO] ERROR fetching code metrics: 400 Client Error: Bad Request for url: https://www.oso.xyz/api/v1/async-sql?id=d6b38de7-0821-462d-a7c8-696e32735665 - USER_ERROR: TABLE_NOT_FOUND - line 1:540: Table 'iceberg.oso.code_metrics_by_artifact_v0' does not exist

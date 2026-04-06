@@ -1,0 +1,7 @@
+[32m2026-04-02 11:49:59 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 73600 - LOGS_CAPTURED - Started capturing logs in process (pid: 73600).
+[32m2026-04-02 11:50:00 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 73600 - token_distribution - STEP_START - Started execution of step "token_distribution".
+[32m2026-04-02 11:50:02 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - token_distribution - [BRONZE] Already on disk: token_distribution.json (67,107 records, 10,876,923 bytes)
+[32m2026-04-02 11:50:02 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - token_distribution - [BRONZE] Skipping fetch — delete the file to force a re-fetch.
+[32m2026-04-02 11:50:02 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 73600 - token_distribution - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-04-02 11:50:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 73600 - token_distribution - ASSET_MATERIALIZATION - Materialized value token_distribution.
+[32m2026-04-02 11:50:05 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 8ed4272e-1caa-4cf0-9bdd-1ccab77938ed - 73600 - token_distribution - STEP_SUCCESS - Finished execution of step "token_distribution" in 4.62s.

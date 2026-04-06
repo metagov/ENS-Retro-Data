@@ -1,0 +1,13 @@
+[32m2026-03-24 18:18:50 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - 504812 - LOGS_CAPTURED - Started capturing logs in process (pid: 504812).
+[32m2026-03-24 18:18:50 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - 504812 - ens_safe_transactions - STEP_START - Started execution of step "ens_safe_transactions".
+[32m2026-03-24 18:18:50 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - ens_safe_transactions - ============================================================
+[32m2026-03-24 18:18:50 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - ens_safe_transactions - [BRONZE] Starting: ens_safe_transactions
+[32m2026-03-24 18:18:50 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - ens_safe_transactions - [BRONZE] Source: Safe Transaction Service API
+[32m2026-03-24 18:18:50 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - ens_safe_transactions - [BRONZE] Output: bronze/financial/ens_safe_transactions.json
+[32m2026-03-24 18:18:50 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - ens_safe_transactions - [BRONZE] Fetching historical multisig transactions for ENS DAO wallets...
+[32m2026-03-24 18:19:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - ens_safe_transactions - [BRONZE] ✓ Received 4235 multisig transaction records
+[32m2026-03-24 18:19:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - ens_safe_transactions - Wrote 4235 records to /home/torch/ENS-Retro-Data/bronze/financial/ens_safe_transactions.json (2,519,543 bytes)
+[32m2026-03-24 18:19:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - ens_safe_transactions - [BRONZE] ✓ ens_safe_transactions COMPLETE - 4235 records written
+[32m2026-03-24 18:19:37 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - 504812 - ens_safe_transactions - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-24 18:19:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - 504812 - ens_safe_transactions - ASSET_MATERIALIZATION - Materialized value ens_safe_transactions.
+[32m2026-03-24 18:19:38 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 0b9177b5-3376-4eb9-b449-5a44a57b61a4 - 504812 - ens_safe_transactions - STEP_SUCCESS - Finished execution of step "ens_safe_transactions" in 40.37s.

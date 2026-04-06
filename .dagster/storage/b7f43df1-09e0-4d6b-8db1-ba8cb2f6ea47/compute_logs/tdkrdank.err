@@ -1,0 +1,16 @@
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131122 - LOGS_CAPTURED - Started capturing logs in process (pid: 131122).
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131122 - delegations - STEP_START - Started execution of step "delegations".
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - ============================================================
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] Starting: delegations (ON-CHAIN)
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] Source: Etherscan Logs API
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] Output: bronze/on-chain/delegations.json
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] Contract: ENS Token (0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72)
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] Fetching DelegateChanged events...
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] This may take 5-10 minutes (860k+ events)
+[32m2026-03-24 15:10:04 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] Using checkpointing for resume capability
+[32m2026-03-24 15:16:31 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] ✓ Received 123051 delegation change events
+[32m2026-03-24 15:16:31 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - Wrote 123051 records to /home/torch/ENS-Retro-Data/bronze/on-chain/delegations.json (26,948,171 bytes)
+[32m2026-03-24 15:16:32 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - delegations - [BRONZE] ✓ delegations COMPLETE - 123051 records written
+[32m2026-03-24 15:16:32 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131122 - delegations - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-24 15:16:32 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131122 - delegations - ASSET_MATERIALIZATION - Materialized value delegations.
+[32m2026-03-24 15:16:32 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 131122 - delegations - STEP_SUCCESS - Finished execution of step "delegations" in 5m47s.

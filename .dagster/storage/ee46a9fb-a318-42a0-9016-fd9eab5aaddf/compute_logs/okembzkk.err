@@ -1,0 +1,7 @@
+[32m2026-04-02 12:09:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97409 - LOGS_CAPTURED - Started capturing logs in process (pid: 97409).
+[32m2026-04-02 12:09:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97409 - snapshot_votes - STEP_START - Started execution of step "snapshot_votes".
+[32m2026-04-02 12:09:42 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - snapshot_votes - [BRONZE] Already on disk: snapshot_votes.json (47,551 records, 14,830,950 bytes)
+[32m2026-04-02 12:09:42 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - snapshot_votes - [BRONZE] Skipping fetch — delete the file to force a re-fetch.
+[32m2026-04-02 12:09:42 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97409 - snapshot_votes - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-04-02 12:09:45 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97409 - snapshot_votes - ASSET_MATERIALIZATION - Materialized value snapshot_votes.
+[32m2026-04-02 12:09:45 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - ee46a9fb-a318-42a0-9016-fd9eab5aaddf - 97409 - snapshot_votes - STEP_SUCCESS - Finished execution of step "snapshot_votes" in 3.59s.

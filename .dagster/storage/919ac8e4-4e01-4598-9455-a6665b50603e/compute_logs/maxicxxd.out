@@ -1,0 +1,2 @@
+[OSO] Fetching ENS timeseries events since 2019-01-01 (namespace='ensdomains')
+[OSO] ERROR fetching timeseries: 401 Client Error: Unauthorized for url: https://www.oso.xyz/api/v1/async-sql - Authentication required

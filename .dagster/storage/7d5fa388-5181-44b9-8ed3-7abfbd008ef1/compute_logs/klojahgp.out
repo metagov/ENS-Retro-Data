@@ -1,0 +1,68 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+[[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 1 unused configuration paths:
+- seeds.ens_retro
+Found 36 models, 123 data tests, 17 sources, 597 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 26 START sql table model main_gold.governance_activity .................... [RUN]
+1 of 26 OK created sql table model main_gold.governance_activity ............... [[32mOK[0m in 2.56s]
+2 of 26 START sql table model main_gold.treasury_summary ....................... [RUN]
+2 of 26 OK created sql table model main_gold.treasury_summary .................. [[32mOK[0m in 0.37s]
+3 of 26 START test accepted_values_governance_activity_source__snapshot__tally . [RUN]
+3 of 26 PASS accepted_values_governance_activity_source__snapshot__tally ....... [[32mPASS[0m in 0.21s]
+4 of 26 START test assert_governance_activity_has_both_sources ................. [RUN]
+4 of 26 PASS assert_governance_activity_has_both_sources ....................... [[32mPASS[0m in 0.05s]
+5 of 26 START test not_null_governance_activity_proposal_id .................... [RUN]
+5 of 26 PASS not_null_governance_activity_proposal_id .......................... [[32mPASS[0m in 0.06s]
+6 of 26 START test not_null_governance_activity_source ......................... [RUN]
+6 of 26 PASS not_null_governance_activity_source ............................... [[32mPASS[0m in 0.06s]
+7 of 26 START test not_null_governance_activity_title .......................... [RUN]
+7 of 26 PASS not_null_governance_activity_title ................................ [[32mPASS[0m in 0.05s]
+8 of 26 START test unique_governance_activity_proposal_id ...................... [RUN]
+8 of 26 PASS unique_governance_activity_proposal_id ............................ [[32mPASS[0m in 0.06s]
+9 of 26 START test not_null_treasury_summary_category .......................... [RUN]
+9 of 26 PASS not_null_treasury_summary_category ................................ [[32mPASS[0m in 0.04s]
+10 of 26 START test not_null_treasury_summary_inflows_usd ...................... [RUN]
+10 of 26 PASS not_null_treasury_summary_inflows_usd ............................ [[32mPASS[0m in 0.05s]
+11 of 26 START test not_null_treasury_summary_internal_transfer_usd ............ [RUN]
+11 of 26 PASS not_null_treasury_summary_internal_transfer_usd .................. [[32mPASS[0m in 0.07s]
+12 of 26 START test not_null_treasury_summary_net_usd .......................... [RUN]
+12 of 26 PASS not_null_treasury_summary_net_usd ................................ [[32mPASS[0m in 0.05s]
+13 of 26 START test not_null_treasury_summary_outflows_usd ..................... [RUN]
+13 of 26 PASS not_null_treasury_summary_outflows_usd ........................... [[32mPASS[0m in 0.05s]
+14 of 26 START test not_null_treasury_summary_period ........................... [RUN]
+14 of 26 PASS not_null_treasury_summary_period ................................. [[32mPASS[0m in 0.05s]
+15 of 26 START sql table model main_gold.delegate_scorecard .................... [RUN]
+15 of 26 OK created sql table model main_gold.delegate_scorecard ............... [[32mOK[0m in 0.92s]
+16 of 26 START test not_null_delegate_scorecard_address ........................ [RUN]
+16 of 26 PASS not_null_delegate_scorecard_address .............................. [[32mPASS[0m in 0.06s]
+17 of 26 START test not_null_delegate_scorecard_voting_power ................... [RUN]
+17 of 26 PASS not_null_delegate_scorecard_voting_power ......................... [[32mPASS[0m in 0.05s]
+18 of 26 START test unique_delegate_scorecard_address .......................... [RUN]
+18 of 26 PASS unique_delegate_scorecard_address ................................ [[32mPASS[0m in 0.05s]
+19 of 26 START python table model main_gold.decentralization_index ............. [RUN]
+19 of 26 OK created python table model main_gold.decentralization_index ........ [[32mOK[0m in 2.50s]
+20 of 26 START python table model main_gold.participation_index ................ [RUN]
+20 of 26 OK created python table model main_gold.participation_index ........... [[32mOK[0m in 0.69s]
+21 of 26 START test not_null_decentralization_index_metric ..................... [RUN]
+21 of 26 PASS not_null_decentralization_index_metric ........................... [[32mPASS[0m in 0.04s]
+22 of 26 START test not_null_decentralization_index_value ...................... [RUN]
+22 of 26 PASS not_null_decentralization_index_value ............................ [[32mPASS[0m in 0.04s]
+23 of 26 START test unique_decentralization_index_metric ....................... [RUN]
+23 of 26 PASS unique_decentralization_index_metric ............................. [[32mPASS[0m in 0.04s]
+24 of 26 START test not_null_participation_index_metric ........................ [RUN]
+24 of 26 PASS not_null_participation_index_metric .............................. [[32mPASS[0m in 0.05s]
+25 of 26 START test not_null_participation_index_value ......................... [RUN]
+25 of 26 PASS not_null_participation_index_value ............................... [[32mPASS[0m in 0.04s]
+26 of 26 START test unique_participation_index_metric .......................... [RUN]
+26 of 26 PASS unique_participation_index_metric ................................ [[32mPASS[0m in 0.04s]
+
+Finished running 5 table models, 21 data tests in 0 hours 0 minutes and 8.97 seconds (8.97s).
+
+[32mCompleted successfully[0m
+
+Done. PASS=26 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=26
+/usr/lib/python3.10/asyncio/base_events.py:688: ResourceWarning: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>

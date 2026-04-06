@@ -1,0 +1,13 @@
+[32m2026-04-03 10:14:41 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - 735025 - LOGS_CAPTURED - Started capturing logs in process (pid: 735025).
+[32m2026-04-03 10:14:42 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - 735025 - oso_ens_code_metrics - STEP_START - Started execution of step "oso_ens_code_metrics".
+[32m2026-04-03 10:14:43 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - oso_ens_code_metrics - ============================================================
+[32m2026-04-03 10:14:43 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - oso_ens_code_metrics - [BRONZE] Starting: oso_ens_code_metrics
+[32m2026-04-03 10:14:44 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - oso_ens_code_metrics - [BRONZE] Output: bronze/github/oso_ens_code_metrics.json
+[OSO] Fetching ENS code metrics (artifact_namespace='ensdomains')
+[OSO] ✓ Fetched code metrics for 130 repos
+[32m2026-04-03 10:18:47 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - oso_ens_code_metrics - [BRONZE] ✓ Received code metrics for 130 repos from OSO
+[32m2026-04-03 10:18:48 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - oso_ens_code_metrics - Wrote 130 records to /home/torch/ENS-Retro-Data/bronze/github/oso_ens_code_metrics.json (71,517 bytes)
+[32m2026-04-03 10:18:48 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - oso_ens_code_metrics - [BRONZE] ✓ oso_ens_code_metrics COMPLETE — 130 repo metric rows written
+[32m2026-04-03 10:18:49 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - 735025 - oso_ens_code_metrics - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-04-03 10:18:50 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - 735025 - oso_ens_code_metrics - ASSET_MATERIALIZATION - Materialized value oso_ens_code_metrics.
+[32m2026-04-03 10:18:50 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - e48352fc-1ab4-45ac-9a51-42dedd27a450 - 735025 - oso_ens_code_metrics - STEP_SUCCESS - Finished execution of step "oso_ens_code_metrics" in 4m7s.

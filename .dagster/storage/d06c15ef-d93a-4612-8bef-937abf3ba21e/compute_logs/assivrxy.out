@@ -1,0 +1,138 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+[[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 1 unused configuration paths:
+- seeds.ens_retro
+Found 29 models, 88 data tests, 13 sources, 596 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 46 START sql view model main_bronze.stg_compensation ...................... [RUN]
+1 of 46 ERROR creating sql view model main_bronze.stg_compensation ............. [[31mERROR[0m in 0.32s]
+2 of 46 START sql view model main_bronze.stg_delegate_profiles ................. [RUN]
+2 of 46 ERROR creating sql view model main_bronze.stg_delegate_profiles ........ [[31mERROR[0m in 0.04s]
+3 of 46 START sql view model main_bronze.stg_delegations ....................... [RUN]
+3 of 46 OK created sql view model main_bronze.stg_delegations .................. [[32mOK[0m in 1.59s]
+4 of 46 START sql view model main_bronze.stg_forum_posts ....................... [RUN]
+4 of 46 ERROR creating sql view model main_bronze.stg_forum_posts .............. [[31mERROR[0m in 1.51s]
+5 of 46 START sql view model main_bronze.stg_grants ............................ [RUN]
+5 of 46 ERROR creating sql view model main_bronze.stg_grants ................... [[31mERROR[0m in 0.03s]
+6 of 46 START sql view model main_bronze.stg_snapshot_proposals ................ [RUN]
+6 of 46 OK created sql view model main_bronze.stg_snapshot_proposals ........... [[32mOK[0m in 0.53s]
+7 of 46 START sql view model main_bronze.stg_snapshot_votes .................... [RUN]
+7 of 46 OK created sql view model main_bronze.stg_snapshot_votes ............... [[32mOK[0m in 1.14s]
+8 of 46 START sql view model main_bronze.stg_tally_delegates ................... [RUN]
+8 of 46 OK created sql view model main_bronze.stg_tally_delegates .............. [[32mOK[0m in 1.87s]
+9 of 46 START sql view model main_bronze.stg_tally_proposals ................... [RUN]
+9 of 46 OK created sql view model main_bronze.stg_tally_proposals .............. [[32mOK[0m in 0.35s]
+10 of 46 START sql view model main_bronze.stg_tally_votes ...................... [RUN]
+10 of 46 OK created sql view model main_bronze.stg_tally_votes ................. [[32mOK[0m in 0.46s]
+11 of 46 START sql view model main_bronze.stg_token_distribution ............... [RUN]
+11 of 46 OK created sql view model main_bronze.stg_token_distribution .......... [[32mOK[0m in 0.51s]
+12 of 46 START sql view model main_bronze.stg_treasury_flows ................... [RUN]
+12 of 46 OK created sql view model main_bronze.stg_treasury_flows .............. [[32mOK[0m in 0.45s]
+13 of 46 START sql view model main_bronze.stg_votingpower_delegates ............ [RUN]
+13 of 46 OK created sql view model main_bronze.stg_votingpower_delegates ....... [[32mOK[0m in 1.46s]
+14 of 46 SKIP test not_null_stg_compensation_recipient_address ................. [[33mSKIP[0m]
+15 of 46 SKIP test not_null_stg_delegate_profiles_address ...................... [[33mSKIP[0m]
+16 of 46 START test not_null_stg_delegations_delegate .......................... [RUN]
+16 of 46 PASS not_null_stg_delegations_delegate ................................ [[32mPASS[0m in 0.37s]
+17 of 46 START test not_null_stg_delegations_delegator ......................... [RUN]
+17 of 46 PASS not_null_stg_delegations_delegator ............................... [[32mPASS[0m in 0.31s]
+18 of 46 SKIP test not_null_stg_forum_posts_post_id ............................ [[33mSKIP[0m]
+19 of 46 SKIP test unique_stg_forum_posts_post_id .............................. [[33mSKIP[0m]
+20 of 46 SKIP test not_null_stg_grants_grant_id ................................ [[33mSKIP[0m]
+21 of 46 SKIP test unique_stg_grants_grant_id .................................. [[33mSKIP[0m]
+22 of 46 START test not_null_stg_snapshot_proposals_author_address ............. [RUN]
+22 of 46 PASS not_null_stg_snapshot_proposals_author_address ................... [[32mPASS[0m in 0.16s]
+23 of 46 START test not_null_stg_snapshot_proposals_proposal_id ................ [RUN]
+23 of 46 PASS not_null_stg_snapshot_proposals_proposal_id ...................... [[32mPASS[0m in 0.05s]
+24 of 46 START test not_null_stg_snapshot_proposals_status ..................... [RUN]
+24 of 46 PASS not_null_stg_snapshot_proposals_status ........................... [[32mPASS[0m in 0.04s]
+25 of 46 START test unique_stg_snapshot_proposals_proposal_id .................. [RUN]
+25 of 46 PASS unique_stg_snapshot_proposals_proposal_id ........................ [[32mPASS[0m in 1.07s]
+26 of 46 START test not_null_stg_snapshot_votes_proposal_id .................... [RUN]
+26 of 46 PASS not_null_stg_snapshot_votes_proposal_id .......................... [[32mPASS[0m in 0.17s]
+27 of 46 START test not_null_stg_snapshot_votes_vote_id ........................ [RUN]
+27 of 46 PASS not_null_stg_snapshot_votes_vote_id .............................. [[32mPASS[0m in 0.19s]
+28 of 46 START test not_null_stg_snapshot_votes_voter .......................... [RUN]
+28 of 46 PASS not_null_stg_snapshot_votes_voter ................................ [[32mPASS[0m in 0.17s]
+29 of 46 START test unique_stg_snapshot_votes_vote_id .......................... [RUN]
+29 of 46 PASS unique_stg_snapshot_votes_vote_id ................................ [[32mPASS[0m in 0.33s]
+30 of 46 START test not_null_stg_tally_delegates_address ....................... [RUN]
+30 of 46 PASS not_null_stg_tally_delegates_address ............................. [[32mPASS[0m in 0.52s]
+31 of 46 START test unique_stg_tally_delegates_address ......................... [RUN]
+31 of 46 PASS unique_stg_tally_delegates_address ............................... [[32mPASS[0m in 0.98s]
+32 of 46 START test not_null_stg_tally_proposals_proposal_id ................... [RUN]
+32 of 46 PASS not_null_stg_tally_proposals_proposal_id ......................... [[32mPASS[0m in 0.10s]
+33 of 46 START test not_null_stg_tally_proposals_status ........................ [RUN]
+33 of 46 PASS not_null_stg_tally_proposals_status .............................. [[32mPASS[0m in 0.08s]
+34 of 46 START test unique_stg_tally_proposals_proposal_id ..................... [RUN]
+34 of 46 PASS unique_stg_tally_proposals_proposal_id ........................... [[32mPASS[0m in 0.07s]
+35 of 46 START test not_null_stg_tally_votes_proposal_id ....................... [RUN]
+35 of 46 PASS not_null_stg_tally_votes_proposal_id ............................. [[32mPASS[0m in 0.26s]
+36 of 46 START test not_null_stg_tally_votes_vote_id ........................... [RUN]
+36 of 46 PASS not_null_stg_tally_votes_vote_id ................................. [[32mPASS[0m in 0.43s]
+37 of 46 START test not_null_stg_tally_votes_voter ............................. [RUN]
+37 of 46 PASS not_null_stg_tally_votes_voter ................................... [[32mPASS[0m in 0.26s]
+38 of 46 START test unique_stg_tally_votes_vote_id ............................. [RUN]
+38 of 46 PASS unique_stg_tally_votes_vote_id ................................... [[32mPASS[0m in 0.14s]
+39 of 46 START test not_null_stg_token_distribution_address .................... [RUN]
+39 of 46 PASS not_null_stg_token_distribution_address .......................... [[32mPASS[0m in 0.22s]
+40 of 46 START test unique_stg_token_distribution_address ...................... [RUN]
+40 of 46 PASS unique_stg_token_distribution_address ............................ [[32mPASS[0m in 0.15s]
+41 of 46 START test not_null_stg_treasury_flows_from_address ................... [RUN]
+41 of 46 PASS not_null_stg_treasury_flows_from_address ......................... [[32mPASS[0m in 0.05s]
+42 of 46 START test not_null_stg_treasury_flows_tx_hash ........................ [RUN]
+42 of 46 PASS not_null_stg_treasury_flows_tx_hash .............................. [[32mPASS[0m in 0.04s]
+43 of 46 START test unique_stg_treasury_flows_tx_hash .......................... [RUN]
+43 of 46 PASS unique_stg_treasury_flows_tx_hash ................................ [[32mPASS[0m in 0.08s]
+44 of 46 START test not_null_stg_votingpower_delegates_delegate_address ........ [RUN]
+44 of 46 PASS not_null_stg_votingpower_delegates_delegate_address .............. [[32mPASS[0m in 0.04s]
+45 of 46 START test not_null_stg_votingpower_delegates_rank .................... [RUN]
+45 of 46 PASS not_null_stg_votingpower_delegates_rank .......................... [[32mPASS[0m in 0.08s]
+46 of 46 START test unique_stg_votingpower_delegates_delegate_address .......... [RUN]
+46 of 46 PASS unique_stg_votingpower_delegates_delegate_address ................ [[32mPASS[0m in 0.06s]
+
+Finished running 33 data tests, 13 view models in 0 hours 0 minutes and 27.99 seconds (27.99s).
+
+[31mCompleted with 4 errors, 0 partial successes, and 0 warnings:[0m
+
+[31mFailure in model stg_compensation (models/staging/stg_compensation.sql)[0m
+  Runtime Error in model stg_compensation (models/staging/stg_compensation.sql)
+  IO Error: No files found that match the pattern "../../bronze/financial/compensation.json"
+  
+  LINE 15: from read_json_auto('../../bronze/financial/compensation.json')
+                ^
+
+  compiled code at target/ens_dbt_assets-d06c15e-d9de8aa/compiled/ens_retro/models/staging/stg_compensation.sql
+
+[31mFailure in model stg_delegate_profiles (models/staging/stg_delegate_profiles.sql)[0m
+  Runtime Error in model stg_delegate_profiles (models/staging/stg_delegate_profiles.sql)
+  IO Error: No files found that match the pattern "../../bronze/interviews/delegate_profiles.json"
+  
+  LINE 15: from read_json_auto('../../bronze/interviews/delegate_profiles...
+                ^
+
+  compiled code at target/ens_dbt_assets-d06c15e-d9de8aa/compiled/ens_retro/models/staging/stg_delegate_profiles.sql
+
+[31mFailure in model stg_forum_posts (models/staging/stg_forum_posts.sql)[0m
+  Runtime Error in model stg_forum_posts (models/staging/stg_forum_posts.sql)
+  Binder Error: Referenced column "id" not found in FROM clause!
+  Candidate bindings: "topic_id", "updated_at", "like_count", "accepted_answer"
+  
+  LINE 9:     id as post_id,
+              ^
+
+  compiled code at target/ens_dbt_assets-d06c15e-d9de8aa/compiled/ens_retro/models/staging/stg_forum_posts.sql
+
+[31mFailure in model stg_grants (models/staging/stg_grants.sql)[0m
+  Runtime Error in model stg_grants (models/staging/stg_grants.sql)
+  IO Error: No files found that match the pattern "../../bronze/grants/grants.json"
+  
+  LINE 18: from read_json_auto('../../bronze/grants/grants.json')
+                ^
+
+  compiled code at target/ens_dbt_assets-d06c15e-d9de8aa/compiled/ens_retro/models/staging/stg_grants.sql
+
+Done. PASS=36 WARN=0 ERROR=4 SKIP=6 NO-OP=0 TOTAL=46

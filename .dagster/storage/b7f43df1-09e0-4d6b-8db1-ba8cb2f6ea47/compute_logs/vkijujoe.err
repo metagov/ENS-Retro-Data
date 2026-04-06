@@ -1,0 +1,16 @@
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133598 - LOGS_CAPTURED - Started capturing logs in process (pid: 133598).
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133598 - token_distribution - STEP_START - Started execution of step "token_distribution".
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - ============================================================
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] Starting: token_distribution (ON-CHAIN)
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] Source: Etherscan Logs API
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] Output: bronze/on-chain/token_distribution.json
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] Computing ENS token distribution...
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] Algorithm: Replay all Transfer events to compute balances
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] This may take 10-20 minutes (millions of events)
+[32m2026-03-24 15:10:39 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] Using checkpointing for resume capability
+[32m2026-03-24 16:31:09 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] ✓ Computed balances for 67190 holders with positive balance
+[32m2026-03-24 16:31:10 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - Wrote 67190 records to /home/torch/ENS-Retro-Data/bronze/on-chain/token_distribution.json (10,890,216 bytes)
+[32m2026-03-24 16:31:10 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - token_distribution - [BRONZE] ✓ token_distribution COMPLETE - 67190 records written
+[32m2026-03-24 16:31:10 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133598 - token_distribution - STEP_OUTPUT - Yielded output "result" of type "Nothing". (Type check passed).
+[32m2026-03-24 16:31:10 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133598 - token_distribution - ASSET_MATERIALIZATION - Materialized value token_distribution.
+[32m2026-03-24 16:31:10 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - b7f43df1-09e0-4d6b-8db1-ba8cb2f6ea47 - 133598 - token_distribution - STEP_SUCCESS - Finished execution of step "token_distribution" in 1h12m.
