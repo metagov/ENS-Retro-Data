@@ -9,11 +9,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from scripts.config import load_config, resolve_render_fn  # noqa: E402
 from scripts.db import get_connection  # noqa: E402
+from scripts.chat_widget import render_chat_widget  # noqa: E402
 
 st.set_page_config(
     page_title="ENS DAO Governance Retrospective",
     page_icon="🔵",
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 config = load_config()
@@ -156,3 +158,9 @@ for c_tab, challenge in zip(challenge_tabs, config.challenges):
                         else:
                             if visual.takeaway:
                                 _render_takeaway(visual.takeaway)
+
+# ---------------------------------------------------------------------------
+# Chat widget
+# ---------------------------------------------------------------------------
+
+render_chat_widget()

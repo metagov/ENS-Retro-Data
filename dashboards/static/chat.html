@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ENS Data Assistant</title>
+<script src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    font-family: system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+  }
+
+  /* Bubble button — bottom-right */
+  #ens-bubble {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #3B4EC8;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(59,78,200,0.4);
+    font-size: 22px;
+    z-index: 10;
+    transition: background 0.2s, transform 0.15s;
+  }
+  #ens-bubble:hover { background: #2D3DAF; transform: scale(1.07); }
+
+  /* Chat panel — slides up from bubble */
+  #ens-panel {
+    position: fixed;
+    bottom: 84px;
+    right: 24px;
+    width: 400px;
+    height: 560px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    border: 1px solid #E2E8F0;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 9;
+  }
+  #ens-panel.open { display: flex; }
+
+  /* Panel header */
+  #ens-header {
+    background: #3B4EC8;
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  #ens-header-title {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  #ens-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #ens-header-actions button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    opacity: 0.8;
+    padding: 0 4px;
+    font-size: 14px;
+    line-height: 1;
+  }
+  #ens-header-actions button:hover { opacity: 1; }
+  #ens-close { font-size: 20px; }
+
+  /* ChatKit container — fills the rest */
+  #ens-chatkit {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+  }
+  #ens-chatkit openai-chatkit {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+</head>
+<body>
+
+<!-- Bubble -->
+<button id="ens-bubble" title="Ask ENS Data">&#x1F4AC;</button>
+
+<!-- Panel -->
+<div id="ens-panel">
+  <div id="ens-header">
+    <span id="ens-header-title">ENS Data Assistant</span>
+    <div id="ens-header-actions">
+      <button id="ens-expand" title="Open full page">&#x26F6;</button>
+      <button id="ens-close" title="Close">&#xD7;</button>
+    </div>
+  </div>
+  <div id="ens-chatkit"></div>
+</div>
+
+<script>
+(function () {
+  // ---- 1. Position the iframe fixed at bottom-right ----
+  var fr = window.frameElement;
+  if (fr) {
+    var sp = fr.style.setProperty.bind(fr.style);
+    sp('position',   'fixed',       'important');
+    sp('bottom',     '0',           'important');
+    sp('right',      '0',           'important');
+    sp('width',      '480px',       'important');
+    sp('height',     '680px',       'important');
+    sp('z-index',    '2147483647',  'important');
+    sp('border',     'none',        'important');
+    sp('background', 'transparent', 'important');
+  }
+
+  // ---- 2. Read client_secret from URL fragment ----
+  var secret = window.location.hash.substring(1);
+  if (!secret) {
+    document.body.innerHTML = '<p style="padding:24px;color:#718096;">Chat not available. Reload the dashboard.</p>';
+    return;
+  }
+
+  // ---- 3. Toggle logic ----
+  var panel = document.getElementById('ens-panel');
+  var bubble = document.getElementById('ens-bubble');
+  var mounted = false;
+
+  function toggle() {
+    var open = panel.classList.contains('open');
+    if (!open) {
+      panel.classList.add('open');
+      bubble.innerHTML = '&#xD7;';
+      bubble.style.fontSize = '24px';
+      if (!mounted) mountChatKit();
+    } else {
+      panel.classList.remove('open');
+      bubble.innerHTML = '&#x1F4AC;';
+      bubble.style.fontSize = '22px';
+    }
+  }
+
+  bubble.addEventListener('click', toggle);
+  document.getElementById('ens-close').addEventListener('click', toggle);
+
+  // ---- 4. Expand to full page ----
+  document.getElementById('ens-expand').addEventListener('click', function () {
+    // Open the dedicated /Chat page in a new tab, passing the secret
+    var base = window.parent ? window.parent.location.origin : window.location.origin;
+    window.open(base + '/Chat', '_blank');
+  });
+
+  // ---- 5. Mount ChatKit hosted UI ----
+  function mountChatKit() {
+    var container = document.getElementById('ens-chatkit');
+    var el = document.createElement('openai-chatkit');
+    el.style.cssText = 'width:100%;height:100%;display:block;';
+    container.appendChild(el);
+    el.setOptions({
+      api: {
+        getClientSecret: async function () { return secret; }
+      },
+      theme: {
+        colorScheme: 'light',
+        density: 'compact',
+        radius: 'soft'
+      }
+    });
+    mounted = true;
+  }
+})();
+</script>
+</body>
+</html>
