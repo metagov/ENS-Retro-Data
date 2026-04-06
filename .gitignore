@@ -1,5 +1,9 @@
 # Secrets
 .env
+dashboards/.env
+
+# Proposal classification cache — safe to commit (public data, no secrets)
+!dashboards/scripts/.proposal_cache.json
 
 # Python
 __pycache__/

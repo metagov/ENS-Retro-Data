@@ -13,6 +13,9 @@ COPY dashboards/ ./dashboards/
 # This matches what db.py expects: 3 parents up from db.py = /app/
 COPY warehouse/ens_retro.duckdb ./warehouse/ens_retro.duckdb
 
+# Copy bronze data so staging views (read_json) resolve at runtime
+COPY bronze/ ./bronze/
+
 EXPOSE 8501
 CMD ["streamlit", "run", "dashboards/app.py", \
      "--server.port=8501", \
