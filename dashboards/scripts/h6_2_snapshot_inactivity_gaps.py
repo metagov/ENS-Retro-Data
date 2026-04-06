@@ -208,7 +208,7 @@ def render_snapshot_inactivity_gaps() -> None:
         return
 
     fig = _build_chart(df)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     proposal_months = df[df["had_proposals"] == 1]
     total_cells     = len(proposal_months)
