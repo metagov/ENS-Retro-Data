@@ -19,8 +19,8 @@ COPY .dagster/storage/ ./.dagster/storage/
 COPY warehouse/ens_retro.duckdb ./warehouse/ens_retro.duckdb
 COPY bronze/ ./bronze/
 
-# Install dbt packages (dbt_utils)
-RUN cd infra/dbt && dbt deps
+# Install dbt packages and generate manifest.json (required by dagster_dbt)
+RUN cd infra/dbt && dbt deps && dbt parse
 
 ENV DAGSTER_HOME=/app/.dagster
 EXPOSE 3000
