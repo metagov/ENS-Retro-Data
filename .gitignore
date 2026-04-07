@@ -24,9 +24,13 @@ ENV/
 # Exception: dbt seed CSVs are committed
 !infra/dbt/seeds/*.csv
 
-# Dagster runtime (auto-generated, not source code)
-.dagster/
+# Dagster runtime (auto-generated logs/telemetry — not source code)
+.dagster/logs/
+.dagster/.logs_queue/
+.dagster/.nux/
+.dagster/.telemetry/
 .tmp_dagster_home_*
+# .dagster/dagster.yaml and .dagster/storage/ are tracked (LFS)
 
 bronze/governance/agora/fetch.sh
 

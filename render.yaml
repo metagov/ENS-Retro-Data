@@ -1,0 +1,41 @@
+services:
+  # --- Streamlit Dashboard ---
+  - type: web
+    name: ens-retro-dashboard
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore
+    plan: free
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: WORKFLOW_ID
+        sync: false
+    autoDeploy: true
+    branch: render-deploy
+
+  # --- FastAPI + MCP Server ---
+  - type: web
+    name: ens-retro-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.api
+    region: singapore
+    plan: free
+    envVars:
+      - key: AGENT_API_KEY
+        sync: false
+    autoDeploy: true
+    branch: render-deploy
+
+  # --- Dagster Read-Only UI ---
+  - type: web
+    name: ens-retro-dagster
+    runtime: docker
+    dockerfilePath: ./Dockerfile.dagster
+    region: singapore
+    plan: free
+    envVars:
+      - key: DAGSTER_HOME
+        value: /app/.dagster
+    autoDeploy: true
+    branch: render-deploy

@@ -17,6 +17,36 @@ models:
         tests:
           - not_null
 
+  - name: governance_discourse_activity
+    description: "Unified governance <-> discourse view: proposals joined to their forum topics and engagement metrics"
+    columns:
+      - name: source
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['snapshot', 'tally']
+      - name: proposal_id
+        tests:
+          - not_null
+      - name: match_source
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['field', 'body_regex', 'manual', 'unmatched']
+      - name: has_forum_discussion
+        tests:
+          - not_null
+      - name: topic_id
+        tests:
+          - relationships:
+              to: ref('stg_forum_topics')
+              field: topic_id
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source
+            - proposal_id
+
   - name: delegate_scorecard
     description: "Per-delegate scorecard with participation and influence metrics"
     columns:

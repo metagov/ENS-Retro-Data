@@ -136,10 +136,10 @@ cd infra/dbt && dbt run
 # 2. Commit the updated warehouse file (LFS handles the binary)
 git add ../../warehouse/ens_retro.duckdb
 git commit -m "Refresh warehouse — data as of $(date +%Y-%m-%d)"
-git push origin main  # triggers Fly.io deploy automatically
+git push origin main  # triggers Render auto-deploy
 ```
 
-> **Cold start note:** The first request after a Fly.io machine wakes from sleep may take 3–5 seconds while Streamlit initialises and DuckDB loads the warehouse file. Subsequent requests are served from the in-memory connection cache.
+> **Cold start note:** The first request after a Render service spins up may take a few seconds while Streamlit initialises and DuckDB loads the warehouse file. Subsequent requests are served from the in-memory connection cache.
 
 ## Dependencies
 
