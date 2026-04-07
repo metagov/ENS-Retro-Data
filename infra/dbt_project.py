@@ -26,6 +26,7 @@ _SOURCE_TO_ASSET_KEY = {
     ("bronze_grants", "grants"): AssetKey("grants"),
     ("bronze_interviews", "delegate_profiles"): AssetKey("delegate_profiles"),
     ("bronze_forum", "forum_posts"): AssetKey("forum_posts"),
+    ("bronze_forum", "forum_topics"): AssetKey("forum_topics"),
 }
 
 

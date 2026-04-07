@@ -80,6 +80,10 @@ sources:
         description: "Forum discussion posts (JSON)"
         meta:
           external_location: "read_json_auto('../../bronze/forum/forum_posts.json')"
+      - name: forum_topics
+        description: "Forum topics from ENS Governance Forum (JSON)"
+        meta:
+          external_location: "read_json_auto('../../bronze/forum/forum_topics.json')"
 
   - name: bronze_github
     description: "Raw GitHub activity data for ENS repos via Open Source Observer (OSO)"
