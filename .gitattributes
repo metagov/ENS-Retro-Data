@@ -2,3 +2,4 @@ warehouse/*.duckdb filter=lfs diff=lfs merge=lfs -text
 bronze/governance/agora/**/*.csv filter=lfs diff=lfs merge=lfs -text
 .dagster/storage/*.db filter=lfs diff=lfs merge=lfs -text
 .dagster/storage/**/*.db filter=lfs diff=lfs merge=lfs -text
+.dagster/storage/.db filter=lfs diff=lfs merge=lfs -text
