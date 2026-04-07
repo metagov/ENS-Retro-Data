@@ -113,29 +113,3 @@ Add an `asyncio.Semaphore(2)` wrapping `_get_conn()` + `conn.execute()` in both
 **Depends on:** Nothing — can be done independently.
 
 ---
-
-## Gold: unified governance↔discourse activity table
-
-**What:** Create `gold/governance_discourse_activity.sql` that unions
-`tally_discourse_crosswalk` and `snapshot_discourse_crosswalk` and joins
-in forum engagement metrics (posts_count, reply_count, like_count, views)
-from `stg_forum_topics`.
-
-**Why:** Downstream dashboards and API queries shouldn't need to know
-whether a proposal came from Tally or Snapshot to get its forum engagement.
-A single gold table with `(source, proposal_id, topic_id, forum_metrics...)`
-is the natural join key.
-
-**Pros:** One join for analytics. Makes "most-discussed proposals" and
-"proposals with no forum debate" trivial to query. Consistent with existing
-gold-layer conventions.
-
-**Cons:** Only valuable once an actual dashboard consumer exists. Premature
-if built before a concrete use case.
-
-**Context:** Deferred from /plan-eng-review on 2026-04-07 (branch:
-`feat/proposal-discourse-crosswalk`). The silver crosswalks are complete;
-this would be a thin gold layer on top. Both silver models expose
-`(proposal_id, topic_id, match_source)` with identical schemas.
-
-**Depends on:** `feat/proposal-discourse-crosswalk` merged.
