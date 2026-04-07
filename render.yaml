@@ -12,7 +12,7 @@ services:
       - key: WORKFLOW_ID
         sync: false
     autoDeploy: true
-    branch: main
+    branch: render-deploy
 
   # --- FastAPI + MCP Server ---
   - type: web
@@ -25,7 +25,7 @@ services:
       - key: AGENT_API_KEY
         sync: false
     autoDeploy: true
-    branch: main
+    branch: render-deploy
 
   # --- Dagster Read-Only UI ---
   - type: web
@@ -38,4 +38,4 @@ services:
       - key: DAGSTER_HOME
         value: /app/.dagster
     autoDeploy: true
-    branch: main
+    branch: render-deploy
