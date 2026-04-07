@@ -220,3 +220,39 @@ models:
         tests:
           - not_null
           - unique
+
+  - name: tally_discourse_crosswalk
+    description: "Tally proposal -> Discourse forum topic mapping (field | manual | unmatched)"
+    columns:
+      - name: proposal_id
+        tests:
+          - not_null
+          - unique
+      - name: topic_id
+        tests:
+          - relationships:
+              to: ref('stg_forum_topics')
+              field: topic_id
+      - name: match_source
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['field', 'manual', 'unmatched']
+
+  - name: snapshot_discourse_crosswalk
+    description: "Snapshot proposal -> Discourse forum topic mapping (body_regex | manual | unmatched)"
+    columns:
+      - name: proposal_id
+        tests:
+          - not_null
+          - unique
+      - name: topic_id
+        tests:
+          - relationships:
+              to: ref('stg_forum_topics')
+              field: topic_id
+      - name: match_source
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['body_regex', 'manual', 'unmatched']
