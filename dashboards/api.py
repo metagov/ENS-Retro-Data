@@ -190,8 +190,8 @@ def _get_conn():
     # 37k delegates + 116k delegators. Single-thread kills aggregation quality.
     conn.execute("SET threads TO 4")
     # 1GB: complex queries (percentile, Gini, multi-join aggregations) need room.
-    # Render starter has 1GB total — 1GB memory limit is generous; app headroom is tight.
-    conn.execute("SET memory_limit='1GB'")
+    # Render free tier has 512MB total — cap DuckDB at 400MB, leave 112MB for FastAPI.
+    conn.execute("SET memory_limit='400MB'")
     # 30s timeout: prevent runaway queries from hanging the server.
     conn.execute("SET timeout='30000ms'")
     return conn
