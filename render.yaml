@@ -5,7 +5,7 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     region: singapore
-    plan: free
+    plan: starter
     envVars:
       - key: OPENAI_API_KEY
         sync: false
@@ -20,7 +20,7 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile.api
     region: singapore
-    plan: free
+    plan: starter
     envVars:
       - key: AGENT_API_KEY
         sync: false
@@ -33,7 +33,7 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile.dagster
     region: singapore
-    plan: free
+    plan: starter
     envVars:
       - key: DAGSTER_HOME
         value: /app/.dagster
