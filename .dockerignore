@@ -1,4 +1,4 @@
-# flyctl launch added from .gitignore
+# Docker build exclusions
 # Secrets
 **/.env
 
@@ -118,4 +118,4 @@ infra/dbt/dbt_packages/dbt_utils/integration_tests/**/.env
 infra/dbt/dbt_packages/dbt_utils/integration_tests/**/profiles.yml
 infra/dbt/dbt_packages/dbt_utils/integration_tests/**/package-lock.yml
 infra/dbt/dbt_packages/dbt_utils/integration_tests/**/dbt_internal_packages
-fly.toml
+render.yaml

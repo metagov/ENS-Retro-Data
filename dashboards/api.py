@@ -22,7 +22,7 @@ Run locally:
     uvicorn dashboards.api:app --reload --port 8001
 
 Register in Agent Builder:
-    MCP Server URL  → https://ens-retro-data.fly.dev/mcp
+    MCP Server URL  → https://ens-retro-api.onrender.com/mcp
     Access token    → value of AGENT_API_KEY env var
 """
 
@@ -190,7 +190,7 @@ def _get_conn():
     # 37k delegates + 116k delegators. Single-thread kills aggregation quality.
     conn.execute("SET threads TO 4")
     # 1GB: complex queries (percentile, Gini, multi-join aggregations) need room.
-    # Fly.io shared-2x machine has 2GB total — 1GB leaves headroom for the app.
+    # Render starter has 1GB total — 1GB memory limit is generous; app headroom is tight.
     conn.execute("SET memory_limit='1GB'")
     # 30s timeout: prevent runaway queries from hanging the server.
     conn.execute("SET timeout='30000ms'")
@@ -330,8 +330,8 @@ def _fetch_tables() -> list[dict]:
 # MCP server — primary integration for Agent Builder
 # ---------------------------------------------------------------------------
 # Agent Builder config:
-#   URL:   https://ens-retro-data.fly.dev/mcp
-#   Token: value of AGENT_API_KEY (set via fly secrets set AGENT_API_KEY=...)
+#   URL:   https://ens-retro-api.onrender.com/mcp
+#   Token: value of AGENT_API_KEY (set via Render env vars)
 #
 # The MCP tools reuse the same _validate_sql / _get_conn / serialisation logic
 # as the REST endpoint — same 7 security layers, same resource limits.

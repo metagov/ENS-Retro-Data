@@ -1,0 +1,32 @@
+# python:3.12 (full) has git pre-installed — needed for dbt package installs
+FROM python:3.12
+
+WORKDIR /app
+
+# Install full project dependencies (dagster, dbt, duckdb, etc.)
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
+
+# Copy pipeline code (Dagster definitions, dbt models, validators)
+COPY infra/ ./infra/
+COPY workspace.yaml .
+
+# Copy Dagster instance config + storage (run history via Git LFS)
+COPY .dagster/dagster.yaml ./.dagster/dagster.yaml
+COPY .dagster/storage/ ./.dagster/storage/
+
+# Copy warehouse + bronze for dbt/asset resolution
+COPY warehouse/ens_retro.duckdb ./warehouse/ens_retro.duckdb
+COPY bronze/ ./bronze/
+
+# Install dbt packages (dbt_utils)
+RUN cd infra/dbt && dbt deps
+
+ENV DAGSTER_HOME=/app/.dagster
+EXPOSE 3000
+
+CMD ["dagster-webserver", \
+     "--workspace", "workspace.yaml", \
+     "--host", "0.0.0.0", \
+     "--port", "3000", \
+     "--read-only"]

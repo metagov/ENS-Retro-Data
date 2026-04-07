@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install only dashboard dependencies (shared with API server)
+COPY dashboards/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy dashboard code (api.py + scripts/db.py live here)
+COPY dashboards/ ./dashboards/
+
+# Copy the database — api.py resolves via same path as db.py
+COPY warehouse/ens_retro.duckdb ./warehouse/ens_retro.duckdb
+
+# Copy bronze data so staging views (read_json) resolve at runtime
+COPY bronze/ ./bronze/
+
+EXPOSE 8001
+CMD ["uvicorn", "dashboards.api:app", \
+     "--host", "0.0.0.0", \
+     "--port", "8001"]
