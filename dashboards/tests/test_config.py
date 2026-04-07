@@ -158,8 +158,8 @@ def test_missing_visual_fn_key_raises(tmp_path):
 
 def test_real_config_challenge_count():
     cfg = _parse_config(_REAL_CONFIG)
-    # C1–C4 are defined in config.yaml (C5 is commented out)
-    assert len(cfg.challenges) == 4
+    # C1–C5 are defined in config.yaml
+    assert len(cfg.challenges) == 5
 
 
 def test_real_config_hypothesis_ids_are_unique():

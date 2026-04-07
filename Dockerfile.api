@@ -2,9 +2,10 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install only dashboard dependencies (shared with API server)
+# Install API dependencies (extends dashboards/requirements.txt with FastAPI/MCP extras)
 COPY dashboards/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY dashboards/requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt
 
 # Copy dashboard code (api.py + scripts/db.py live here)
 COPY dashboards/ ./dashboards/
