@@ -4,36 +4,6 @@ Items deferred from engineering review on 2026-03-27 (branch: dashboard-setup-v2
 
 ---
 
-## When `render-deploy` is merged to main
-
-**Render service branch setting:** The 3 Render services (`ens-retro-dashboard`,
-`ens-retro-api`, `ens-retro-dagster`) are currently pointed at the `render-deploy`
-branch because `Dockerfile.api`, `Dockerfile.dagster`, and `render.yaml` only exist
-there. After merging `render-deploy` → `main`:
-
-1. Update `render.yaml` to set `branch: main` on all 3 services
-2. Via the Render API or dashboard, switch each service back to `branch: main`:
-   ```bash
-   export RENDER_API_KEY=<key>
-   for id in srv-d7a95bbuibrs73fsq7lg srv-d7a95bbuibrs73fsq7mg srv-d7a95bbuibrs73fsq7m0; do
-     curl -X PATCH -H "Authorization: Bearer $RENDER_API_KEY" \
-       -H "Content-Type: application/json" \
-       -d '{"branch":"main"}' \
-       "https://api.render.com/v1/services/$id"
-   done
-   ```
-3. Delete the `render-deploy` branch locally and on origin once main is green
-4. Confirm auto-deploy triggers on subsequent pushes to main
-
-**Why:** Blueprint expects `branch: main` per convention, and the split-brain
-between render.yaml and service config will drift otherwise.
-
-**Dagster run history (LFS):** Only 4 `.db` files in `.dagster/storage/` survived
-the Git LFS migration (originally ~40). Re-materialize Dagster assets locally to
-repopulate run history, then commit `.dagster/storage/` to share it via LFS.
-
----
-
 ## Nakamoto / Gini computation — read from gold table instead of computing inline
 
 **What:** Once `main_gold.decentralization_index` is materialized, `h2_1_concentration_curve.py`
