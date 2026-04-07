@@ -237,7 +237,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['field', 'manual', 'unmatched']
+              values: ['field', 'body_regex', 'manual', 'unmatched']
 
   - name: snapshot_discourse_crosswalk
     description: "Snapshot proposal -> Discourse forum topic mapping (body_regex | manual | unmatched)"
