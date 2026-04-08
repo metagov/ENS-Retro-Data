@@ -42,6 +42,7 @@ def _load_data() -> pd.DataFrame:
             SELECT delegator, delegate, delegated_at
             FROM current_delegations
             WHERE rn = 1
+              AND delegate != '0x0000000000000000000000000000000000000000'
         ),
         active_with_balance AS (
             SELECT

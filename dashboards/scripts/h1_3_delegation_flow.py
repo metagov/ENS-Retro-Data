@@ -33,6 +33,7 @@ def _load_data() -> pd.DataFrame:
                     PARTITION BY delegator ORDER BY delegated_at
                 ) AS prev_delegate
             FROM main_silver.clean_delegations
+            WHERE delegate != '0x0000000000000000000000000000000000000000'
         ),
         active_delegations AS (
             SELECT delegator, delegate,
@@ -40,6 +41,7 @@ def _load_data() -> pd.DataFrame:
                        PARTITION BY delegator ORDER BY delegated_at DESC
                    ) AS rn
             FROM main_silver.clean_delegations
+            WHERE delegate != '0x0000000000000000000000000000000000000000'
         ),
         active AS (
             SELECT delegator, delegate FROM active_delegations WHERE rn = 1
