@@ -233,7 +233,10 @@ if selected_view == _NAV_START:
 # ---------------------------------------------------------------------------
 
 else:
-    challenge = next(c for c in config.challenges if c.short_title == selected_view)
+    challenge = next(
+        (c for c in config.challenges if c.short_title == selected_view),
+        config.challenges[0],
+    )
 
     st.markdown(f"## {challenge.title}")
     st.markdown(
@@ -258,7 +261,10 @@ else:
         or hyp_options[0]
     )
 
-    hyp = next(h for h in challenge.hypotheses if h.short_title == selected_hyp_title)
+    hyp = next(
+        (h for h in challenge.hypotheses if h.short_title == selected_hyp_title),
+        challenge.hypotheses[0],
+    )
 
     # Hypothesis badge + title
     st.markdown(
