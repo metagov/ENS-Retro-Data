@@ -10,7 +10,7 @@ Where data originates:
 | Source | Description |
 |---|---|
 | `snapshot` | Off-chain governance votes (Snapshot.org) |
-| `tally` | On-chain governance proposals and votes (Tally) |
+| `tally` | On-chain governance proposals and votes (Tally — historical, API discontinued) |
 | `etherscan` | Blockchain transaction data |
 | `dune` | Dune Analytics queries |
 | `ens-governance-forum` | Discourse governance forum |

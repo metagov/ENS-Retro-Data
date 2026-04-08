@@ -1,12 +1,17 @@
 # Command Reference
 
-Every command in this project, organized by category.
+Every command in this project, organized by category. For the minimal set needed to get started, see the README Quick Start instead.
 
 ## Setup & Installation
 
 ```bash
 # Install uv (Python package manager)
 curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install git-lfs (required to clone the warehouse + bronze data)
+# macOS:  brew install git-lfs
+# Debian/Ubuntu:  sudo apt install git-lfs
+git lfs install
 
 # Create virtual environment and install all dependencies
 uv sync
@@ -15,16 +20,17 @@ uv sync
 uv sync --extra dev
 
 # Install dbt packages (dbt_utils)
-uv run dbt deps --project-dir infra/dbt --profiles-dir infra/dbt
+cd infra/dbt && uv run dbt deps && cd ../..
 
 # Generate dbt manifest (required before first Dagster run)
-uv run dbt parse --project-dir infra/dbt --profiles-dir infra/dbt
+cd infra/dbt && uv run dbt parse && cd ../..
 
 # Generate dbt seed CSVs from taxonomy.yaml
 uv run python scripts/generate_taxonomy_seeds.py
 
-# Create .env file with API keys
-echo 'TALLY_API_KEY=your_key_here' > .env
+# Create .env file with the keys you need
+cp .env.example .env
+# then edit .env to fill in ETHERSCAN_API_KEY, OSO_API_KEY, OPENAI_API_KEY, AGENT_API_KEY, etc.
 ```
 
 ## Dagster (Orchestration)
@@ -33,224 +39,249 @@ echo 'TALLY_API_KEY=your_key_here' > .env
 
 ```bash
 # Start the Dagster webserver (default: http://localhost:3000)
-uv run dagster dev
+DAGSTER_HOME=$(pwd)/.dagster uv run dagster dev
 ```
 
-This loads the Dagster definitions from `infra/definitions.py` (configured via `[tool.dagster]` in `pyproject.toml`).
+Or use the helper script:
+
+```bash
+./scripts/serve.sh              # full edit mode
+./scripts/serve.sh --read-only  # read-only mode (matches the Render deployment)
+```
+
+Dagster discovers the pipeline via `[tool.dagster] module_name = "infra.definitions"` in `pyproject.toml`.
 
 ### Dagster UI Operations
 
 Once the UI is running at `http://localhost:3000`:
 
-| Action                        | How                                                              |
-|-------------------------------|------------------------------------------------------------------|
-| View all assets               | Go to **Assets** tab                                             |
-| Materialize everything        | Click **Materialize all** button                                 |
-| Materialize specific asset    | Click asset → **Materialize**                                    |
-| Run bronze fetchers only      | Select bronze assets → **Materialize selected**                  |
-| View asset checks             | Click asset → **Checks** tab                                     |
-| View run logs                 | Go to **Runs** tab → click a run                                 |
-| View asset lineage graph      | Go to **Assets** → **Global asset lineage**                      |
-| Reload definitions            | Click **Reload definitions** in the top bar after code changes   |
+| Action | How |
+|---|---|
+| View all assets | **Assets** tab |
+| Materialize everything | **Materialize all** button |
+| Materialize specific asset | Click asset → **Materialize** |
+| Run bronze fetchers only | Select bronze assets → **Materialize selected** |
+| View asset checks | Click asset → **Checks** tab |
+| View run logs | **Runs** tab → click a run |
+| View asset lineage | **Assets** → **Global asset lineage** |
+| Reload definitions | **Reload definitions** (top bar) after code changes |
 
-### Dagster CLI Commands
+### Dagster CLI
 
 ```bash
 # Materialize all assets (bronze fetch + dbt build + checks)
-uv run dagster asset materialize --select '*'
+uv run dagster asset materialize -m infra.definitions --select '*'
 
 # Materialize only bronze assets
-uv run dagster asset materialize --select 'group:bronze'
+uv run dagster asset materialize -m infra.definitions --select 'group:bronze_governance'
 
 # Materialize a single asset
-uv run dagster asset materialize --select 'snapshot_proposals'
+uv run dagster asset materialize -m infra.definitions --select 'snapshot_proposals'
 
 # Run all asset checks
-uv run dagster asset check --select '*'
+uv run dagster asset check -m infra.definitions --select '*'
 
 # List all registered assets
-uv run dagster asset list
+uv run dagster asset list -m infra.definitions
 ```
 
-## dbt (SQL Transformations)
+## dbt (SQL Transforms)
 
-All dbt commands require `--project-dir infra/dbt --profiles-dir infra/dbt`.
+All dbt commands must be run from `infra/dbt/` (the project directory). `profiles.yml` is colocated there.
+
+```bash
+cd infra/dbt
+```
 
 ### Build Commands
 
 ```bash
 # Build everything (run models + run tests + load seeds)
-uv run dbt build --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt build
 
 # Run only models (no tests)
-uv run dbt run --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt run
 
 # Run only tests
-uv run dbt test --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt test
 
-# Load seed data
-uv run dbt seed --project-dir infra/dbt --profiles-dir infra/dbt
+# Load seed data (taxonomy CSVs)
+uv run dbt seed
 ```
 
 ### Selective Builds
 
 ```bash
 # Build only staging models
-uv run dbt build --select 'staging.*' --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt build --select 'staging.*'
 
 # Build only silver models
-uv run dbt build --select 'silver.*' --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt build --select 'silver.*'
 
 # Build only gold models
-uv run dbt build --select 'gold.*' --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt build --select 'gold.*'
 
 # Build a specific model and its downstream dependents
-uv run dbt build --select 'clean_snapshot_proposals+' --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt build --select 'clean_snapshot_proposals+'
 
 # Build a specific model and its upstream dependencies
-uv run dbt build --select '+governance_activity' --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt build --select '+governance_activity'
 ```
 
 ### Introspection
 
 ```bash
-# Parse project and generate manifest.json (no build)
-uv run dbt parse --project-dir infra/dbt --profiles-dir infra/dbt
+# Parse project and regenerate manifest.json (no build)
+uv run dbt parse
 
 # List all models
-uv run dbt ls --resource-type model --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt ls --resource-type model
 
 # List all sources
-uv run dbt ls --resource-type source --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt ls --resource-type source
 
 # List all tests
-uv run dbt ls --resource-type test --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt ls --resource-type test
 
 # Show compiled SQL for a model
-uv run dbt show --select 'governance_activity' --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt show --select 'governance_activity'
 
 # Generate dbt docs
-uv run dbt docs generate --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt docs generate
 
 # Serve dbt docs locally
-uv run dbt docs serve --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt docs serve
 ```
 
 ### Cleanup
 
 ```bash
 # Remove dbt artifacts (target/, dbt_packages/)
-uv run dbt clean --project-dir infra/dbt --profiles-dir infra/dbt
+uv run dbt clean
 ```
 
 ## DuckDB (Warehouse)
 
+> **Schema naming:** dbt writes tables with DuckDB's `main_` database prefix. When you query from outside dbt, use `main_silver.<table>` or `main_gold.<table>`.
+
 ```bash
-# Open interactive DuckDB shell on the warehouse
-uv run duckdb warehouse/ens_retro.duckdb
+# Open interactive DuckDB shell
+duckdb warehouse/ens_retro.duckdb
 
 # Run a query directly
-uv run duckdb warehouse/ens_retro.duckdb -c "SELECT count(*) FROM gold.governance_activity;"
+duckdb warehouse/ens_retro.duckdb -c "SELECT count(*) FROM main_gold.governance_activity;"
 
 # List all schemas
-uv run duckdb warehouse/ens_retro.duckdb -c "SELECT schema_name FROM information_schema.schemata;"
+duckdb warehouse/ens_retro.duckdb -c "SELECT schema_name FROM information_schema.schemata;"
 
-# List all tables in a schema
-uv run duckdb warehouse/ens_retro.duckdb -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'gold';"
+# List all tables in the gold schema
+duckdb warehouse/ens_retro.duckdb -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'main_gold';"
 
-# Preview a gold table
-uv run duckdb warehouse/ens_retro.duckdb -c "SELECT * FROM gold.delegate_scorecard LIMIT 10;"
+# Preview the delegate scorecard
+duckdb warehouse/ens_retro.duckdb -c "SELECT * FROM main_gold.delegate_scorecard LIMIT 10;"
 
 # Export a table to CSV
-uv run duckdb warehouse/ens_retro.duckdb -c "COPY gold.governance_activity TO 'output.csv' (HEADER, DELIMITER ',');"
+duckdb warehouse/ens_retro.duckdb -c "COPY main_gold.governance_activity TO 'output.csv' (HEADER, DELIMITER ',');"
 
-# Export a table to Parquet
-uv run duckdb warehouse/ens_retro.duckdb -c "COPY gold.delegate_scorecard TO 'scorecard.parquet' (FORMAT PARQUET);"
+# Export to Parquet
+duckdb warehouse/ens_retro.duckdb -c "COPY main_gold.delegate_scorecard TO 'scorecard.parquet' (FORMAT PARQUET);"
 
 # Read a bronze JSON file directly (no dbt needed)
-uv run duckdb -c "SELECT count(*) FROM read_json_auto('bronze/governance/snapshot_proposals.json');"
+duckdb -c "SELECT count(*) FROM read_json_auto('bronze/governance/snapshot_proposals.json');"
 ```
 
 ### Useful Queries
 
 ```sql
 -- Count records in all gold tables
-SELECT 'governance_activity' as tbl, count(*) as rows FROM gold.governance_activity
-UNION ALL SELECT 'delegate_scorecard', count(*) FROM gold.delegate_scorecard
-UNION ALL SELECT 'treasury_summary', count(*) FROM gold.treasury_summary
-UNION ALL SELECT 'participation_index', count(*) FROM gold.participation_index
-UNION ALL SELECT 'decentralization_index', count(*) FROM gold.decentralization_index;
+SELECT 'governance_activity' AS tbl, count(*) AS rows FROM main_gold.governance_activity
+UNION ALL SELECT 'governance_discourse_activity', count(*) FROM main_gold.governance_discourse_activity
+UNION ALL SELECT 'delegate_scorecard', count(*) FROM main_gold.delegate_scorecard
+UNION ALL SELECT 'treasury_summary', count(*) FROM main_gold.treasury_summary
+UNION ALL SELECT 'participation_index', count(*) FROM main_gold.participation_index
+UNION ALL SELECT 'decentralization_index', count(*) FROM main_gold.decentralization_index;
 
 -- Top 10 delegates by voting power
 SELECT address, ens_name, voting_power, participation_rate
-FROM gold.delegate_scorecard
-ORDER BY voting_power DESC LIMIT 10;
+FROM main_gold.delegate_scorecard
+ORDER BY voting_power DESC
+LIMIT 10;
 
--- Governance activity summary
-SELECT source, count(*) as proposals, avg(for_pct) as avg_for_pct
-FROM gold.governance_activity
+-- Governance activity summary by source
+SELECT source, count(*) AS proposals, avg(for_pct) AS avg_for_pct
+FROM main_gold.governance_activity
 GROUP BY source;
 
--- Decentralization metrics
-SELECT * FROM gold.decentralization_index;
+-- Decentralization metrics (long format)
+SELECT metric, value FROM main_gold.decentralization_index;
 
--- Participation metrics
-SELECT * FROM gold.participation_index;
+-- Participation metrics (long format)
+SELECT metric, value FROM main_gold.participation_index;
 ```
 
-## Bronze Data Fetching (Standalone Scripts)
+## Dashboard (Streamlit)
 
 ```bash
-# Fetch Snapshot proposals and votes (standalone, outside Dagster)
-uv run python bronze/governance/scripts/export_ens_tally.py
+# Run the full dashboard locally
+uv run streamlit run dashboards/app.py
 
-# Generate taxonomy seed CSVs from taxonomy.yaml
-uv run python scripts/generate_taxonomy_seeds.py
+# Run the /Chat sub-page only
+uv run streamlit run dashboards/pages/Chat.py
+```
+
+## MCP API server (FastAPI + MCP)
+
+```bash
+# Generate a secret key and run the API locally
+export AGENT_API_KEY=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")
+cd dashboards
+uv run uvicorn api:app --host 0.0.0.0 --port 8001 --reload
+
+# Smoke test the endpoints (in another shell)
+curl http://localhost:8001/                                # HTML landing page
+
+curl -X POST http://localhost:8001/mcp \
+  -H "Authorization: Bearer $AGENT_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+
+curl -X GET http://localhost:8001/api/tables \
+  -H "Authorization: Bearer $AGENT_API_KEY"
 ```
 
 ## Code Quality
 
 ```bash
-# Lint with ruff
-uv run ruff check infra/
+# Lint everything with ruff
+uv run ruff check .
 
 # Lint and auto-fix
-uv run ruff check --fix infra/
+uv run ruff check . --fix
 
-# Format with ruff
-uv run ruff format infra/
+# Format
+uv run ruff format .
 
-# Run tests
-uv run pytest
+# Check format without modifying
+uv run ruff format --check .
 
-# Run tests with verbose output
-uv run pytest -v
-
-# Type check (if mypy/pyright installed)
-uv run mypy infra/
-```
-
-## Git
-
-```bash
-# Check status (see what's changed)
-git status
-
-# Stage specific files
-git add infra/ingest/assets.py infra/validate/checks.py
-
-# Commit
-git commit -m "description of changes"
-
-# Push current branch
-git push origin governance-scripts
+# Run all dashboard + API tests (106 cases)
+cd dashboards && uv run pytest tests/ -v
 ```
 
 ## Environment Variables
 
-| Variable        | Required | Description                              |
-|-----------------|----------|------------------------------------------|
-| `TALLY_API_KEY` | Yes      | API key for Tally GraphQL API            |
-| `DAGSTER_HOME`  | No       | Override Dagster's home directory         |
+See `.env.example` for the full list. Quick reference:
 
-The `.env` file is loaded automatically by Dagster via `python-dotenv`. For standalone scripts, load it manually or export the variables.
+| Variable | Needed by | Purpose |
+|---|---|---|
+| `DAGSTER_HOME` | Dagster | Absolute path to repo's `.dagster/` dir |
+| `ETHERSCAN_API_KEY` | `etherscan_api.py` | On-chain event fetching |
+| `OSO_API_KEY` | `oso_api.py` | GitHub activity metrics |
+| `TALLY_API_KEY` | Legacy only | Tally is frozen; only needed if you try to re-run the (now file-sentinel) tally assets |
+| `OPENAI_API_KEY` | Dashboard + ChatKit | Mint ChatKit session tokens, sync vector store |
+| `OPENAI_WORKFLOWS_API_KEY` | Dashboard ChatKit | Agent Builder workflow calls |
+| `WORKFLOW_ID` | Dashboard ChatKit | Agent Builder workflow ID |
+| `AGENT_API_KEY` | MCP API (`api.py`) | Bearer token protecting `/api/*` and `/mcp` |
+
+The `.env` file is loaded automatically by Dagster, Streamlit, and the API via `python-dotenv`. For standalone scripts, either source the file manually or rely on the `load_dotenv()` calls already embedded in most entry points.

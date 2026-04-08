@@ -1,45 +1,49 @@
 # API Reference
 
-Public functions and classes in the `infra` Python package.
+Public functions, classes, and assets in the `infra` Python package.
 
-## infra.definitions
+> This is the Python API. For the FastAPI / MCP HTTP API, see `dashboards/api.py` source or run `curl https://mcp.ensretro.metagov.org/` for the endpoint landing page.
+
+## `infra.definitions`
 
 **File:** `infra/definitions.py`
 
 The central Dagster entry point. Loaded via `[tool.dagster] module_name = "infra.definitions"` in `pyproject.toml`.
 
 ### `defs: Definitions`
-The Dagster `Definitions` object combining all assets, checks, and resources.
+The Dagster `Definitions` object combining all assets, checks, resources, and sensors.
 
 **Contains:**
-- `assets`: 13 bronze Python assets + 1 dbt asset group (29 models)
-- `asset_checks`: 10 checks (5 row-count + 5 GE suites)
-- `resources`: `dbt` (DbtCliResource), `tally_config` (TallyApiConfig)
+- `assets`: 18 bronze Python assets + 1 dbt asset group (40 models)
+- `asset_checks`: 10 checks (5 row-count + 5 GE suites, all on governance assets)
+- `resources`: `dbt` (`DbtCliResource`), `etherscan_config` (`EtherscanApiConfig`), `oso_config` (`OsoApiConfig`)
+- `sensors`: `vector_store_sync_sensor` (triggers vector store refresh after gold materializations)
 
 ---
 
-## infra.resources
+## `infra.resources`
 
 **File:** `infra/resources.py`
 
-### `class TallyApiConfig(ConfigurableResource)`
-Dagster resource holding the Tally API key.
+### `class EtherscanApiConfig(ConfigurableResource)`
+Dagster resource holding the Etherscan API key. Consumed by `delegations`, `token_distribution`, and `treasury_flows` bronze assets.
 
-**Fields:**
-| Field     | Type | Description                |
-|-----------|------|----------------------------|
-| `api_key` | str  | Tally GraphQL API key      |
+| Field | Type | Description |
+|---|---|---|
+| `api_key` | str | Etherscan API key (from `ETHERSCAN_API_KEY` env var) |
 
-**Usage in asset:**
-```python
-@asset
-def tally_proposals(context, tally_config: TallyApiConfig) -> None:
-    org = fetch_organization(tally_config.api_key)
-```
+### `class OsoApiConfig(ConfigurableResource)`
+Dagster resource holding the Open Source Observer API key. Consumed by the `bronze_github` assets.
+
+| Field | Type | Description |
+|---|---|---|
+| `api_key` | str | OSO API key (from `OSO_API_KEY` env var) |
+
+> **Removed:** `TallyApiConfig` no longer exists. Tally assets were converted to file sentinels when Tally.xyz shut down their public API.
 
 ---
 
-## infra.dbt_project
+## `infra.dbt_project`
 
 **File:** `infra/dbt_project.py`
 
@@ -47,18 +51,18 @@ def tally_proposals(context, tally_config: TallyApiConfig) -> None:
 Configured dbt project instance pointing to `infra/dbt/`. Calls `prepare_if_dev()` at import time to generate the manifest.
 
 ### `class EnsDbtTranslator(DagsterDbtTranslator)`
-Maps dbt sources to upstream Dagster bronze asset keys.
+Maps dbt sources to upstream Dagster bronze asset keys and assigns UI group names based on the dbt folder layout.
 
-**Method:**
-```python
-def get_asset_key(self, dbt_resource_props: dict) -> AssetKey
-```
-- For `resource_type == "source"`: looks up `(source_name, table_name)` in `_SOURCE_TO_ASSET_KEY`
-- Otherwise: delegates to `super().get_asset_key()`
+**Methods:**
+- `get_asset_key(dbt_resource_props)` — for `resource_type == "source"`, looks up `(source_name, table_name)` in `_SOURCE_TO_ASSET_KEY`. Otherwise delegates to `super().get_asset_key()`.
+- `get_group_name(dbt_resource_props)` — reads the model's folder (staging/silver/gold) from the `fqn` list and returns it as the group name, so the Dagster UI shows models grouped by layer.
+
+### `_SOURCE_TO_ASSET_KEY: dict`
+Static mapping from `(source_name, table_name)` to `AssetKey`. Updated whenever a new ingest asset is added that a dbt model consumes via `{{ source(...) }}`.
 
 ---
 
-## infra.dbt_assets
+## `infra.dbt_assets`
 
 **File:** `infra/dbt_assets.py`
 
@@ -67,179 +71,148 @@ The `@dbt_assets` decorated function that runs `dbt build` for all models.
 
 - Creates `warehouse/` directory before running dbt
 - Uses `EnsDbtTranslator` for source-to-asset mapping
-- Streams dbt CLI output back to Dagster
+- Streams dbt CLI output back to Dagster for real-time logging
 
 ---
 
-## infra.ingest.snapshot_api
+## `infra.ingest` — API clients
 
-**File:** `infra/ingest/snapshot_api.py`
+All ingest modules follow the same shape: a handful of `fetch_*` functions that hit the API, optional `flatten_*` helpers that reshape nested responses into flat dicts, and errors that re-raise as `requests.HTTPError` / `httpx.HTTPStatusError` with 60-second backoff on HTTP 429.
 
-### `run_query(query: str) -> dict`
-Execute a GraphQL query against the Snapshot API.
-
-| Parameter | Type | Description           |
-|-----------|------|-----------------------|
-| `query`   | str  | GraphQL query string  |
-
-**Returns:** Parsed JSON response dict.
-**Raises:** `requests.HTTPError` on non-429 errors.
-**Retry:** Waits 60s on HTTP 429.
-
-### `fetch_snapshot_proposals() -> list[dict]`
-Fetch all ENS Snapshot proposals.
-
-**Returns:** List of raw proposal dicts (paginated, batch=100, ordered by `created` desc).
-
-**Schema per record:**
+### `infra.ingest.snapshot_api` (177 lines)
+```python
+fetch_snapshot_proposals() -> list[dict]
+fetch_snapshot_votes(proposals: list[dict]) -> list[dict]
 ```
-id, title, body, choices, start, end, snapshot, state,
-author, created, scores, scores_total, votes, quorum, type
+No authentication. Hits `https://hub.snapshot.org/graphql` with paginated queries against the `ens.eth` space.
+
+### `infra.ingest.tally_api` (661 lines — frozen)
+```python
+fetch_organization(api_key) -> dict
+fetch_tally_proposals(org_id, api_key) -> list[dict]
+fetch_tally_votes(proposals, api_key) -> list[dict]
+fetch_tally_delegates(org_id, api_key) -> list[dict]
+
+flatten_tally_proposals(raw) -> list[dict]
+flatten_tally_votes(raw) -> list[dict]
+flatten_tally_delegates(raw) -> list[dict]
 ```
+**Frozen:** Tally.xyz no longer exposes a public API. The assets that depend on this module are `compute_kind="file"` sentinels. The code is retained for historical reference and for the case where a new API becomes available.
 
-### `fetch_snapshot_votes(proposals: list[dict]) -> list[dict]`
-Fetch votes for the given proposals.
-
-| Parameter   | Type        | Description                    |
-|-------------|-------------|--------------------------------|
-| `proposals` | list[dict]  | Proposals (must have `id` key) |
-
-**Returns:** List of vote dicts with injected `proposal_id`.
-
-**Schema per record:**
+### `infra.ingest.etherscan_api` (585 lines)
+```python
+fetch_delegate_changed_events(api_key) -> list[dict]
+fetch_transfer_events(api_key) -> list[dict]
+fetch_treasury_transactions(safe_addresses, api_key) -> list[dict]
 ```
-id, voter, choice, vp, created, proposal_id
+Paginates Etherscan's v2 event logs endpoint for the ENS token contract. Handles checkpointing via `bronze/on-chain/.checkpoints/` to resume interrupted fetches.
+
+### `infra.ingest.safe_api` (434 lines)
+```python
+fetch_safe_transactions(safe_address) -> list[dict]
+fetch_safe_balances(safe_address) -> list[dict]
 ```
+Safe Transaction Service REST client. No auth required. Used for every ENS working-group Safe.
+
+### `infra.ingest.smallgrants_api` (145 lines)
+```python
+fetch_smallgrants_proposals() -> list[dict]
+fetch_smallgrants_votes(proposals) -> list[dict]
+```
+Uses Snapshot GraphQL under the hood — SmallGrants hosts its grant voting as a Snapshot space.
+
+### `infra.ingest.discourse_api` (206 lines)
+```python
+fetch_forum_topics(category_id) -> list[dict]
+fetch_forum_posts_for_topic(topic_id) -> list[dict]
+```
+Discourse REST client for `discuss.ens.domains`. No auth.
+
+### `infra.ingest.oso_api` (244 lines)
+```python
+fetch_ens_repos(api_key) -> list[dict]
+fetch_ens_code_metrics(api_key) -> list[dict]
+fetch_ens_timeseries(api_key) -> list[dict]
+```
+Wraps the `pyoso` client for Open Source Observer's GraphQL data lake.
 
 ---
 
-## infra.ingest.tally_api
+## `infra.ingest.assets`
 
-**File:** `infra/ingest/tally_api.py`
+**File:** `infra/ingest/assets.py` (~930 lines)
 
-### `run_query(query: str, variables: dict | None, api_key: str) -> dict`
-Execute a GraphQL query against the Tally API.
+Hosts all 18 `@asset` definitions plus shared helpers.
 
-| Parameter   | Type            | Description               |
-|-------------|-----------------|---------------------------|
-| `query`     | str             | GraphQL query string      |
-| `variables` | dict or None    | GraphQL variables         |
-| `api_key`   | str             | Tally API key             |
-
-### `fetch_organization(api_key: str) -> dict`
-Fetch ENS organization metadata from Tally.
-
-**Returns:** Dict with `id`, `name`, `slug`, `governorIds`, `tokenIds`, `proposalsCount`, `delegatesCount`, `delegatesVotesCount`, `tokenOwnersCount`.
-
-### `fetch_tally_proposals(org_id: str, api_key: str) -> list[dict]`
-Fetch all raw proposals for the organization (paginated, batch=50).
-
-### `fetch_tally_votes(proposals: list[dict], api_key: str) -> list[dict]`
-Fetch raw votes for given proposals (per-proposal, batch=100).
-
-### `fetch_tally_delegates(org_id: str, api_key: str) -> list[dict]`
-Fetch all raw delegates for the organization (paginated, batch=50, sorted by votes desc).
-
-### `flatten_tally_proposals(raw_proposals: list[dict]) -> list[dict]`
-Flatten nested API response into flat dicts.
-
-**Output schema:** `id`, `title`, `description`, `status`, `proposer`, `start_block`, `end_block`, `for_votes`, `against_votes`, `abstain_votes`
-
-### `flatten_tally_votes(raw_votes: list[dict]) -> list[dict]`
-Flatten nested vote response.
-
-**Output schema:** `id`, `voter`, `support`, `weight`, `proposal_id`, `reason`
-
-### `flatten_tally_delegates(raw_delegates: list[dict]) -> list[dict]`
-Flatten nested delegate response.
-
-**Output schema:** `address`, `ens_name`, `voting_power`, `delegators_count`, `votes_count`, `proposals_count`, `statement`
-
----
-
-## infra.ingest.assets
-
-**File:** `infra/ingest/assets.py`
-
-### Helper Functions
+### Helper functions
 
 #### `_update_metadata(subdir, filename, *, status, records, file_size, source, method)`
 Update a file entry in the subdomain's `metadata.json`.
-
-| Parameter   | Type       | Description                              |
-|-------------|------------|------------------------------------------|
-| `subdir`    | str        | Bronze subdomain (e.g., `"governance"`)  |
-| `filename`  | str        | File name within the subdomain           |
-| `status`    | str        | `"present"`, `"missing"`, or `"planned"` |
-| `records`   | int / None | Record count (optional)                  |
-| `file_size` | int / None | File size in bytes (optional)            |
-| `source`    | str        | Source identifier (default: `"dagster_pipeline"`) |
-| `method`    | str / None | Description of fetch method              |
 
 #### `_write_json(data, subdir, filename, context, *, source, method)`
 Write a JSON array to a bronze file and update metadata provenance.
 
 #### `_check_file_exists(subdir, filename, context)`
-Check if a manually-placed file exists. Logs warning if missing.
+Check if a manually-placed file exists. Logs a warning via `context.log` if missing.
 
-### Active Fetcher Assets
+### Bronze assets by group
 
-| Asset                | Dependencies         | API              | Output File                              |
-|----------------------|----------------------|------------------|------------------------------------------|
-| `snapshot_proposals` | —                    | Snapshot GraphQL | `bronze/governance/snapshot_proposals.json` |
-| `snapshot_votes`     | `snapshot_proposals` | Snapshot GraphQL | `bronze/governance/snapshot_votes.json`    |
-| `tally_proposals`    | —                    | Tally GraphQL    | `bronze/governance/tally_proposals.json`   |
-| `tally_votes`        | `tally_proposals`    | Tally GraphQL    | `bronze/governance/tally_votes.json`       |
-| `tally_delegates`    | —                    | Tally GraphQL    | `bronze/governance/tally_delegates.json`   |
-
-### Sentinel Assets
-
-| Asset                    | Checked File                                              |
-|--------------------------|-----------------------------------------------------------|
-| `votingpower_delegates`  | `bronze/governance/votingpower-xyz/ens-delegates-*.csv`   |
-| `delegations`            | `bronze/on-chain/delegations.json`                        |
-| `token_distribution`     | `bronze/on-chain/token_distribution.json`                 |
-| `treasury_flows`         | `bronze/on-chain/treasury_flows.json`                     |
-| `grants`                 | `bronze/grants/grants.json`                               |
-| `compensation`           | `bronze/financial/compensation.json`                      |
-| `delegate_profiles`      | `bronze/interviews/delegate_profiles.json`                |
-| `forum_posts`            | `bronze/forum/forum_posts.json`                           |
+| Group | Asset | Kind | Upstream dep |
+|---|---|---|---|
+| `bronze_governance` | `snapshot_proposals` | api | — |
+| `bronze_governance` | `snapshot_votes` | api | `snapshot_proposals` |
+| `bronze_governance` | `tally_proposals` | file | — |
+| `bronze_governance` | `tally_votes` | file | `tally_proposals` |
+| `bronze_governance` | `tally_delegates` | file | — |
+| `bronze_governance` | `votingpower_delegates` | file | — |
+| `bronze_financial` | `ens_ledger_transactions` | file | — |
+| `bronze_financial` | `ens_wallet_balances` | api | — |
+| `bronze_financial` | `ens_safe_transactions` | api | — |
+| `bronze_onchain` | `delegations` | api | — |
+| `bronze_onchain` | `token_distribution` | api | — |
+| `bronze_onchain` | `treasury_flows` | api | — |
+| `bronze_grants` | `smallgrants_proposals` | api | — |
+| `bronze_grants` | `smallgrants_votes` | api | `smallgrants_proposals` |
+| `bronze_forum` | `forum_topics` | api | — |
+| `bronze_github` | OSO repos, code metrics, timeseries | api | — (3 assets) |
 
 ---
 
-## infra.validate.checks
+## `infra.validate.checks`
 
 **File:** `infra/validate/checks.py`
 
-### Helper Functions
+### Helper functions
 
 #### `_count_json_records(subdir: str, filename: str) -> int`
 Count records in a bronze JSON array file. Returns 0 if file missing.
 
 #### `_load_bronze_df(subdir: str, filename: str) -> pd.DataFrame | None`
-Load a bronze JSON file into a pandas DataFrame. Returns None if missing/empty.
+Load a bronze JSON file into a pandas DataFrame. Returns `None` if missing/empty.
 
-#### `_run_ge_suite(subdir: str, filename: str, suite_name: str) -> AssetCheckResult`
-Run a Great Expectations suite against a bronze file. Uses ephemeral GE context with pandas datasource.
+#### `_run_ge_suite(subdir, filename, suite_name) -> AssetCheckResult`
+Run a Great Expectations suite against a bronze file. Uses an ephemeral GE context with a pandas datasource.
 
-### Asset Checks
+### Asset checks (10 total)
 
-| Check Function                     | Asset               | Type       | Description                    |
-|------------------------------------|-----------------------|------------|--------------------------------|
-| `check_snapshot_proposals_count`   | snapshot_proposals    | Row count  | Expected ~90 rows              |
-| `check_snapshot_votes_count`       | snapshot_votes        | Row count  | Expected ~47,551 rows          |
-| `check_tally_proposals_count`      | tally_proposals       | Row count  | Expected ~62 rows              |
-| `check_tally_votes_count`          | tally_votes           | Row count  | Expected ~9,550 rows           |
-| `check_tally_delegates_count`      | tally_delegates       | Row count  | Expected ~37,876 rows          |
-| `check_ge_snapshot_proposals`      | snapshot_proposals    | GE suite   | Schema + value validation      |
-| `check_ge_snapshot_votes`          | snapshot_votes        | GE suite   | Schema + value validation      |
-| `check_ge_tally_proposals`         | tally_proposals       | GE suite   | Schema + value validation      |
-| `check_ge_tally_votes`             | tally_votes           | GE suite   | Schema + value validation      |
-| `check_ge_tally_delegates`         | tally_delegates       | GE suite   | Schema + value validation      |
+| Check | Asset | Type | Description |
+|---|---|---|---|
+| `check_snapshot_proposals_count` | `snapshot_proposals` | row count | Expected ~90 rows |
+| `check_snapshot_votes_count` | `snapshot_votes` | row count | Expected ~47,551 rows |
+| `check_tally_proposals_count` | `tally_proposals` | row count | Expected ~62 rows |
+| `check_tally_votes_count` | `tally_votes` | row count | Expected ~9,550 rows |
+| `check_tally_delegates_count` | `tally_delegates` | row count | Expected ~37,876 rows |
+| `check_ge_snapshot_proposals` | `snapshot_proposals` | GE suite | Schema + value validation |
+| `check_ge_snapshot_votes` | `snapshot_votes` | GE suite | Schema + value validation |
+| `check_ge_tally_proposals` | `tally_proposals` | GE suite | Schema + value validation |
+| `check_ge_tally_votes` | `tally_votes` | GE suite | Schema + value validation |
+| `check_ge_tally_delegates` | `tally_delegates` | GE suite | Schema + value validation |
+
+Coverage is concentrated on the governance layer (Snapshot + Tally). On-chain, financial, grants, forum, and github assets currently rely on dbt tests (`_staging.yml`, `_silver.yml`, `_gold.yml`) rather than Dagster asset checks. See [ROADMAP section D](../ROADMAP.md#d-test-coverage-is-inverted-pipeline-has-0-tests-dashboard-has-106) for the plan to extend coverage.
 
 ---
 
-## infra.taxonomy
+## `infra.taxonomy`
 
 **File:** `infra/taxonomy.py`
 
@@ -248,10 +221,6 @@ Load and cache `taxonomy.yaml`. Returns the full taxonomy dict.
 
 ### `valid_values(field: str) -> list[str]`
 Return the allowed values for a taxonomy field.
-
-| Parameter | Type | Description                           |
-|-----------|------|---------------------------------------|
-| `field`   | str  | Taxonomy field name (e.g., `"sources"`) |
 
 **Raises:** `KeyError` if field not found.
 
@@ -262,20 +231,23 @@ Validate that non-null values in a pandas/polars Series are in the taxonomy.
 
 ---
 
-## infra.io_managers
+## `infra.sensors`
+
+**File:** `infra/sensors.py`
+
+### `vector_store_sync_sensor`
+Asset sensor that watches the gold asset group. After any gold model is materialized, it triggers a re-export of gold tables to markdown (via `scripts/sync_vector_store.py`) and uploads the fresh files to the OpenAI vector store so the ChatKit agent sees current data.
+
+---
+
+## `infra.io_managers`
 
 **File:** `infra/io_managers.py`
+
+Utility IO managers (not currently mounted on assets — left in place for downstream users who want DataFrame-based asset flows).
 
 ### `class ParquetIOManager(ConfigurableIOManager)`
 Read/write DataFrames as Parquet files.
 
-| Field      | Type | Default | Description            |
-|------------|------|---------|------------------------|
-| `base_dir` | str  | `"."`   | Base directory for files |
-
 ### `class JsonIOManager(ConfigurableIOManager)`
 Read/write objects as JSON files.
-
-| Field      | Type | Default | Description            |
-|------------|------|---------|------------------------|
-| `base_dir` | str  | `"."`   | Base directory for files |
