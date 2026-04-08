@@ -1,0 +1,6 @@
+# API + MCP server extras (extends requirements.txt)
+-r requirements.txt
+fastapi>=0.115
+uvicorn>=0.30
+sqlglot>=25.0
+fastmcp>=2.0
