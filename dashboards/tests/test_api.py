@@ -112,11 +112,13 @@ class TestValidateSQL:
 
 class TestCheckAuth:
 
-    def test_dev_mode_no_key_set(self):
-        """When AGENT_API_KEY is empty, all requests are allowed."""
+    def test_fail_closed_when_key_unset(self):
+        """When AGENT_API_KEY is empty, server fails closed with 503 — no dev bypass."""
         from api import _check_auth
         with patch("api._AGENT_API_KEY", ""):
-            _check_auth(None)  # should not raise
+            with pytest.raises(HTTPException) as exc_info:
+                _check_auth(None)
+            assert exc_info.value.status_code == 503
 
     def test_valid_bearer_token(self):
         from api import _check_auth
@@ -176,10 +178,12 @@ def client(_reset_ast_cache, tmp_path):
     def mock_get_conn():
         return duckdb.connect(db_path, read_only=True)
 
-    with patch("api._AGENT_API_KEY", ""), \
+    with patch("api._AGENT_API_KEY", "test-key"), \
          patch("api._get_conn", mock_get_conn):
         from api import app
-        yield TestClient(app, raise_server_exceptions=False)
+        tc = TestClient(app, raise_server_exceptions=False)
+        tc.headers.update({"Authorization": "Bearer test-key"})
+        yield tc
 
 
 class TestAgentQueryEndpoint:
@@ -219,10 +223,11 @@ class TestAgentQueryEndpoint:
         def mock_get_conn():
             return duckdb.connect(db_path, read_only=True)
 
-        with patch("api._AGENT_API_KEY", ""), \
+        with patch("api._AGENT_API_KEY", "test-key"), \
              patch("api._get_conn", mock_get_conn):
             from api import app
             tc = TestClient(app, raise_server_exceptions=False)
+            tc.headers.update({"Authorization": "Bearer test-key"})
             resp = tc.post("/api/agent-query", json={"sql": "SELECT * FROM main_gold.big"})
 
         assert resp.status_code == 200

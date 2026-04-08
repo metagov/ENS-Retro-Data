@@ -10,7 +10,7 @@ MCP tools exposed at /mcp:
     list_tables()           — return all permitted tables with column names and types
 
 Security layers on all query paths (applied in order):
-    1. Bearer token auth      — AGENT_API_KEY env var (skipped in dev if unset)
+    1. Bearer token auth      — AGENT_API_KEY env var (fails closed if unset)
     2. Length cap             — 4,000-char query maximum
     3. sqlglot AST parse      — must be a single SELECT; DML/DDL nodes rejected
                                 even when buried inside CTEs or subqueries
@@ -77,9 +77,14 @@ app.add_middleware(_TrailingSlashMiddleware)
 # ---------------------------------------------------------------------------
 
 def _check_auth(creds: HTTPAuthorizationCredentials | None) -> None:
-    """Validate Bearer token. If AGENT_API_KEY is unset, dev mode — allow all."""
+    """Validate Bearer token. Fails closed if AGENT_API_KEY is not set."""
     if not _AGENT_API_KEY:
-        return
+        # Fail closed: no dev-mode bypass. If the key is missing, the server
+        # is misconfigured and every authenticated route must refuse requests.
+        raise HTTPException(
+            status_code=503,
+            detail="Server misconfigured: AGENT_API_KEY not set.",
+        )
     if creds is None or creds.credentials != _AGENT_API_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized.")
 
@@ -215,6 +220,56 @@ class QueryResponse(BaseModel):
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
+# Root landing page — served as HTML so the domain key meta tag is present
+# when OpenAI's domain verifier or a browser visits https://<mcp-host>/.
+# The MCP server itself doesn't host ChatKit, but claiming the domain with
+# the same key keeps OpenAI's allowlist happy across both origins.
+_CHATKIT_DOMAIN_KEY = "domain_pk_69d4b7e70f4c8196afc6427fb78932ed0a3e9730a6acc6cc"
+
+_ROOT_HTML = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="openai-chatkit-domain-key" content="{_CHATKIT_DOMAIN_KEY}">
+<title>ENS Retro Agent API</title>
+<style>
+  body {{ font-family: system-ui, -apple-system, sans-serif; max-width: 680px;
+         margin: 48px auto; padding: 0 24px; color: #2D3748; line-height: 1.6; }}
+  h1 {{ color: #3B4EC8; margin-bottom: 8px; }}
+  code {{ background: #F7FAFC; padding: 2px 6px; border-radius: 4px;
+          font-size: 13px; color: #2D3748; }}
+  .endpoint {{ background: #F7FAFC; border-left: 3px solid #3B4EC8;
+               padding: 10px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; }}
+  .muted {{ color: #718096; font-size: 14px; }}
+</style>
+</head>
+<body>
+<h1>ENS Retro Agent API</h1>
+<p class="muted">FastAPI + MCP server backing the ENS DAO Governance Research dashboard.
+Queries a read-only DuckDB warehouse via a security-hardened SELECT-only SQL layer.</p>
+
+<h2>Endpoints</h2>
+<div class="endpoint"><code>GET  /api/tables</code> — list permitted tables + column schemas</div>
+<div class="endpoint"><code>POST /api/agent-query</code> — execute a validated SELECT query</div>
+<div class="endpoint"><code>GET  /mcp</code> — MCP server endpoint for Agent Builder integration</div>
+
+<p class="muted">All endpoints except <code>GET /</code> require bearer token authentication
+via the <code>AGENT_API_KEY</code> environment variable.</p>
+
+<p class="muted">Source: <a href="https://github.com/metagov/ENS-Retro-Data">github.com/metagov/ENS-Retro-Data</a></p>
+</body>
+</html>
+"""
+
+
+@app.get("/", response_class=None)
+def root():
+    """Landing page — also carries the ChatKit domain verification meta tag."""
+    from fastapi.responses import HTMLResponse
+    return HTMLResponse(content=_ROOT_HTML, status_code=200)
+
 
 @app.get("/api/tables")
 def api_tables(
@@ -417,22 +472,32 @@ try:
     def list_tables() -> str:
         return _run_list_tables()
 
-    # Mount MCP server on the FastAPI app at /mcp
-    # Auth is enforced by middleware below — the MCP app itself is unaware of it
-    _mcp_asgi = mcp.http_app(path="/")
+    # Mount MCP server on the FastAPI app at /mcp.
+    # stateless_http=True: no Mcp-Session-Id tracking — each POST stands alone.
+    #   Required for OpenAI Agent Builder compatibility; the default stateful
+    #   mode requires clients to track session IDs across requests, which
+    #   Agent Builder's MCP client does not do cleanly.
+    # json_response=True: return plain JSON instead of SSE-streamed responses
+    #   — simpler for clients that aren't ready to handle event-stream parsing.
+    # Auth is enforced by middleware below — the MCP app itself is unaware of it.
+    _mcp_asgi = mcp.http_app(path="/", stateless_http=True, json_response=True)
 
     # FastMCP 3.x requires its lifespan to initialize the task group.
     # Pass it to the parent FastAPI app so the session manager starts up.
     app.router.lifespan_context = _mcp_asgi.router.lifespan_context
 
     class _McpAuthMiddleware(BaseHTTPMiddleware):
-        """Enforce Bearer token on all /mcp requests."""
+        """Enforce Bearer token on all /mcp requests. Fails closed if key unset."""
         async def dispatch(self, request: StarletteRequest, call_next):
-            if _AGENT_API_KEY:
-                auth_header = request.headers.get("authorization", "")
-                token = auth_header.removeprefix("Bearer ").strip()
-                if token != _AGENT_API_KEY:
-                    return JSONResponse({"error": "Unauthorized"}, status_code=401)
+            if not _AGENT_API_KEY:
+                return JSONResponse(
+                    {"error": "Server misconfigured: AGENT_API_KEY not set."},
+                    status_code=503,
+                )
+            auth_header = request.headers.get("authorization", "")
+            token = auth_header.removeprefix("Bearer ").strip()
+            if token != _AGENT_API_KEY:
+                return JSONResponse({"error": "Unauthorized"}, status_code=401)
             return await call_next(request)
 
     _mcp_asgi.add_middleware(_McpAuthMiddleware)
