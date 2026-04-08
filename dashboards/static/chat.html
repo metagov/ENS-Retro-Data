@@ -218,7 +218,30 @@
     window.open(base + '/app/static/chatpage.html#' + secret, '_blank');
   });
 
-  // ---- 5. Mount ChatKit (lazy-loads chatkit.js on first click) ----
+  // ---- 5. Starter prompts — randomized pool (4 shown per session) ----
+  var STARTER_PROMPT_POOL = [
+    { label: 'Low-turnout proposals',   prompt: 'Which ENS proposals had the lowest voter turnout in the last year, and what did they have in common?' },
+    { label: 'Complexity vs turnout',   prompt: 'Do more complex proposals get fewer votes? Show me the correlation.' },
+    { label: 'Top 10 active delegates', prompt: 'Who are the top 10 most active delegates by voting frequency?' },
+    { label: 'Inactive delegates',      prompt: 'Show me delegates who stopped participating in the last 6 months.' },
+    { label: 'Divergent voters',        prompt: 'Find delegates whose voting patterns diverge most from the majority.' },
+    { label: 'Hot forum threads',       prompt: 'Which forum threads led to actual on-chain proposals?' },
+    { label: 'Forum topics this quarter', prompt: 'What topics dominated ENS forum discussions last quarter?' },
+    { label: 'Grants breakdown',        prompt: 'How much has the ENS DAO spent on grants in the past year, broken down by category?' },
+    { label: 'Proposal type pass rates', prompt: 'Which proposal types (treasury, governance, social) pass most often?' },
+    { label: 'DAO health summary',      prompt: 'Give me a 30-second summary of ENS DAO health right now.' }
+  ];
+
+  function pickStarterPrompts(n) {
+    var pool = STARTER_PROMPT_POOL.slice();
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    return pool.slice(0, n);
+  }
+
+  // ---- 6. Mount ChatKit (lazy-loads chatkit.js on first click) ----
   function mountChatKit() {
     var container = document.getElementById('ens-chatkit');
     var loader = document.getElementById('ens-loading');
@@ -235,6 +258,10 @@
           colorScheme: 'light',
           density: 'compact',
           radius: 'soft'
+        },
+        startScreen: {
+          greeting: 'Ask about ENS governance',
+          prompts: pickStarterPrompts(4)
         }
       });
       mounted = true;

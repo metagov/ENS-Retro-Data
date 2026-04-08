@@ -26,7 +26,9 @@ WORKFLOW_ID = (
 
 # Maximum number of ChatKit session tokens minted per Streamlit browser session.
 # Prevents a single session from looping and burning tokens in case of a bug.
-_SESSION_TOKEN_CAP = 10
+# Raised from 10 → 50 so a long-lived dashboard session can safely re-mint
+# after the 4-hour cache expiry without hitting the cap.
+_SESSION_TOKEN_CAP = 50
 
 
 def _get_session_id() -> str:

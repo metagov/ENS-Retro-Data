@@ -20,7 +20,7 @@ import streamlit as st
 
 from scripts.chat_session import create_chatkit_session, is_configured
 
-_SECRET_TTL = 1800  # reuse session token for 30 min — avoids re-minting on every dashboard rerun
+_SECRET_TTL = 14400  # reuse session token for 4 hours — avoids re-minting on rerun / page hop
 
 
 def _get_cached_secret() -> str | None:
@@ -37,8 +37,17 @@ def _get_cached_secret() -> str | None:
     return secret
 
 
+@st.fragment
 def render_chat_widget() -> None:
-    """Embed the ChatKit hosted UI at the bottom of the page."""
+    """Embed the ChatKit hosted UI at the bottom of the page.
+
+    Wrapped in `@st.fragment` so that outer reruns (e.g. switching
+    segments on the main page) do NOT re-execute this function —
+    which would remount the iframe and reset the ChatKit thread to
+    the start screen. The fragment keeps the iframe DOM node alive
+    across reruns, preserving the ongoing conversation exactly where
+    the user left it.
+    """
     if not is_configured():
         return
 

@@ -60,8 +60,7 @@ Thumbs.db
 # Jupyter
 .ipynb_checkpoints/
 
-# uv
-uv.lock
+# Note: uv.lock IS tracked (committed for reproducibility — do not add it here)
 
 # Linting / tooling
 .ruff_cache/
