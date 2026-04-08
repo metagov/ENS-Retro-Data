@@ -105,7 +105,7 @@ stakeholder interviews with on-chain and forum data analysis.
 )
 
 # ---------------------------------------------------------------------------
-# Tabs: Start Here + Challenges
+# Challenge badges / verdicts
 # ---------------------------------------------------------------------------
 
 _CHALLENGE_SUMMARIES = {
@@ -134,13 +134,32 @@ def _verdict_badge(verdict: str) -> str:
         f'padding:3px 9px; border-radius:12px; white-space:nowrap;">{label}</span>'
     )
 
-all_tabs = st.tabs(["Start Here"] + [c.short_title for c in config.challenges])
-start_tab = all_tabs[0]
-challenge_tabs = all_tabs[1:]
 
-with start_tab:
-    
+# ---------------------------------------------------------------------------
+# Top-level navigation — segmented control (only selected view renders)
+# ---------------------------------------------------------------------------
 
+_NAV_START = "Start Here"
+nav_options = [_NAV_START] + [c.short_title for c in config.challenges]
+
+selected_view = (
+    st.segmented_control(
+        "view",
+        options=nav_options,
+        default=_NAV_START,
+        key="nav",
+        label_visibility="collapsed",
+    )
+    or _NAV_START
+)
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# Start Here view
+# ---------------------------------------------------------------------------
+
+if selected_view == _NAV_START:
     st.markdown("### What this dashboard covers")
     cols = st.columns(5)
     for col, challenge in zip(cols, config.challenges):
@@ -209,55 +228,76 @@ with start_tab:
                 unsafe_allow_html=True,
             )
 
-for c_tab, challenge in zip(challenge_tabs, config.challenges):
-    with c_tab:
-        st.markdown(f"## {challenge.title}")
-        st.markdown(
-            f"<p style='color:#718096; font-size:15px; margin-bottom:16px;'>"
-            f"{challenge.description}</p>",
-            unsafe_allow_html=True,
+# ---------------------------------------------------------------------------
+# Challenge view — only the selected challenge renders
+# ---------------------------------------------------------------------------
+
+else:
+    challenge = next(
+        (c for c in config.challenges if c.short_title == selected_view),
+        config.challenges[0],
+    )
+
+    st.markdown(f"## {challenge.title}")
+    st.markdown(
+        f"<p style='color:#718096; font-size:15px; margin-bottom:16px;'>"
+        f"{challenge.description}</p>",
+        unsafe_allow_html=True,
+    )
+    if challenge.doc_url:
+        st.markdown(f"[Read the full interview findings →]({challenge.doc_url})")
+    st.markdown("---")
+
+    # Hypothesis navigation — segmented control (only selected hypothesis renders)
+    hyp_options = [h.short_title for h in challenge.hypotheses]
+    selected_hyp_title = (
+        st.segmented_control(
+            "hypothesis",
+            options=hyp_options,
+            default=hyp_options[0],
+            key=f"hyp_{challenge.id}",
+            label_visibility="collapsed",
         )
-        if challenge.doc_url:
-            st.markdown(f"[Read the full interview findings →]({challenge.doc_url})")
-        st.markdown("---")
+        or hyp_options[0]
+    )
 
-        # Hypothesis sub-tabs
-        hyp_tabs = st.tabs([h.short_title for h in challenge.hypotheses])
+    hyp = next(
+        (h for h in challenge.hypotheses if h.short_title == selected_hyp_title),
+        challenge.hypotheses[0],
+    )
 
-        for h_tab, hyp in zip(hyp_tabs, challenge.hypotheses):
-            with h_tab:
-                # Hypothesis badge + title
-                st.markdown(
-                    f"""
+    # Hypothesis badge + title
+    st.markdown(
+        f"""
 <span style="background:#E2E8F0; color:#4A5568; font-size:12px; font-weight:600;
              padding:4px 10px; border-radius:20px; letter-spacing:0.5px;">
     {hyp.id}
 </span>
 """,
-                    unsafe_allow_html=True,
-                )
-                st.markdown(f"### {hyp.title}")
-                st.markdown(
-                    f"<p style='color:#718096; font-size:14px; margin-bottom:8px;'>"
-                    f"{hyp.description}</p>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown("---")
+        unsafe_allow_html=True,
+    )
+    st.markdown(f"### {hyp.title}")
+    st.markdown(
+        f"<p style='color:#718096; font-size:14px; margin-bottom:8px;'>"
+        f"{hyp.description}</p>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("---")
 
-                # Visuals
-                if not hyp.visuals:
-                    _render_wip()
-                else:
-                    for visual in hyp.visuals:
-                        st.markdown(f"#### {visual.title}")
-                        try:
-                            render_fn = resolve_render_fn(visual)
-                            render_fn()
-                        except (ModuleNotFoundError, AttributeError, duckdb.Error):
-                            _render_wip(label=visual.title)
-                        else:
-                            if visual.takeaway:
-                                _render_takeaway(visual.takeaway)
+    # Visuals
+    if not hyp.visuals:
+        _render_wip()
+    else:
+        for visual in hyp.visuals:
+            st.markdown(f"#### {visual.title}")
+            try:
+                render_fn = resolve_render_fn(visual)
+                render_fn()
+            except (ModuleNotFoundError, AttributeError, duckdb.Error):
+                _render_wip(label=visual.title)
+            else:
+                if visual.takeaway:
+                    _render_takeaway(visual.takeaway)
 
 # ---------------------------------------------------------------------------
 # Chat widget
