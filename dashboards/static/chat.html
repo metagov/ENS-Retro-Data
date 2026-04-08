@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="openai-chatkit-domain-key" content="domain_pk_69d4b7e70f4c8196afc6427fb78932ed0a3e9730a6acc6cc">
+<!-- Warm up the OpenAI CDN connection (DNS + TLS) so when the user clicks
+     the bubble, chatkit.js + the 3.8MB inner bundle start downloading
+     immediately instead of waiting on a fresh handshake. -->
+<link rel="preconnect" href="https://cdn.platform.openai.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.platform.openai.com">
 <title>ENS Data Assistant</title>
 <!-- chatkit.js is lazy-loaded inside mountChatKit() to avoid fetching it on
      every dashboard page render. Only loads when the user clicks the bubble. -->

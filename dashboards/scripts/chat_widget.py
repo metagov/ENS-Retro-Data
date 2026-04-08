@@ -20,7 +20,7 @@ import streamlit as st
 
 from scripts.chat_session import create_chatkit_session, is_configured
 
-_SECRET_TTL = 300  # reuse session token for 5 min
+_SECRET_TTL = 1800  # reuse session token for 30 min — avoids re-minting on every dashboard rerun
 
 
 def _get_cached_secret() -> str | None:

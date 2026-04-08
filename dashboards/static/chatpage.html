@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="openai-chatkit-domain-key" content="domain_pk_69d4b7e70f4c8196afc6427fb78932ed0a3e9730a6acc6cc">
+<!-- Warm up the OpenAI CDN connection (DNS + TLS) before chatkit.js starts
+     downloading. Saves the handshake roundtrip on the critical path. -->
+<link rel="preconnect" href="https://cdn.platform.openai.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.platform.openai.com">
+<!-- Start fetching chatkit.js immediately on HTML parse instead of waiting
+     for the JS to dynamically inject the script tag. -->
+<link rel="preload" as="script" href="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js" crossorigin>
 <title>ENS Data Assistant</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }

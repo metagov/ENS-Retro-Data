@@ -381,7 +381,7 @@ class TestGetCachedSecret:
         mock_st = MagicMock()
         mock_st.session_state = {
             "_chatkit_secret": "ek_stale",
-            "_chatkit_secret_ts": time.monotonic() - 600,  # expired
+            "_chatkit_secret_ts": time.monotonic() - 3600,  # expired (TTL is 1800s)
         }
 
         with patch("scripts.chat_widget.st", mock_st), \
