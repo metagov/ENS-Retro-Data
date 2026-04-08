@@ -10,7 +10,7 @@ MCP tools exposed at /mcp:
     list_tables()           — return all permitted tables with column names and types
 
 Security layers on all query paths (applied in order):
-    1. Bearer token auth      — AGENT_API_KEY env var (skipped in dev if unset)
+    1. Bearer token auth      — AGENT_API_KEY env var (fails closed if unset)
     2. Length cap             — 4,000-char query maximum
     3. sqlglot AST parse      — must be a single SELECT; DML/DDL nodes rejected
                                 even when buried inside CTEs or subqueries
@@ -77,9 +77,14 @@ app.add_middleware(_TrailingSlashMiddleware)
 # ---------------------------------------------------------------------------
 
 def _check_auth(creds: HTTPAuthorizationCredentials | None) -> None:
-    """Validate Bearer token. If AGENT_API_KEY is unset, dev mode — allow all."""
+    """Validate Bearer token. Fails closed if AGENT_API_KEY is not set."""
     if not _AGENT_API_KEY:
-        return
+        # Fail closed: no dev-mode bypass. If the key is missing, the server
+        # is misconfigured and every authenticated route must refuse requests.
+        raise HTTPException(
+            status_code=503,
+            detail="Server misconfigured: AGENT_API_KEY not set.",
+        )
     if creds is None or creds.credentials != _AGENT_API_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized.")
 
@@ -476,13 +481,17 @@ try:
     app.router.lifespan_context = _mcp_asgi.router.lifespan_context
 
     class _McpAuthMiddleware(BaseHTTPMiddleware):
-        """Enforce Bearer token on all /mcp requests."""
+        """Enforce Bearer token on all /mcp requests. Fails closed if key unset."""
         async def dispatch(self, request: StarletteRequest, call_next):
-            if _AGENT_API_KEY:
-                auth_header = request.headers.get("authorization", "")
-                token = auth_header.removeprefix("Bearer ").strip()
-                if token != _AGENT_API_KEY:
-                    return JSONResponse({"error": "Unauthorized"}, status_code=401)
+            if not _AGENT_API_KEY:
+                return JSONResponse(
+                    {"error": "Server misconfigured: AGENT_API_KEY not set."},
+                    status_code=503,
+                )
+            auth_header = request.headers.get("authorization", "")
+            token = auth_header.removeprefix("Bearer ").strip()
+            if token != _AGENT_API_KEY:
+                return JSONResponse({"error": "Unauthorized"}, status_code=401)
             return await call_next(request)
 
     _mcp_asgi.add_middleware(_McpAuthMiddleware)
