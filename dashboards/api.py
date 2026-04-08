@@ -472,9 +472,15 @@ try:
     def list_tables() -> str:
         return _run_list_tables()
 
-    # Mount MCP server on the FastAPI app at /mcp
-    # Auth is enforced by middleware below — the MCP app itself is unaware of it
-    _mcp_asgi = mcp.http_app(path="/")
+    # Mount MCP server on the FastAPI app at /mcp.
+    # stateless_http=True: no Mcp-Session-Id tracking — each POST stands alone.
+    #   Required for OpenAI Agent Builder compatibility; the default stateful
+    #   mode requires clients to track session IDs across requests, which
+    #   Agent Builder's MCP client does not do cleanly.
+    # json_response=True: return plain JSON instead of SSE-streamed responses
+    #   — simpler for clients that aren't ready to handle event-stream parsing.
+    # Auth is enforced by middleware below — the MCP app itself is unaware of it.
+    _mcp_asgi = mcp.http_app(path="/", stateless_http=True, json_response=True)
 
     # FastMCP 3.x requires its lifespan to initialize the task group.
     # Pass it to the parent FastAPI app so the session manager starts up.
