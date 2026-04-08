@@ -50,6 +50,7 @@ def _load_data() -> tuple[pd.DataFrame, float, float, float]:
             SELECT delegator, delegate, delegated_at
             FROM main_silver.clean_delegations
             WHERE delegator != delegate
+              AND delegate != '0x0000000000000000000000000000000000000000'
         ),
         with_prev AS (
             SELECT
@@ -89,6 +90,7 @@ def _load_data() -> tuple[pd.DataFrame, float, float, float]:
             SELECT delegator, delegate, delegated_at
             FROM main_silver.clean_delegations
             WHERE delegator != delegate
+              AND delegate != '0x0000000000000000000000000000000000000000'
         ),
         with_prev AS (
             SELECT delegator, delegate, delegated_at,

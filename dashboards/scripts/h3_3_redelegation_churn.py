@@ -38,6 +38,7 @@ def _load_data() -> pd.DataFrame:
             SELECT delegator, delegate, delegated_at
             FROM main_silver.clean_delegations
             WHERE delegator != delegate
+              AND delegate != '0x0000000000000000000000000000000000000000'
         ),
         top_n AS (
             SELECT address
