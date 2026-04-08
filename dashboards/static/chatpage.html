@@ -89,8 +89,11 @@
     }, 1500);
   }
 
-  // Lazy-load chatkit.js
+  // Lazy-load chatkit.js — crossorigin must match the <link rel="preload">
+  // in <head> so the browser dedupes against the preload cache instead of
+  // fetching the script twice (preload + dynamic injection).
   var script = document.createElement('script');
+  script.crossOrigin = 'anonymous';
   script.src = 'https://cdn.platform.openai.com/deployments/chatkit/chatkit.js';
   script.onload = createElement;
   script.onerror = function () {
