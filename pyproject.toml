@@ -2,7 +2,7 @@
 name = "ens-retro-data"
 version = "0.1.0"
 description = "Data infrastructure for ENS DAO retrospective evaluation"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "dagster>=1.9",
     "dagster-dbt>=0.25",
@@ -39,7 +39,7 @@ packages = ["infra"]
 module_name = "infra.definitions"
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 line-length = 100
 
 [tool.ruff.lint]
