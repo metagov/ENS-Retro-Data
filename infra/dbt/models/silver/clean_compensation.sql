@@ -18,7 +18,13 @@ select
     value_usd,
     period,
     date,
-    lower(working_group) as working_group,
+    case lower(working_group)
+        when 'metagov'      then 'meta-governance'
+        when 'ecosystem'    then 'ens-ecosystem'
+        when 'public goods' then 'public-goods'
+        when 'community wg' then 'ens-ecosystem'   -- community WG was folded into ecosystem
+        else lower(working_group)
+    end as working_group,
     lower(role) as role,
     lower(category) as category
 from deduped

@@ -10,7 +10,13 @@ select distinct
     token,
     value_usd,
     lower(status) as status,
-    lower(working_group) as working_group,
+    case lower(working_group)
+        when 'metagov'      then 'meta-governance'
+        when 'ecosystem'    then 'ens-ecosystem'
+        when 'public goods' then 'public-goods'
+        when 'community wg' then 'ens-ecosystem'
+        else lower(working_group)
+    end as working_group,
     description,
     try_cast(date as date) as date,
     quarter
