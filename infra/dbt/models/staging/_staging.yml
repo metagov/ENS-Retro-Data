@@ -79,10 +79,12 @@ models:
         tests:
           - not_null
 
-  # --- Sentinel models (data not yet collected, tests set to warn) ---
+  # --- On-chain, financial, grants, forum staging models ---
+  # severity:warn used defensively for sources that may have transient gaps.
+  # Data is real for everything except stg_delegate_profiles (interviews not indexed).
 
   - name: stg_delegations
-    description: "Staged delegation events (placeholder until on-chain data collected)"
+    description: "Raw on-chain delegation events from Etherscan DelegateChanged logs"
     columns:
       - name: delegator
         tests:
@@ -94,7 +96,7 @@ models:
               severity: warn
 
   - name: stg_token_distribution
-    description: "Staged token distribution snapshot (placeholder until on-chain data collected)"
+    description: "Raw token distribution snapshot from Etherscan Transfer events"
     columns:
       - name: address
         description: "Token holder address"
@@ -139,7 +141,7 @@ models:
               severity: warn
 
   - name: stg_grants
-    description: "Staged grants data (placeholder until grants data collected)"
+    description: "Raw grants data — large grants from the ENS ledger via the source macro indirection (bronze/grants/large_grants.json)"
     columns:
       - name: grant_id
         description: "Grant identifier"
@@ -150,7 +152,7 @@ models:
               severity: warn
 
   - name: stg_compensation
-    description: "Staged compensation records (placeholder until financial data collected)"
+    description: "Raw compensation records for ENS DAO contributors and stewards"
     columns:
       - name: recipient_address
         tests:
@@ -158,7 +160,7 @@ models:
               severity: warn
 
   - name: stg_delegate_profiles
-    description: "Staged delegate profile data (placeholder until interviews collected)"
+    description: "Staged delegate profile data — PLACEHOLDER. Source file bronze/interviews/delegate_profiles.json is not yet indexed; this model will fail at dbt build until the file exists. No silver model exists yet."
     columns:
       - name: address
         description: "Delegate address"
@@ -167,7 +169,7 @@ models:
               severity: warn
 
   - name: stg_forum_posts
-    description: "Staged forum posts (placeholder until forum data collected)"
+    description: "Raw governance forum posts from discuss.ens.domains via Discourse API"
     columns:
       - name: post_id
         description: "Forum post identifier"

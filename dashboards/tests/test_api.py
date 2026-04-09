@@ -381,12 +381,13 @@ class TestGetCachedSecret:
     def test_refreshes_after_ttl(self):
         """Secret is re-minted when TTL expires."""
         import time
-        from scripts.chat_widget import _get_cached_secret
+        from scripts.chat_widget import _SECRET_TTL, _get_cached_secret
 
         mock_st = MagicMock()
         mock_st.session_state = {
             "_chatkit_secret": "ek_stale",
-            "_chatkit_secret_ts": time.monotonic() - 3600,  # expired (TTL is 1800s)
+            # Force expiry regardless of how high the TTL gets bumped in future
+            "_chatkit_secret_ts": time.monotonic() - (_SECRET_TTL + 100),
         }
 
         with patch("scripts.chat_widget.st", mock_st), \
