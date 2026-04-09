@@ -89,10 +89,15 @@
       theme: {
         colorScheme: 'light',
         density: 'normal',
-        radius: 'soft'
+        radius: 'round',
+        color: { accent: { primary: '#3B4EC8' } }
+      },
+      header: {
+        enabled: true,
+        title: { enabled: true, text: 'ENS Governance Research' }
       },
       startScreen: {
-        greeting: 'Ask about ENS governance',
+        greeting: 'Explore ENS DAO governance data — ask a question or pick one below.',
         prompts: STARTER_PROMPTS
       }
     });
