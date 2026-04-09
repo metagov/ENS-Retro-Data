@@ -85,7 +85,8 @@ This materializes everything: fetches bronze data from APIs, runs dbt staging/si
    └── ~66 dbt tests
 
 4. vector_store_sync_sensor fires after gold materialization,
-   re-exporting gold tables to markdown and syncing to the
+   re-exporting gold tables to docs/vector-store-exports/ and
+   syncing 22 files (gold exports + docs/ + config) to the
    OpenAI vector store (if OPENAI_API_KEY is set).
 ```
 

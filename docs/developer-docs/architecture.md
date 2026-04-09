@@ -187,7 +187,7 @@ Declared in `infra/definitions.py`:
 
 ## Sensors
 
-- **`vector_store_sync_sensor`** (`infra/sensors.py`) — triggers after gold models are materialized; re-exports the gold tables to markdown and uploads them to the OpenAI vector store so the ChatKit agent sees fresh data.
+- **`vector_store_sync_sensor`** (`infra/sensors.py`) — triggers after gold models are materialized; re-exports all 6 gold tables to markdown in `docs/vector-store-exports/`, then uploads them (along with all `docs/` markdown files, `config.yaml`, and `taxonomy.yaml`) to the OpenAI vector store so the ChatKit agent sees current data. The exports are tracked in git so contributors can inspect exactly what data the chatbot has access to.
 
 ## Dagster-dbt Integration
 

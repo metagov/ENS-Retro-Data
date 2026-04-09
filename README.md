@@ -153,6 +153,9 @@ ENS-Retro-Data/
 │
 ├── warehouse/             DuckDB file output (LFS)
 ├── docs/                  Research deliverables + developer docs
+│   ├── developer-docs/    Architecture, API ref, data dictionary, workflow guides
+│   ├── vector-store-exports/  Auto-generated gold table markdown (chatbot knowledge base)
+│   └── Phase 1/           Research design docs, codebook, KII synopsis
 ├── scripts/               Standalone utilities (taxonomy seeds, serve.sh)
 ├── .dagster/              Dagster instance state (LFS — shared run history)
 ├── Dockerfile             Dashboard image

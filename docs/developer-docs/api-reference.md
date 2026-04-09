@@ -236,7 +236,13 @@ Validate that non-null values in a pandas/polars Series are in the taxonomy.
 **File:** `infra/sensors.py`
 
 ### `vector_store_sync_sensor`
-Asset sensor that watches the gold asset group. After any gold model is materialized, it triggers a re-export of gold tables to markdown (via `scripts/sync_vector_store.py`) and uploads the fresh files to the OpenAI vector store so the ChatKit agent sees current data.
+Asset sensor that watches the gold asset group. After any gold model is materialized, it exports all 6 gold tables to markdown in `docs/vector-store-exports/` (tracked in git), then uploads them along with all `docs/` markdown files to the OpenAI vector store. Run manually via `python3 scripts/sync_vector_store.py`.
+
+**What gets synced (22 files):**
+- 6 gold table exports (`docs/vector-store-exports/auto__gold_*.md`)
+- 10 developer docs (`docs/developer-docs/*.md`)
+- 4 reference docs (schema-report + lighthouse ledger reports)
+- 2 config files (`config.yaml` + `taxonomy.yaml`, uploaded as `.md`)
 
 ---
 
