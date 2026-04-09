@@ -30,7 +30,7 @@ load_dotenv(Path(__file__).parent.parent / ".env")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 VS_ID = "vs_69d291d5a5fc819194838e0475405ef7"
 DB_PATH = Path(__file__).parent.parent / "warehouse" / "ens_retro.duckdb"
-EXPORT_DIR = Path(__file__).parent.parent / "DEV" / "vector-store-exports"
+EXPORT_DIR = Path(__file__).parent.parent / "docs" / "vector-store-exports"
 DOCS_DIR = Path(__file__).parent.parent / "docs"
 REPO_ROOT = Path(__file__).parent.parent
 

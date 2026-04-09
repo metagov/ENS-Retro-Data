@@ -41,8 +41,8 @@ _GOLD_ASSET_KEYS = [
 
 _VS_ID = "vs_69d291d5a5fc819194838e0475405ef7"
 _DB_PATH = Path(__file__).resolve().parent.parent / "warehouse" / "ens_retro.duckdb"
-_EXPORT_DIR = Path(__file__).resolve().parent.parent / "DEV" / "vector-store-exports"
-_IDS_FILE = _EXPORT_DIR / ".gold-file-ids"
+_EXPORT_DIR = Path(__file__).resolve().parent.parent / "docs" / "vector-store-exports"
+_IDS_FILE = _EXPORT_DIR / ".auto-file-ids"
 
 _GOLD_TABLES = [
     "decentralization_index",
