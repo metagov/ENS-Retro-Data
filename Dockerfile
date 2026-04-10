@@ -13,8 +13,8 @@ COPY dashboards/ ./dashboards/
 # This matches what db.py expects: 3 parents up from db.py = /app/
 COPY warehouse/ens_retro.duckdb ./warehouse/ens_retro.duckdb
 
-# Copy bronze data so staging views (read_json) resolve at runtime
-COPY bronze/ ./bronze/
+# Note: bronze/ is NOT copied. The dashboard queries materialized gold/silver
+# tables in DuckDB, not raw JSON files. Omitting saves ~250 MB per build.
 
 EXPOSE 8501
 CMD ["streamlit", "run", "dashboards/app.py", \
