@@ -114,4 +114,4 @@ If you find a security issue (SQL injection, auth bypass, data leak, secret in c
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [CC BY 4.0 license](LICENSE) that covers the rest of the project.
+By contributing, you agree that your contributions will be licensed under the project's dual license: [MIT](LICENSE-CODE) for code and [CC BY 4.0](LICENSE-DATA) for data and research materials. See [LICENSE](LICENSE) for which files fall under which license.

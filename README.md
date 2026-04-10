@@ -2,7 +2,7 @@
 
 > An open research platform analyzing governance, voting power, treasury, and participation patterns in the Ethereum Name Service DAO. Built on a reproducible medallion data pipeline (Dagster + dbt + DuckDB), with a Streamlit dashboard, AI research assistant, and MCP-compatible query API.
 
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
+[![Code: MIT](https://img.shields.io/badge/Code-MIT-blue.svg)](LICENSE-CODE) [![Data: CC BY 4.0](https://img.shields.io/badge/Data-CC%20BY%204.0-lightgrey.svg)](LICENSE-DATA)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
 [![Dagster](https://img.shields.io/badge/orchestration-Dagster-5E2EE6.svg)](https://dagster.io/)
 [![dbt](https://img.shields.io/badge/transform-dbt-FF694A.svg)](https://www.getdbt.com/)
@@ -14,10 +14,10 @@
 
 This is the data infrastructure and public research frontend for the **ENS DAO Retrospective Evaluation** — a metagov-led study of how ENS governance has evolved since the token launch. Everything is open for public inspection, replication, and extension:
 
--  **Live dashboard** — explore the five governance research challenges interactively
--  **AI research assistant** — ask questions in plain English, get answers backed by live SQL against the warehouse
--  **Reproducible data pipeline** — every number on the dashboard traces back to a bronze source file through versioned dbt transformations
--  **Open dataset** — 58 materialized tables/views spanning 7 data sources, CC BY 4.0
+- 📊 **Live dashboard** — explore the five governance research challenges interactively
+- 🤖 **AI research assistant** — ask questions in plain English, get answers backed by live SQL against the warehouse
+- 🗄 **Reproducible data pipeline** — every number on the dashboard traces back to a bronze source file through versioned dbt transformations
+- 📚 **Open dataset** — 58 materialized tables/views spanning 7 data sources (MIT code, CC BY 4.0 data)
 
 ### Live services
 
@@ -306,10 +306,15 @@ If you use this dataset or code in research, please cite:
   author       = {Metagov},
   year         = {2026},
   url          = {https://github.com/metagov/ENS-Retro-Data},
-  note         = {CC BY 4.0}
+  note         = {MIT (code), CC BY 4.0 (data)}
 }
 ```
 
 ## License
 
-[CC BY 4.0](LICENSE) — code, data, and documentation. Attribution is required for any reuse. See the LICENSE file for full terms (including a note on the software caveat for code reuse).
+Dual-licensed:
+
+- **Code** (`.py`, `.sql`, `.html`, Dockerfiles, scripts) — [MIT](LICENSE-CODE)
+- **Data & research** (`bronze/`, `warehouse/`, `docs/`, all `.md`/`.csv`/`.json`/`.pdf`) — [CC BY 4.0](LICENSE-DATA)
+
+See [LICENSE](LICENSE) for the full breakdown. Attribution is required for reuse of data and research materials.
