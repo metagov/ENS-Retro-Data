@@ -1,0 +1,95 @@
+# DigitalOcean App Platform — ENS Retro Data
+# Three services mirroring the current Render setup, with persistent storage.
+#
+# Deploy: doctl apps create --spec .do/app.yaml
+# Update: doctl apps update <app-id> --spec .do/app.yaml
+#
+# Key difference from Render: DO App Platform supports persistent volumes,
+# so we don't need Git LFS as a shared state store. The warehouse and
+# dagster storage live on disk, not in the repo.
+
+name: ens-retro-data
+region: fra
+
+services:
+  # --- Streamlit Dashboard ---
+  - name: dashboard
+    dockerfile_path: Dockerfile
+    github:
+      repo: metagov/ENS-Retro-Data
+      branch: main
+      deploy_on_push: true
+    http_port: 8501
+    instance_count: 1
+    instance_size_slug: basic-xs  # 512 MB RAM, 1 vCPU ($5/mo)
+    routes:
+      - path: /
+    envs:
+      - key: OPENAI_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: WORKFLOW_ID
+        scope: RUN_TIME
+        type: SECRET
+
+  # --- FastAPI + MCP Server ---
+  - name: api
+    dockerfile_path: Dockerfile.api
+    github:
+      repo: metagov/ENS-Retro-Data
+      branch: main
+      deploy_on_push: true
+    http_port: 8001
+    instance_count: 1
+    instance_size_slug: basic-xs  # 512 MB RAM, 1 vCPU ($5/mo)
+    routes:
+      - path: /api
+        preserve_path_prefix: true
+    cors:
+      allow_origins:
+        - prefix: "*"
+    envs:
+      - key: AGENT_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+  # --- Dagster Read-Only UI ---
+  - name: dagster
+    dockerfile_path: Dockerfile.dagster
+    github:
+      repo: metagov/ENS-Retro-Data
+      branch: main
+      deploy_on_push: true
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: basic-xs  # 512 MB RAM, 1 vCPU ($5/mo)
+    envs:
+      - key: DAGSTER_HOME
+        scope: RUN_TIME
+        value: /app/.dagster
+
+# Notes on migration from Render:
+#
+# 1. DNS: Update mcp.ensretro.metagov.org CNAME to point to the DO app's
+#    ingress domain (shown after `doctl apps create`).
+#
+# 2. Secrets: Set via DO dashboard or CLI:
+#    doctl apps update <app-id> --spec .do/app.yaml
+#    Then set secrets in the DO dashboard (they can't go in the spec file).
+#
+# 3. Custom domains: Add via DO dashboard after the app is running:
+#    doctl apps create-domain <app-id> --domain ensretro.metagov.org
+#
+# 4. LFS: DO App Platform clones via git, same as Render. To eliminate
+#    LFS bandwidth entirely, consider hosting warehouse/ens_retro.duckdb
+#    on DO Spaces (S3-compatible) and downloading it at build time.
+#
+# 5. Persistent volumes: DO App Platform doesn't support volumes on
+#    the basic tier — only on professional ($12/mo per service). If you
+#    need persistent storage for dagster run history, upgrade the dagster
+#    service to professional tier and add a volume mount.
+#
+# 6. Cost comparison:
+#    Render starter: 3 × $7/mo = $21/mo
+#    DO basic-xs:    3 × $5/mo = $15/mo  (smaller instances)
+#    DO basic-s:     3 × $10/mo = $30/mo (1 GB RAM, comparable to Render)
