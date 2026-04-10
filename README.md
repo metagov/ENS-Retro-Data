@@ -14,10 +14,10 @@
 
 This is the data infrastructure and public research frontend for the **ENS DAO Retrospective Evaluation** — a metagov-led study of how ENS governance has evolved since the token launch. Everything is open for public inspection, replication, and extension:
 
-- 📊 **Live dashboard** — explore the five governance research challenges interactively
-- 🤖 **AI research assistant** — ask questions in plain English, get answers backed by live SQL against the warehouse
-- 🗄 **Reproducible data pipeline** — every number on the dashboard traces back to a bronze source file through versioned dbt transformations
-- 📚 **Open dataset** — 58 materialized tables/views spanning 7 data sources (MIT code, CC BY 4.0 data)
+- **Live dashboard** — explore the five governance research challenges interactively
+- **AI research assistant** — ask questions in plain English, get answers backed by live SQL against the warehouse
+- **Reproducible data pipeline** — every number on the dashboard traces back to a bronze source file through versioned dbt transformations
+- **Open dataset** — 58 materialized tables/views spanning 7 data sources (MIT code, CC BY 4.0 data)
 
 ### Live services
 
