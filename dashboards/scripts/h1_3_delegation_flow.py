@@ -116,7 +116,7 @@ def _load_data() -> pd.DataFrame:
 
     name_map = names.set_index("address")["ens_name"].to_dict()
     df["label"] = df["delegate"].map(
-        lambda addr: name_map.get(addr, addr[:10] + "…")
+        lambda addr: name_map.get(addr) or addr[:10] + "…"
     )
 
     return df
@@ -139,23 +139,26 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
     labels = delegate_order["label"].tolist()
     delegates = delegate_order["delegate"].tolist()
 
-    # Build z matrix and text matrix
+    # Build z matrix aligned to delegate/label order
     pivot = df.pivot_table(
         index="delegate", columns="quarter_label", values="net_change", fill_value=0
     ).reindex(index=delegates, columns=quarters, fill_value=0)
 
     z = pivot.values.tolist()
 
+    # Use numeric y-values so Plotly never conflates rows with the same string label.
+    # Display labels are applied separately via tickvals/ticktext.
+    y_positions = list(range(len(labels)))
+
     # Cap color scale at 90th percentile so moderate changes get visible color
     # without being swamped by Q4'21 outliers. Cells beyond cap clip to extreme color.
     nonzero = df.loc[df["net_change"] != 0, "net_change"].abs()
     abs_max = max(nonzero.quantile(0.90) if not nonzero.empty else 1, 1)
 
-    # Per-cell annotations for text with adaptive color:
-    # white text on strongly-colored cells, dark text on near-white cells.
+    # Per-cell annotations keyed by numeric row index — never misaligns with labels.
     threshold = abs_max * 0.5
     annotations = []
-    for row_i, (label, row) in enumerate(zip(labels, z)):
+    for row_i, row in enumerate(z):
         for col_i, (quarter, val) in enumerate(zip(quarters, row)):
             if val == 0:
                 continue
@@ -163,7 +166,7 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
             font_color = "white" if abs(val) >= threshold else "#1A202C"
             annotations.append(dict(
                 x=quarter,
-                y=label,
+                y=row_i,
                 text=text_str,
                 showarrow=False,
                 font=dict(size=10, color=font_color),
@@ -174,7 +177,7 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
     fig = go.Figure(go.Heatmap(
         z=z,
         x=quarters,
-        y=labels,
+        y=y_positions,
         colorscale="RdBu",
         zmid=0,
         zmin=-abs_max,
@@ -185,8 +188,9 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
             thickness=14,
             len=0.8,
         ),
+        customdata=[[labels[row_i]] * len(quarters) for row_i in range(len(labels))],
         hovertemplate=(
-            "<b>%{y}</b><br>"
+            "<b>%{customdata}</b><br>"
             "%{x}<br>"
             "Net: %{z:+d} delegators"
             "<extra></extra>"
@@ -211,6 +215,9 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
             tickfont=dict(size=12, color="#2D3748"),
             showgrid=False,
             autorange=True,
+            tickmode="array",
+            tickvals=y_positions,
+            ticktext=labels,
         ),
         annotations=annotations,
         plot_bgcolor="white",
