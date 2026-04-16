@@ -30,9 +30,15 @@ ENV/
 .dagster/.nux/
 .dagster/.telemetry/
 .tmp_dagster_home_*
-# .dagster/dagster.yaml and .dagster/storage/ are tracked (LFS)
+# .dagster/dagster.yaml and .dagster/storage/ are tracked in regular git.
+# Deployed services download them from DO Spaces at build time (see Dockerfiles).
+# Run `python3 scripts/spaces_sync.py` after pipeline runs to keep Spaces current.
 
 bronze/governance/agora/fetch.sh
+
+# Agora CSVs — too large for git (178 MB Transfer.csv exceeds GitHub 100 MB limit).
+# Hosted on DO Spaces. Download with: python3 scripts/spaces_sync.py --download
+bronze/governance/agora/**/*.csv
 
 # dbt runtime artifacts
 infra/dbt/target/

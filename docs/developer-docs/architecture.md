@@ -50,7 +50,7 @@ ENS-Retro-Data implements a **medallion architecture** (bronze → silver → go
 
 ```
 ENS-Retro-Data/
-├── bronze/                     Raw data (append-only JSON/CSV, LFS for large files)
+├── bronze/                     Raw data (JSON/CSV, Agora CSVs on DO Spaces)
 │   ├── governance/             Snapshot, Tally, Agora governor events, votingpower
 │   ├── on-chain/               Delegations, transfers, treasury (Etherscan)
 │   ├── forum/                  Discourse topics + posts
@@ -82,10 +82,10 @@ ENS-Retro-Data/
 │   ├── pages/                  Streamlit sub-pages
 │   └── tests/                  106 pytest cases
 │
-├── warehouse/                  DuckDB database (LFS)
+├── warehouse/                  DuckDB database (git + DO Spaces for deploys)
 │   └── ens_retro.duckdb        Created/refreshed by dbt
 │
-├── .dagster/                   Dagster instance state (LFS for run history)
+├── .dagster/                   Dagster instance state (git + DO Spaces for deploys)
 ├── docs/                       Project + research documentation
 ├── scripts/                    Standalone utilities (taxonomy seeds, serve.sh)
 ├── taxonomy.yaml               Single source of truth for vocabularies
@@ -169,8 +169,8 @@ Tally.xyz shut down their public governance API in early 2026. The existing bron
 ### Why DuckDB
 DuckDB is an embedded OLAP engine that reads JSON/CSV/Parquet natively, requires no server, and stores everything in a single file (`warehouse/ens_retro.duckdb`). It supports SQL with analytical functions, making it ideal for a local-first data pipeline.
 
-### Why `.dagster/storage/` is tracked via LFS
-Render's free/starter tier doesn't provide persistent disks. To share Dagster's run history across deployments (so the read-only UI can show meaningful run state), the SQLite storage files are committed via Git LFS. This is documented in [`ROADMAP.md`](../ROADMAP.md#a-clone-size-12-gb-via-git-lfs).
+### Why `.dagster/storage/` is on DO Spaces
+Render's starter tier doesn't provide persistent disks. The Dagster read-only UI needs run history to show meaningful state. The SQLite storage files are committed in regular git (so contributors get them on clone) AND hosted on [DigitalOcean Spaces](https://ensretro-data.fra1.digitaloceanspaces.com/) so Dockerfiles can download them at build time without consuming GitHub LFS bandwidth. After a pipeline run, run `python3 scripts/spaces_sync.py` to upload the fresh files to Spaces.
 
 ### Why `warehouse/` is a separate directory
 The `warehouse/` directory holds the DuckDB database file created at runtime. It is separate from `bronze/` (raw inputs) and `infra/` (code) to keep outputs isolated. The directory is auto-created by the `ens_dbt_assets` function before each dbt build.

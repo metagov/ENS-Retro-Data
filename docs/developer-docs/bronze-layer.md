@@ -15,7 +15,7 @@ bronze/
 │   ├── tally_delegates.json            ~38k delegates (historical)
 │   ├── votingpower-xyz/                Manual CSV export
 │   │   └── ens-delegates-*.csv
-│   ├── agora/                          Agora governor contract events (CSV, LFS)
+│   ├── agora/                          Agora governor contract events (CSV)
 │   │   ├── Governor Contract/
 │   │   └── Token Contract/
 │   └── scripts/

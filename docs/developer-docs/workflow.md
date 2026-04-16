@@ -5,8 +5,7 @@ Step-by-step instructions for common workflows.
 ## First-Time Setup
 
 ```bash
-# 1. Install git-lfs and clone (the warehouse + bronze data live in LFS)
-git lfs install
+# 1. Clone (no LFS needed — all data is regular git)
 git clone https://github.com/metagov/ENS-Retro-Data.git
 cd ENS-Retro-Data
 
@@ -279,11 +278,10 @@ A bronze JSON file is missing. Either:
 - Place the data file manually in the correct `bronze/` subdirectory
 - Use selective dbt builds to skip missing sources: `dbt build --select 'staging.stg_snapshot_*'`
 
-### LFS pointer files instead of real data
-You cloned without `git lfs install`. Fix:
+### Warehouse file is empty or missing
+The DuckDB warehouse should be in `warehouse/ens_retro.duckdb` after cloning. If it's missing, re-run the pipeline:
 ```bash
-git lfs install
-git lfs pull
+cd infra/dbt && uv run dbt build
 ```
 
 ### Rate limit errors (429)

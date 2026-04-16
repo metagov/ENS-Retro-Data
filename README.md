@@ -97,10 +97,12 @@ Each challenge decomposes into hypotheses (`H1.3`, `H2.1`, etc.) rendered by ded
 2. **MCP API** (`Dockerfile.api`) — FastAPI with REST endpoints and an MCP (Model Context Protocol) server at `/mcp` for OpenAI Agent Builder integration
 3. **Dagster** (`Dockerfile.dagster`) — Read-only UI showing the pipeline asset graph and run history
 
-### Why DuckDB + LFS?
-The warehouse ships as a single ~40 MB DuckDB file (`warehouse/ens_retro.duckdb`) tracked via Git LFS. Same for `.dagster/storage/` (run history). This is intentional: Render services don't have persistent disks on the starter tier, so LFS acts as the shared state store. Cloning the repo gives you a fully-populated warehouse ready to query.
+### Why DuckDB + DO Spaces?
+The warehouse ships as a single ~40 MB DuckDB file (`warehouse/ens_retro.duckdb`) committed in regular git. Deployed services (Render) download the latest copy from [DigitalOcean Spaces](https://ensretro-data.fra1.digitaloceanspaces.com/) at Docker build time — no Git LFS needed.
 
-**If you're cloning:** install [git-lfs](https://git-lfs.com/) first, then `git clone`. Otherwise you'll get LFS pointer files instead of real data.
+**For contributors:** just `git clone` then `python3 scripts/spaces_sync.py --download` — you get a fully-populated warehouse and bronze data ready to query. No LFS setup required.
+
+**For reproducibility:** every number on the dashboard traces back to raw bronze source files. Run `uv run dagster dev` to re-materialize the full pipeline from scratch. The bronze data is append-only and hosted on DigitalOcean Spaces.
 
 ---
 
@@ -126,7 +128,7 @@ All bronze data is immutable append-only JSON/CSV with `metadata.json` provenanc
 
 ```
 ENS-Retro-Data/
-├── bronze/                Raw data (JSON/CSV, LFS for large files)
+├── bronze/                Raw data (JSON/CSV, Agora CSVs on DO Spaces)
 │   ├── governance/        Snapshot, Tally, Agora governor contract events
 │   ├── on-chain/          Delegations, transfers, treasury
 │   ├── forum/             Discourse topics + posts
@@ -151,13 +153,13 @@ ENS-Retro-Data/
 │   ├── pages/             Streamlit sub-pages (Chat, …)
 │   └── tests/             106 pytest cases (API auth, SQL safety, config)
 │
-├── warehouse/             DuckDB file output (LFS)
+├── warehouse/             DuckDB file output (also on DO Spaces for deploys)
 ├── docs/                  Research deliverables + developer docs
 │   ├── developer-docs/    Architecture, API ref, data dictionary, workflow guides
 │   ├── vector-store-exports/  Auto-generated gold table markdown (chatbot knowledge base)
 │   └── Phase 1/           Research design docs, codebook, KII synopsis
 ├── scripts/               Standalone utilities (taxonomy seeds, serve.sh)
-├── .dagster/              Dagster instance state (LFS — shared run history)
+├── .dagster/              Dagster instance state (also on DO Spaces for deploys)
 ├── Dockerfile             Dashboard image
 ├── Dockerfile.api         MCP API image
 ├── Dockerfile.dagster     Dagster read-only UI image
@@ -176,7 +178,7 @@ Everything below this line is for people who want to run the pipeline, modify th
 
 - **Python 3.12** (or 3.11, but 3.12 is what CI and Docker use)
 - **[uv](https://docs.astral.sh/uv/)** — fast Python package manager
-- **[git-lfs](https://git-lfs.com/)** — required to clone the warehouse + bronze data
+- **No Git LFS needed** — all data is regular git or downloaded from DO Spaces at deploy time
 - **[DuckDB CLI](https://duckdb.org/docs/installation/)** — optional, for interactive queries
 
 ### Required environment variables
@@ -197,8 +199,7 @@ Copy `.env.example` to `.env` and fill in the keys you need. Not every script ne
 ## Quick start
 
 ```bash
-# Clone with LFS
-git lfs install
+# Clone (no LFS needed)
 git clone https://github.com/metagov/ENS-Retro-Data.git
 cd ENS-Retro-Data
 

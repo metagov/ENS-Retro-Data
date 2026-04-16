@@ -10,11 +10,12 @@ RUN pip install --no-cache-dir -r requirements-api.txt
 # Copy dashboard code (api.py + scripts/db.py live here)
 COPY dashboards/ ./dashboards/
 
-# Copy the database — api.py resolves via same path as db.py
-COPY warehouse/ens_retro.duckdb ./warehouse/ens_retro.duckdb
-
-# Note: bronze/ is NOT copied. The API queries materialized gold/silver
-# tables in DuckDB, not raw JSON files. Omitting saves ~250 MB per build.
+# Download the DuckDB warehouse from DigitalOcean Spaces (replaces Git LFS).
+RUN apt-get update && apt-get install -y --no-install-recommends curl && \
+    mkdir -p warehouse && \
+    curl -fsSL https://ensretro-data.fra1.digitaloceanspaces.com/warehouse/ens_retro.duckdb \
+         -o warehouse/ens_retro.duckdb && \
+    apt-get purge -y curl && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8001
 CMD ["uvicorn", "dashboards.api:app", \

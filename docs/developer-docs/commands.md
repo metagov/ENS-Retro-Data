@@ -8,10 +8,9 @@ Every command in this project, organized by category. For the minimal set needed
 # Install uv (Python package manager)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install git-lfs (required to clone the warehouse + bronze data)
-# macOS:  brew install git-lfs
-# Debian/Ubuntu:  sudo apt install git-lfs
-git lfs install
+# No Git LFS needed — all data is regular git.
+# Large files (warehouse, dagster storage) are also hosted on DO Spaces
+# for deployed services. See scripts/spaces_sync.py.
 
 # Create virtual environment and install all dependencies
 uv sync
