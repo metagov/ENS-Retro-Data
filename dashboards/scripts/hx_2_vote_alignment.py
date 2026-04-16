@@ -15,7 +15,7 @@ import streamlit as st
 from scipy.cluster.hierarchy import dendrogram, fcluster, linkage
 from scipy.spatial.distance import squareform
 
-from scripts.chart_utils import CHART_CONFIG, WATERMARK
+from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 
 TOP_N = 50
@@ -306,7 +306,6 @@ def _sim_heatmap(
         margin=dict(t=80, b=160, l=160, r=60),
         height=700,
     )
-    fig.add_annotation(**WATERMARK)
     return fig
 
 
@@ -415,7 +414,6 @@ def _vote_pattern_heatmap(
         margin=dict(t=100, b=200, l=160, r=40),
         height=max(500, 14 * n + 260),
     )
-    fig.add_annotation(**WATERMARK)
     return fig
 
 
@@ -564,17 +562,11 @@ def render_vote_alignment() -> None:
 
     tab1, tab2 = st.tabs(["Similarity Matrix", "Vote Pattern Grid"])
     with tab1:
-        st.plotly_chart(
-            _sim_heatmap(sim, labels_list, order, cluster_ids, cluster_color_map),
-            use_container_width=True,
-            config=CHART_CONFIG,
-        )
+        fig_sim = _sim_heatmap(sim, labels_list, order, cluster_ids, cluster_color_map)
+        render_chart(fig_sim, key="dl_hx2_sim_heatmap", filename="vote_alignment_similarity")
     with tab2:
-        st.plotly_chart(
-            _vote_pattern_heatmap(pivot, prop_meta, labels_list, order, cluster_ids, cluster_color_map),
-            use_container_width=True,
-            config=CHART_CONFIG,
-        )
+        fig_pattern = _vote_pattern_heatmap(pivot, prop_meta, labels_list, order, cluster_ids, cluster_color_map)
+        render_chart(fig_pattern, key="dl_hx2_vote_pattern", filename="vote_alignment_pattern")
 
     n_proposals = len(prop_meta)
     st.caption(

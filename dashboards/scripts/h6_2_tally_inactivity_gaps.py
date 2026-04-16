@@ -10,7 +10,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from scripts.chart_utils import CHART_CONFIG, WATERMARK
+from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 
 # ---------------------------------------------------------------------------
@@ -180,7 +180,6 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
             font=dict(size=12, color="#2D3748"),
             bgcolor="rgba(0,0,0,0)",
         ),
-        annotations=[WATERMARK],
         plot_bgcolor="white",
         paper_bgcolor="white",
         margin=dict(t=80, b=50, l=120, r=30),
@@ -210,7 +209,7 @@ def render_tally_inactivity_gaps() -> None:
         return
 
     fig = _build_chart(df)
-    st.plotly_chart(fig, width='stretch', config=CHART_CONFIG)
+    render_chart(fig, key="dl_tally_inactivity", filename="tally_inactivity_gaps", width='stretch')
 
     proposal_months = df[df["had_proposals"] == 1]
     total_cells     = len(proposal_months)

@@ -10,7 +10,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from scripts.chart_utils import CHART_CONFIG, WATERMARK
+from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 
 _SNAPSHOT_PRE  = "#3B4EC8"
@@ -113,7 +113,6 @@ def _build_box_chart(platform_df: pd.DataFrame, platform: str, color_pre: str, c
         ),
         margin=dict(t=80, b=50, l=60, r=20),
         height=400,
-        annotations=[WATERMARK],
     )
     return fig
 
@@ -186,7 +185,6 @@ def _build_scatter_chart(df: pd.DataFrame) -> go.Figure:
         ),
         margin=dict(t=100, b=60, l=70, r=40),
         height=400,
-        annotations=[WATERMARK],
     )
     return fig
 
@@ -265,14 +263,17 @@ def render_participation_variance() -> None:
 
     col1, col2 = st.columns(2)
     with col1:
-        st.plotly_chart(_build_box_chart(snapshot_df, "Snapshot", _SNAPSHOT_PRE, _SNAPSHOT_POST), use_container_width=True, config=CHART_CONFIG)
+        fig_snap = _build_box_chart(snapshot_df, "Snapshot", _SNAPSHOT_PRE, _SNAPSHOT_POST)
+        render_chart(fig_snap, key="dl_c2_box_snapshot", filename="participation_box_snapshot")
     with col2:
-        st.plotly_chart(_build_box_chart(tally_df, "Tally", _TALLY_PRE, _TALLY_POST), use_container_width=True, config=CHART_CONFIG)
+        fig_tally = _build_box_chart(tally_df, "Tally", _TALLY_PRE, _TALLY_POST)
+        render_chart(fig_tally, key="dl_c2_box_tally", filename="participation_box_tally")
 
     _render_cards(df)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    st.plotly_chart(_build_scatter_chart(df), use_container_width=True, config=CHART_CONFIG)
+    fig_scatter = _build_scatter_chart(df)
+    render_chart(fig_scatter, key="dl_c2_turnout_scatter", filename="participation_turnout_scatter")
 
     st.caption("Sources: Snapshot GraphQL API (snapshot_votes, snapshot_proposals) · Tally GraphQL API (tally_votes, tally_proposals) · warehouse/ens_retro.duckdb")

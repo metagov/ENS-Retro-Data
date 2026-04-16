@@ -24,7 +24,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from scripts.chart_utils import CHART_CONFIG, WATERMARK
+from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 from scripts.proposal_type import classify_proposals
 
@@ -261,7 +261,6 @@ def _category_timeline(proposals: pd.DataFrame) -> go.Figure:
         plot_bgcolor="white", paper_bgcolor="white",
         margin=dict(t=80, b=60, l=200, r=20),
         height=480,
-        annotations=[WATERMARK],
     )
     return fig
 
@@ -410,7 +409,6 @@ def _outcome_strip(proposals: pd.DataFrame) -> go.Figure:
         plot_bgcolor="white", paper_bgcolor="white",
         margin=dict(t=90, b=60, l=80, r=40),
         height=420,
-        annotations=[WATERMARK],
     )
     return fig
 
@@ -519,7 +517,6 @@ def _delegate_reform_heatmap(
         margin=dict(t=110, b=220, l=180, r=40),
         height=max(420, 28 * n_del + 280),
     )
-    fig.add_annotation(**WATERMARK)
     return fig
 
 
@@ -649,7 +646,8 @@ def render_h6_3_experimentation() -> None:
     _h6_3_cards(proposals)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    st.plotly_chart(_category_timeline(proposals), use_container_width=True, config=CHART_CONFIG)
+    fig_timeline = _category_timeline(proposals)
+    render_chart(fig_timeline, key="dl_c3_category_timeline", filename="category_timeline")
 
     st.markdown("##### Structural experiment inventory")
     inv = _structural_inventory_table(proposals)
@@ -681,11 +679,12 @@ def render_h2_2_resistance() -> None:
     _h2_2_cards(proposals)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    st.plotly_chart(_outcome_strip(proposals), use_container_width=True, config=CHART_CONFIG)
+    fig_strip = _outcome_strip(proposals)
+    render_chart(fig_strip, key="dl_c3_outcome_strip", filename="reform_outcome_strip")
 
     heatmap = _delegate_reform_heatmap(proposals, delegates, all_votes)
     if heatmap is not None:
-        st.plotly_chart(heatmap, use_container_width=True, config=CHART_CONFIG)
+        render_chart(heatmap, key="dl_c3_delegate_heatmap", filename="delegate_reform_heatmap")
     else:
         st.info(
             "No reform proposals with top-30 delegate votes found on Snapshot. "

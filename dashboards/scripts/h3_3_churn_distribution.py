@@ -12,7 +12,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from scripts.chart_utils import CHART_CONFIG, WATERMARK
+from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 
 # ---------------------------------------------------------------------------
@@ -194,7 +194,6 @@ def _build_chart(
             font=dict(size=12, color="#2D3748"),
             bgcolor="rgba(0,0,0,0)",
         ),
-        annotations=[WATERMARK],
         plot_bgcolor="white",
         paper_bgcolor="white",
         margin=dict(t=80, b=60, l=80, r=40),
@@ -273,7 +272,7 @@ def render_churn_distribution() -> None:
         return
 
     fig = _build_chart(dist_df, mean_chg, median_chg)
-    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
+    render_chart(fig, key="dl_churn_distribution", filename="churn_distribution")
     st.markdown("<br>", unsafe_allow_html=True)
     _render_cards(dist_df, mean_chg, pct_zero)
 

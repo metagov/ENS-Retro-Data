@@ -9,7 +9,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from scripts.chart_utils import CHART_CONFIG, WATERMARK
+from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 
 # ---------------------------------------------------------------------------
@@ -310,7 +310,6 @@ def _build_chart(df: pd.DataFrame, holder_type: str = "small") -> tuple[go.Figur
             font=dict(size=11, color="#2D3748"),
             bgcolor="rgba(0,0,0,0)",
         ),
-        annotations=[WATERMARK],
         plot_bgcolor="white",
         paper_bgcolor="white",
         margin=dict(t=80, b=60, l=420, r=60),
@@ -444,7 +443,7 @@ def render_counterfactual_flip() -> None:
     threshold = threshold_p80 if holder_type == "small" else threshold_p95
 
     fig, n_flipped, n_proposals = _build_chart(df, holder_type)
-    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
+    render_chart(fig, key="dl_counterfactual_flip", filename="counterfactual_flip")
 
     _render_cards(df, n_flipped, n_proposals, threshold, holder_label, holder_type)
 

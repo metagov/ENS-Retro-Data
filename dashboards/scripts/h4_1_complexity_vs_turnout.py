@@ -15,7 +15,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from scipy import stats
 
-from scripts.chart_utils import CHART_CONFIG, WATERMARK
+from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 from scripts.proposal_type import classify_proposals
 
@@ -192,7 +192,6 @@ def _build_strip_median(
             font=dict(size=11, color="#2D3748"),
             bgcolor="rgba(0,0,0,0)",
         ),
-        annotations=[WATERMARK],
         plot_bgcolor="white", paper_bgcolor="white",
         margin=dict(t=70, b=60, l=60, r=20),
         height=400,
@@ -283,10 +282,10 @@ def render_complexity_vs_turnout() -> None:
             for st_col, (platform, color, fill_color) in zip([c1, c2], _PLATFORMS):
                 sub = df[df["platform"] == platform]
                 with st_col:
-                    st.plotly_chart(
+                    render_chart(
                         _build_strip_median(sub, col, label, platform, color, fill_color),
-                        use_container_width=True,
-                        config=CHART_CONFIG,
+                        key=f"dl_complexity_{platform}",
+                        filename=f"complexity_vs_turnout_{platform}",
                     )
 
     st.markdown("##### Spearman correlation with voter turnout")

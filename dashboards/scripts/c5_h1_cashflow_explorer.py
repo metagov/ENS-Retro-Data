@@ -11,7 +11,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from scripts.chart_utils import CHART_CONFIG, WATERMARK
+from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 
 _CARD_CSS = """
@@ -161,10 +161,9 @@ def render_cashflow_overview() -> None:
         margin=dict(t=80, b=100, l=90, r=40),
         height=460,
         bargap=0.15,
-        annotations=[WATERMARK],
     )
 
-    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
+    render_chart(fig, key="dl_c5h1_cashflow_overview", filename="cashflow_overview")
 
     total_in = monthly["inflows_usd"].sum()
     total_out = monthly["outflows_usd"].sum()
@@ -467,10 +466,9 @@ def render_category_breakdown() -> None:
         paper_bgcolor="white",
         margin=dict(t=10, b=10, l=10, r=10),
         height=max(500, len(node_labels) * 28),
-        annotations=[WATERMARK],
     )
 
-    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
+    render_chart(fig, key="dl_c5h1_sankey", filename="cashflow_sankey")
 
     # Stat cards
     total_flow = agg["value_usd"].sum()
