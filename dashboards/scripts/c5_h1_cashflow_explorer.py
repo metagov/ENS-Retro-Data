@@ -11,21 +11,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
-
-_WATERMARK = dict(
-    text="ENS Retro Analysis by Metagov 2026",
-    xref="paper", yref="paper",
-    x=0.5, y=0.5,
-    showarrow=False,
-    font=dict(size=28, color="rgba(200,200,200,0.35)"),
-    textangle=-30,
-)
-
-_CHART_CONFIG = {
-    "displayModeBar": True,
-    "modeBarButtonsToRemove": ["lasso2d", "select2d"],
-}
 
 _CARD_CSS = """
 <style>
@@ -174,10 +161,10 @@ def render_cashflow_overview() -> None:
         margin=dict(t=80, b=100, l=90, r=40),
         height=460,
         bargap=0.15,
-        annotations=[_WATERMARK],
+        annotations=[WATERMARK],
     )
 
-    st.plotly_chart(fig, use_container_width=True, config=_CHART_CONFIG)
+    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
 
     total_in = monthly["inflows_usd"].sum()
     total_out = monthly["outflows_usd"].sum()
@@ -480,10 +467,10 @@ def render_category_breakdown() -> None:
         paper_bgcolor="white",
         margin=dict(t=10, b=10, l=10, r=10),
         height=max(500, len(node_labels) * 28),
-        annotations=[_WATERMARK],
+        annotations=[WATERMARK],
     )
 
-    st.plotly_chart(fig, use_container_width=True, config=_CHART_CONFIG)
+    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
 
     # Stat cards
     total_flow = agg["value_usd"].sum()

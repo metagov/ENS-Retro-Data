@@ -15,6 +15,7 @@ import streamlit as st
 from scipy.cluster.hierarchy import dendrogram, fcluster, linkage
 from scipy.spatial.distance import squareform
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
 
 TOP_N = 50
@@ -305,6 +306,7 @@ def _sim_heatmap(
         margin=dict(t=80, b=160, l=160, r=60),
         height=700,
     )
+    fig.add_annotation(**WATERMARK)
     return fig
 
 
@@ -413,6 +415,7 @@ def _vote_pattern_heatmap(
         margin=dict(t=100, b=200, l=160, r=40),
         height=max(500, 14 * n + 260),
     )
+    fig.add_annotation(**WATERMARK)
     return fig
 
 
@@ -564,11 +567,13 @@ def render_vote_alignment() -> None:
         st.plotly_chart(
             _sim_heatmap(sim, labels_list, order, cluster_ids, cluster_color_map),
             use_container_width=True,
+            config=CHART_CONFIG,
         )
     with tab2:
         st.plotly_chart(
             _vote_pattern_heatmap(pivot, prop_meta, labels_list, order, cluster_ids, cluster_color_map),
             use_container_width=True,
+            config=CHART_CONFIG,
         )
 
     n_proposals = len(prop_meta)

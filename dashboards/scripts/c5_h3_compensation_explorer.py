@@ -11,6 +11,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
 
 _CARD_CSS = """
@@ -183,9 +184,10 @@ def render_compensation_by_wg() -> None:
         margin=dict(t=80, b=60, l=90, r=40),
         height=420,
         bargap=0.2,
+        annotations=[WATERMARK],
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
 
     # Stat cards
     total_usd = filtered["value_usd"].sum()

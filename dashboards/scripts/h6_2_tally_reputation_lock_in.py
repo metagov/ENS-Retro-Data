@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
 
 # ---------------------------------------------------------------------------
@@ -182,6 +183,7 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
         margin=dict(t=80, b=70, l=70, r=40),
         height=500,
     )
+    fig.add_annotation(**WATERMARK)
 
     return fig, df
 
@@ -209,7 +211,7 @@ def render_tally_activity_vs_vp() -> None:
     lock_in_count = (df_classified["category"] == "Lock-in zone (<50% participation)").sum()
     total_count = len(df_classified)
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
 
     st.caption(
         f"**{lock_in_count} of {total_count} top delegates** fall in the lock-in zone "

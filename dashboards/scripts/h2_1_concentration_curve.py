@@ -8,6 +8,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
 
 
@@ -154,6 +155,7 @@ def _build_chart(curve_df: pd.DataFrame, nakamoto: int, gini: float) -> go.Figur
         paper_bgcolor="white",
         margin=dict(t=100, b=70, l=70, r=40),
         height=480,
+        annotations=[WATERMARK],
     )
 
     return fig
@@ -242,7 +244,7 @@ def render_concentration_curve() -> None:
     top1 = _top1_share(curve_df)
 
     fig = _build_chart(curve_df, nakamoto, gini)
-    st.plotly_chart(fig, width='stretch')
+    st.plotly_chart(fig, width='stretch', config=CHART_CONFIG)
 
     _render_cards(top1, nakamoto, gini)
 

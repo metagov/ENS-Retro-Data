@@ -18,6 +18,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
 
 # Academic benchmark from Goldberg & Schär (2023): VP.1 matched VP.ALL in 94.8% of proposals
@@ -256,6 +257,7 @@ def _chart_agreement_rate(stats: dict) -> go.Figure:
         plot_bgcolor="white", paper_bgcolor="white",
         margin=dict(t=80, b=100, l=70, r=40),
         height=440,
+        annotations=[WATERMARK],
     )
     return fig
 
@@ -340,6 +342,7 @@ def _chart_per_proposal(df: pd.DataFrame) -> go.Figure:
         margin=dict(t=80, b=120, l=90, r=40),
         height=500,
     )
+    fig.add_annotation(**WATERMARK)
     return fig
 
 
@@ -432,9 +435,9 @@ def render_outcome_robustness() -> None:
 
     tab1, tab2 = st.tabs(["Agreement Rate", "Per-Proposal Scatter"])
     with tab1:
-        st.plotly_chart(_chart_agreement_rate(stats), use_container_width=True)
+        st.plotly_chart(_chart_agreement_rate(stats), use_container_width=True, config=CHART_CONFIG)
     with tab2:
-        st.plotly_chart(_chart_per_proposal(df), use_container_width=True)
+        st.plotly_chart(_chart_per_proposal(df), use_container_width=True, config=CHART_CONFIG)
 
     st.caption(
         f"Sources: ENS Tally on-chain governance ({stats['n']} finalized proposals: executed or defeated). "

@@ -8,6 +8,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
 
 
@@ -175,6 +176,7 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
             font=dict(size=13, color="#2D3748"),
             bgcolor="rgba(0,0,0,0)",
         ),
+        annotations=[WATERMARK],
         plot_bgcolor="white",
         paper_bgcolor="white",
         margin=dict(t=100, b=60, l=70, r=40),
@@ -279,7 +281,7 @@ def render_legacy_distribution() -> None:
         return
 
     fig = _build_chart(df)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
 
     _render_cards(df)
 

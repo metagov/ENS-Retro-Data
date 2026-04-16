@@ -9,6 +9,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
 
 # ---------------------------------------------------------------------------
@@ -185,6 +186,7 @@ def _build_chart(df: pd.DataFrame) -> go.Figure:
         paper_bgcolor="white",
         margin=dict(t=80, b=70, l=70, r=40),
         height=420,
+        annotations=[WATERMARK],
     )
 
     return fig
@@ -294,7 +296,7 @@ def render_small_holder_alignment() -> None:
         df, threshold_p80 = _load_data()
 
     fig = _build_chart(df)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG)
 
     _render_cards(df, threshold_p80)
 

@@ -10,6 +10,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from scripts.chart_utils import CHART_CONFIG, WATERMARK
 from scripts.db import get_connection
 
 _SNAPSHOT_PRE  = "#3B4EC8"
@@ -112,6 +113,7 @@ def _build_box_chart(platform_df: pd.DataFrame, platform: str, color_pre: str, c
         ),
         margin=dict(t=80, b=50, l=60, r=20),
         height=400,
+        annotations=[WATERMARK],
     )
     return fig
 
@@ -184,6 +186,7 @@ def _build_scatter_chart(df: pd.DataFrame) -> go.Figure:
         ),
         margin=dict(t=100, b=60, l=70, r=40),
         height=400,
+        annotations=[WATERMARK],
     )
     return fig
 
@@ -262,14 +265,14 @@ def render_participation_variance() -> None:
 
     col1, col2 = st.columns(2)
     with col1:
-        st.plotly_chart(_build_box_chart(snapshot_df, "Snapshot", _SNAPSHOT_PRE, _SNAPSHOT_POST), use_container_width=True)
+        st.plotly_chart(_build_box_chart(snapshot_df, "Snapshot", _SNAPSHOT_PRE, _SNAPSHOT_POST), use_container_width=True, config=CHART_CONFIG)
     with col2:
-        st.plotly_chart(_build_box_chart(tally_df, "Tally", _TALLY_PRE, _TALLY_POST), use_container_width=True)
+        st.plotly_chart(_build_box_chart(tally_df, "Tally", _TALLY_PRE, _TALLY_POST), use_container_width=True, config=CHART_CONFIG)
 
     _render_cards(df)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    st.plotly_chart(_build_scatter_chart(df), use_container_width=True)
+    st.plotly_chart(_build_scatter_chart(df), use_container_width=True, config=CHART_CONFIG)
 
     st.caption("Sources: Snapshot GraphQL API (snapshot_votes, snapshot_proposals) · Tally GraphQL API (tally_votes, tally_proposals) · warehouse/ens_retro.duckdb")
