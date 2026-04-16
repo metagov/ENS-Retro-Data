@@ -75,9 +75,11 @@ def upload_file(client, local_path: Path, remote_key: str):
 
 def download_file(local_path: Path, remote_key: str):
     """Download a file from the Space via public URL (no credentials needed)."""
+    import urllib.parse
     import urllib.request
 
-    url = f"{SPACE_URL}/{remote_key}"
+    encoded_key = urllib.parse.quote(remote_key)
+    url = f"{SPACE_URL}/{encoded_key}"
     local_path.parent.mkdir(parents=True, exist_ok=True)
     print(f"  Downloading {remote_key}...")
     urllib.request.urlretrieve(url, str(local_path))
