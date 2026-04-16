@@ -13,6 +13,20 @@ import streamlit as st
 
 from scripts.db import get_connection
 
+_WATERMARK = dict(
+    text="ENS Retro Analysis by Metagov 2026",
+    xref="paper", yref="paper",
+    x=0.5, y=0.5,
+    showarrow=False,
+    font=dict(size=28, color="rgba(200,200,200,0.35)"),
+    textangle=-30,
+)
+
+_CHART_CONFIG = {
+    "displayModeBar": True,
+    "modeBarButtonsToRemove": ["lasso2d", "select2d"],
+}
+
 _CARD_CSS = """
 <style>
 .stat-card {
@@ -72,7 +86,7 @@ def _fmt_usd(val: float) -> str:
 @st.fragment
 def render_cashflow_overview() -> None:
     st.markdown(
-        "<p style='color:#718096; font-size:14px; margin-bottom:16px;'>"
+        "<p style='color:#2D3748; font-size:14px; font-weight:600; margin-bottom:16px;'>"
         "Monthly treasury inflows (external revenue), outflows (working group spending), "
         "and internal transfers (DAO Wallet → WG budget allocations) from Mar 2022 to "
         "Nov 2025. Use the year filter to focus on a specific period.</p>",
@@ -160,9 +174,10 @@ def render_cashflow_overview() -> None:
         margin=dict(t=80, b=100, l=90, r=40),
         height=460,
         bargap=0.15,
+        annotations=[_WATERMARK],
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config=_CHART_CONFIG)
 
     total_in = monthly["inflows_usd"].sum()
     total_out = monthly["outflows_usd"].sum()
@@ -290,7 +305,7 @@ def _filter_by_graph(
 @st.fragment
 def render_category_breakdown() -> None:
     st.markdown(
-        "<p style='color:#718096; font-size:14px; margin-bottom:16px;'>"
+        "<p style='color:#2D3748; font-size:14px; font-weight:600; margin-bottom:16px;'>"
         "Follow the money: external revenue flows into the DAO Wallet, which allocates "
         "budgets to working groups, which spend on recipients and grantees. "
         "Destinations receiving less than $10K in the period are grouped into "
@@ -465,9 +480,10 @@ def render_category_breakdown() -> None:
         paper_bgcolor="white",
         margin=dict(t=10, b=10, l=10, r=10),
         height=max(500, len(node_labels) * 28),
+        annotations=[_WATERMARK],
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config=_CHART_CONFIG)
 
     # Stat cards
     total_flow = agg["value_usd"].sum()
