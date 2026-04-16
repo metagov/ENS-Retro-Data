@@ -447,6 +447,7 @@ def render_category_breakdown() -> None:
             color="#A0AEC0",
             pad=18,
             thickness=20,
+            line=dict(color="#2D3748", width=0.5),
             hovertemplate="%{label}<extra></extra>",
         ),
         link=dict(
@@ -461,12 +462,22 @@ def render_category_breakdown() -> None:
                 "Amount: $%{value:,.0f}<extra></extra>"
             ),
         ),
+        textfont=dict(
+            family="Inter, -apple-system, Helvetica, sans-serif",
+            size=14,
+            color="#1A202C",
+        ),
     ))
 
     fig.update_layout(
         paper_bgcolor="white",
         margin=dict(t=10, b=10, l=10, r=10),
         height=max(500, len(node_labels) * 28),
+        font=dict(
+            family="Inter, -apple-system, Helvetica, sans-serif",
+            size=14,
+            color="#1A202C",
+        ),
     )
 
     render_chart(fig, key="dl_c5h1_sankey", filename="cashflow_sankey")
