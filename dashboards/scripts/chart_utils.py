@@ -5,12 +5,16 @@ import copy
 import streamlit as st
 
 WATERMARK = dict(
-    text="ENS Retro Analysis by Metagov 2026",
+    text="ENS Retro Analysis  ·  Metagov  ·  2026",
     xref="paper", yref="paper",
     x=0.5, y=0.5,
     showarrow=False,
-    font=dict(size=28, color="rgba(200,200,200,0.35)"),
-    textangle=-30,
+    font=dict(
+        size=20,
+        color="rgba(120,120,120,0.22)",
+        family="Inter, -apple-system, Helvetica, sans-serif",
+    ),
+    textangle=0,
 )
 
 CHART_CONFIG = {
