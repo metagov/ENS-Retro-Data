@@ -20,6 +20,7 @@ dependencies = [
     "pyoso>=0.6",
     "requests>=2.31",
     "httpx>=0.28.1",
+    "boto3>=1.42.87",
 ]
 
 [project.optional-dependencies]

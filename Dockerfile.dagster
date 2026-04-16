@@ -11,12 +11,19 @@ RUN pip install --no-cache-dir .
 COPY infra/ ./infra/
 COPY workspace.yaml .
 
-# Copy Dagster instance config + storage (run history via Git LFS)
+# Copy Dagster instance config
 COPY .dagster/dagster.yaml ./.dagster/dagster.yaml
-COPY .dagster/storage/ ./.dagster/storage/
 
-# Copy warehouse only — read-only UI doesn't need bronze/ source files
-COPY warehouse/ens_retro.duckdb ./warehouse/ens_retro.duckdb
+# Download dagster storage + warehouse from DigitalOcean Spaces (replaces Git LFS).
+RUN mkdir -p .dagster/storage warehouse && \
+    curl -fsSL https://ensretro-data.fra1.digitaloceanspaces.com/.dagster/storage/.db \
+         -o .dagster/storage/.db && \
+    curl -fsSL https://ensretro-data.fra1.digitaloceanspaces.com/.dagster/storage/index.db \
+         -o .dagster/storage/index.db && \
+    curl -fsSL https://ensretro-data.fra1.digitaloceanspaces.com/.dagster/storage/schedules.db \
+         -o .dagster/storage/schedules.db && \
+    curl -fsSL https://ensretro-data.fra1.digitaloceanspaces.com/warehouse/ens_retro.duckdb \
+         -o warehouse/ens_retro.duckdb
 
 # Install dbt packages and generate manifest.json (required by dagster_dbt)
 RUN cd infra/dbt && dbt deps && dbt parse

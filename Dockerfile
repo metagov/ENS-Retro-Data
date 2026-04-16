@@ -9,12 +9,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy dashboard code — lands at /app/dashboards/
 COPY dashboards/ ./dashboards/
 
-# Copy the database — lands at /app/warehouse/ens_retro.duckdb
-# This matches what db.py expects: 3 parents up from db.py = /app/
-COPY warehouse/ens_retro.duckdb ./warehouse/ens_retro.duckdb
-
-# Note: bronze/ is NOT copied. The dashboard queries materialized gold/silver
-# tables in DuckDB, not raw JSON files. Omitting saves ~250 MB per build.
+# Download the DuckDB warehouse from DigitalOcean Spaces (replaces Git LFS).
+# This avoids burning GitHub LFS bandwidth on every Render deploy.
+RUN apt-get update && apt-get install -y --no-install-recommends curl && \
+    mkdir -p warehouse && \
+    curl -fsSL https://ensretro-data.fra1.digitaloceanspaces.com/warehouse/ens_retro.duckdb \
+         -o warehouse/ens_retro.duckdb && \
+    apt-get purge -y curl && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8501
 CMD ["streamlit", "run", "dashboards/app.py", \
