@@ -30,7 +30,8 @@ _CARD_CSS = """
 }
 .stat-row {
     font-size: 13px;
-    color: #4A5568;
+    color: #1A202C;
+    font-weight: 500;
     line-height: 1.8;
 }
 .stat-value {

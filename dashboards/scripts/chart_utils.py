@@ -15,7 +15,7 @@ WATERMARK = dict(
 
 CHART_CONFIG = {
     "displayModeBar": True,
-    "modeBarButtonsToRemove": ["lasso2d", "select2d", "toImage"],
+    "modeBarButtonsToRemove": ["lasso2d", "select2d"],
 }
 
 
