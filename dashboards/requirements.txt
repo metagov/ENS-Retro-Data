@@ -1,6 +1,6 @@
 streamlit>=1.40
 plotly>=5.24
-kaleido>=0.2
+kaleido==0.2.1
 duckdb>=1.1
 pandas>=2.2
 numpy>=1.26
