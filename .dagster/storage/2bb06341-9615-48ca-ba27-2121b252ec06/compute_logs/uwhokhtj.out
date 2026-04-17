@@ -1,0 +1,28 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+Found 40 models, 145 data tests, 7 seeds, 18 sources, 598 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 8 START seed file main_reference.manual_snapshot_discourse_map ............ [RUN]
+1 of 8 OK loaded seed file main_reference.manual_snapshot_discourse_map ........ [[32mINSERT 0[0m in 0.30s]
+2 of 8 START seed file main_reference.manual_tally_discourse_map ............... [RUN]
+2 of 8 OK loaded seed file main_reference.manual_tally_discourse_map ........... [[32mINSERT 0[0m in 0.03s]
+3 of 8 START seed file main_reference.taxonomy_proposal_status ................. [RUN]
+3 of 8 OK loaded seed file main_reference.taxonomy_proposal_status ............. [[32mINSERT 7[0m in 0.17s]
+4 of 8 START seed file main_reference.taxonomy_sources ......................... [RUN]
+4 of 8 OK loaded seed file main_reference.taxonomy_sources ..................... [[32mINSERT 9[0m in 0.14s]
+5 of 8 START seed file main_reference.taxonomy_stakeholder_roles ............... [RUN]
+5 of 8 OK loaded seed file main_reference.taxonomy_stakeholder_roles ........... [[32mINSERT 8[0m in 0.13s]
+6 of 8 START seed file main_reference.taxonomy_vote_choices .................... [RUN]
+6 of 8 OK loaded seed file main_reference.taxonomy_vote_choices ................ [[32mINSERT 3[0m in 0.12s]
+7 of 8 START seed file main_reference.taxonomy_working_groups .................. [RUN]
+7 of 8 OK loaded seed file main_reference.taxonomy_working_groups .............. [[32mINSERT 4[0m in 0.15s]
+8 of 8 START test assert_taxonomy_consistency .................................. [RUN]
+8 of 8 PASS assert_taxonomy_consistency ........................................ [[32mPASS[0m in 0.07s]
+
+Finished running 7 seeds, 1 test in 0 hours 0 minutes and 1.35 seconds (1.35s).
+
+[32mCompleted successfully[0m
+
+Done. PASS=8 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=8

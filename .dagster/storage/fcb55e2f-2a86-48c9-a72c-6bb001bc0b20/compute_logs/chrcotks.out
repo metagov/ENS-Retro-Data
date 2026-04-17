@@ -1,0 +1,42 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+Found 40 models, 145 data tests, 7 seeds, 18 sources, 598 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 15 START sql table model main_silver.snapshot_discourse_crosswalk ......... [RUN]
+1 of 15 OK created sql table model main_silver.snapshot_discourse_crosswalk .... [[32mOK[0m in 0.47s]
+2 of 15 START sql table model main_silver.tally_discourse_crosswalk ............ [RUN]
+2 of 15 OK created sql table model main_silver.tally_discourse_crosswalk ....... [[32mOK[0m in 0.45s]
+3 of 15 START test accepted_values_snapshot_discourse_crosswalk_match_source__body_regex__manual__unmatched  [RUN]
+3 of 15 PASS accepted_values_snapshot_discourse_crosswalk_match_source__body_regex__manual__unmatched  [[32mPASS[0m in 0.06s]
+4 of 15 START test assert_snapshot_discourse_crosswalk_one_to_one .............. [RUN]
+4 of 15 PASS assert_snapshot_discourse_crosswalk_one_to_one .................... [[32mPASS[0m in 0.04s]
+5 of 15 START test not_null_snapshot_discourse_crosswalk_match_source .......... [RUN]
+5 of 15 PASS not_null_snapshot_discourse_crosswalk_match_source ................ [[32mPASS[0m in 0.03s]
+6 of 15 START test not_null_snapshot_discourse_crosswalk_proposal_id ........... [RUN]
+6 of 15 PASS not_null_snapshot_discourse_crosswalk_proposal_id ................. [[32mPASS[0m in 0.03s]
+7 of 15 START test relationships_snapshot_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_  [RUN]
+7 of 15 PASS relationships_snapshot_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_  [[32mPASS[0m in 0.06s]
+8 of 15 START test unique_snapshot_discourse_crosswalk_proposal_id ............. [RUN]
+8 of 15 PASS unique_snapshot_discourse_crosswalk_proposal_id ................... [[32mPASS[0m in 0.03s]
+9 of 15 START test accepted_values_tally_discourse_crosswalk_match_source__field__body_regex__manual__unmatched  [RUN]
+9 of 15 PASS accepted_values_tally_discourse_crosswalk_match_source__field__body_regex__manual__unmatched  [[32mPASS[0m in 0.03s]
+10 of 15 START test assert_tally_discourse_crosswalk_one_to_one ................ [RUN]
+10 of 15 PASS assert_tally_discourse_crosswalk_one_to_one ...................... [[32mPASS[0m in 0.03s]
+11 of 15 START test not_null_tally_discourse_crosswalk_match_source ............ [RUN]
+11 of 15 PASS not_null_tally_discourse_crosswalk_match_source .................. [[32mPASS[0m in 0.02s]
+12 of 15 START test not_null_tally_discourse_crosswalk_proposal_id ............. [RUN]
+12 of 15 PASS not_null_tally_discourse_crosswalk_proposal_id ................... [[32mPASS[0m in 0.03s]
+13 of 15 START test relationships_tally_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_  [RUN]
+13 of 15 PASS relationships_tally_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_  [[32mPASS[0m in 0.05s]
+14 of 15 START test unique_tally_discourse_crosswalk_proposal_id ............... [RUN]
+14 of 15 PASS unique_tally_discourse_crosswalk_proposal_id ..................... [[32mPASS[0m in 0.03s]
+15 of 15 START test assert_governance_discourse_activity_one_to_one ............ [RUN]
+15 of 15 PASS assert_governance_discourse_activity_one_to_one .................. [[32mPASS[0m in 0.08s]
+
+Finished running 2 table models, 13 data tests in 0 hours 0 minutes and 1.72 seconds (1.72s).
+
+[32mCompleted successfully[0m
+
+Done. PASS=15 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=15

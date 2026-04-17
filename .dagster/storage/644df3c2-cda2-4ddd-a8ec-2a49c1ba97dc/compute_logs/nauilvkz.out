@@ -1,0 +1,20 @@
+Running with dbt=1.11.6
+Registered adapter: duckdb=1.10.1
+Found 40 models, 145 data tests, 7 seeds, 18 sources, 598 macros
+
+Concurrency: 1 threads (target='dev')
+
+1 of 4 START sql view model main_bronze.stg_forum_topics ....................... [RUN]
+1 of 4 OK created sql view model main_bronze.stg_forum_topics .................. [[32mOK[0m in 0.33s]
+2 of 4 START test relationships_snapshot_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_  [RUN]
+2 of 4 PASS relationships_snapshot_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_  [[32mPASS[0m in 0.24s]
+3 of 4 START test relationships_tally_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_  [RUN]
+3 of 4 PASS relationships_tally_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_  [[32mPASS[0m in 0.05s]
+4 of 4 START test relationships_governance_discourse_activity_topic_id__topic_id__ref_stg_forum_topics_  [RUN]
+4 of 4 PASS relationships_governance_discourse_activity_topic_id__topic_id__ref_stg_forum_topics_  [[32mPASS[0m in 0.05s]
+
+Finished running 3 data tests, 1 view model in 0 hours 0 minutes and 1.26 seconds (1.26s).
+
+[32mCompleted successfully[0m
+
+Done. PASS=4 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=4

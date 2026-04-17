@@ -1,0 +1,27 @@
+[32m2026-04-16 21:43:15 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - LOGS_CAPTURED - Started capturing logs in process (pid: 11802).
+[32m2026-04-16 21:43:15 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - STEP_START - Started execution of step "ens_dbt_assets".
+/home/torch/.local/lib/python3.10/site-packages/dagster_dbt/asset_utils.py:497: DeprecationWarning: AssetExecutionContext.op is deprecated and will be removed in a future release. You have called the deprecated method op on AssetExecutionContext. Use context.op_execution_context.op instead.
+/home/torch/.local/lib/python3.10/site-packages/dagster_dbt/asset_utils.py:498: DeprecationWarning: AssetExecutionContext.op is deprecated and will be removed in a future release. You have called the deprecated method op on AssetExecutionContext. Use context.op_execution_context.op instead.
+/home/torch/.local/lib/python3.10/site-packages/dagster_dbt/asset_utils.py:499: DeprecationWarning: AssetExecutionContext.op is deprecated and will be removed in a future release. You have called the deprecated method op on AssetExecutionContext. Use context.op_execution_context.op instead.
+[32m2026-04-16 21:43:15 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - ens_dbt_assets - A dbt subsetted execution is being performed. Overriding default dbt selection arguments `['--select', 'fqn:*']` with arguments: `['ens_retro.staging.stg_forum_topics']`.
+[32m2026-04-16 21:43:21 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - ens_dbt_assets - Copying `/home/torch/ENS-Retro-Data/infra/dbt/target/partial_parse.msgpack` to `/home/torch/ENS-Retro-Data/infra/dbt/target/ens_dbt_assets-644df3c-fc09efd/partial_parse.msgpack` to take advantage of partial parsing.
+[32m2026-04-16 21:43:21 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - ens_dbt_assets - Running dbt command: `dbt build --select ens_retro.staging.stg_forum_topics`.
+[32m2026-04-16 21:43:25 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - STEP_OUTPUT - Yielded output "bronze__stg_forum_topics" of type "Nothing". (Type check passed).
+[32m2026-04-16 21:43:28 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - ASSET_MATERIALIZATION - Materialized value bronze stg_forum_topics.
+[32m2026-04-16 21:43:28 +0530[0m - dagster - [34mWARNING[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - ens_dbt_assets - Logging an `AssetObservation` instead of an `AssetCheckResult` for dbt test `relationships_snapshot_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_`.
+
+This test was not included in Dagster's asset check selection, and was likely executed due to dbt indirect selection.
+[32m2026-04-16 21:43:29 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - ASSET_OBSERVATION - ASSET_OBSERVATION for step ens_dbt_assets
+[32m2026-04-16 21:43:30 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - ASSET_OBSERVATION - ASSET_OBSERVATION for step ens_dbt_assets
+[32m2026-04-16 21:43:30 +0530[0m - dagster - [34mWARNING[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - ens_dbt_assets - Logging an `AssetObservation` instead of an `AssetCheckResult` for dbt test `relationships_tally_discourse_crosswalk_topic_id__topic_id__ref_stg_forum_topics_`.
+
+This test was not included in Dagster's asset check selection, and was likely executed due to dbt indirect selection.
+[32m2026-04-16 21:43:32 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - ASSET_OBSERVATION - ASSET_OBSERVATION for step ens_dbt_assets
+[32m2026-04-16 21:43:34 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - ASSET_OBSERVATION - ASSET_OBSERVATION for step ens_dbt_assets
+[32m2026-04-16 21:43:34 +0530[0m - dagster - [34mWARNING[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - ens_dbt_assets - Logging an `AssetObservation` instead of an `AssetCheckResult` for dbt test `relationships_governance_discourse_activity_topic_id__topic_id__ref_stg_forum_topics_`.
+
+This test was not included in Dagster's asset check selection, and was likely executed due to dbt indirect selection.
+[32m2026-04-16 21:43:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - ASSET_OBSERVATION - ASSET_OBSERVATION for step ens_dbt_assets
+[32m2026-04-16 21:43:36 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - ASSET_OBSERVATION - ASSET_OBSERVATION for step ens_dbt_assets
+[32m2026-04-16 21:43:37 +0530[0m - dagster - [34mINFO[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - ens_dbt_assets - Finished dbt command: `dbt build --select ens_retro.staging.stg_forum_topics`.
+[32m2026-04-16 21:43:37 +0530[0m - dagster - [34mDEBUG[0m - __ASSET_JOB - 644df3c2-cda2-4ddd-a8ec-2a49c1ba97dc - 11802 - ens_dbt_assets - STEP_SUCCESS - Finished execution of step "ens_dbt_assets" in 21.69s.
