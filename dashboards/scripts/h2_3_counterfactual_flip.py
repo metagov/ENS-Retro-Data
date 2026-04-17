@@ -3,8 +3,6 @@ H2.3 — Weak small-holder voice
 Visual 3: Counterfactual analysis — would removing small-holder votes change outcomes?
 """
 
-from pathlib import Path
-
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -13,17 +11,11 @@ from scripts.chart_utils import render_chart
 from scripts.db import get_connection
 
 # ---------------------------------------------------------------------------
-# Threshold & paths
+# Thresholds
 # ---------------------------------------------------------------------------
 
 SMALL_HOLDER_PERCENTILE  = 0.80
 MEDIUM_HOLDER_PERCENTILE = 0.95  # mirrors h2_3_supply_vs_voice.py
-
-# Raw JSON path — bypasses the broken vote_choice mapping in the silver model
-# (clean_tally_votes maps support codes as integers, but the field is a string)
-_TALLY_VOTES_JSON = str(
-    Path(__file__).parent.parent.parent / "bronze" / "governance" / "tally_votes.json"
-)
 
 # ---------------------------------------------------------------------------
 # Data loading
@@ -33,23 +25,11 @@ _TALLY_VOTES_JSON = str(
 def _load_data() -> tuple[pd.DataFrame, float, float]:
     con = get_connection()
 
-    df = con.execute(f"""
+    df = con.execute("""
         WITH raw_votes AS (
-            SELECT
-                voter,
-                proposal_id,
-                support                             AS vote_choice,
-                CAST(weight AS DOUBLE) / 1e18       AS weight
-            FROM read_json(
-                '{_TALLY_VOTES_JSON}',
-                columns = {{
-                    voter:       'VARCHAR',
-                    proposal_id: 'VARCHAR',
-                    support:     'VARCHAR',
-                    weight:      'VARCHAR'
-                }}
-            )
-            WHERE support IN ('for', 'against', 'abstain')
+            SELECT voter, proposal_id, vote_choice, weight
+            FROM main_silver.clean_tally_votes
+            WHERE vote_choice IN ('for', 'against', 'abstain')
         ),
         threshold AS (
             SELECT

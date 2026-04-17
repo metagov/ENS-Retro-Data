@@ -12,8 +12,6 @@ authority rather than consensus-reflection — the whale does not merely predict
 outcome, they materially determine it.
 """
 
-from pathlib import Path
-
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -23,11 +21,6 @@ from scripts.db import get_connection
 
 # Academic benchmark from Goldberg & Schär (2023): VP.1 matched VP.ALL in 94.8% of proposals
 PAPER_BENCHMARK = 94.8
-
-# Raw JSON path — bypasses the broken vote_choice mapping in the silver model
-_TALLY_VOTES_JSON = str(
-    Path(__file__).parent.parent.parent / "bronze" / "governance" / "tally_votes.json"
-)
 
 
 # ---------------------------------------------------------------------------
@@ -39,23 +32,11 @@ def _load_data() -> pd.DataFrame:
     """Load per-proposal outcome robustness metrics for Tally on-chain proposals."""
     con = get_connection()
 
-    sql = f"""
+    sql = """
         WITH votes AS (
-            SELECT
-                voter,
-                proposal_id,
-                support                             AS vote_choice,
-                CAST(weight AS DOUBLE) / 1e18       AS weight
-            FROM read_json(
-                '{_TALLY_VOTES_JSON}',
-                columns = {{
-                    voter:       'VARCHAR',
-                    proposal_id: 'VARCHAR',
-                    support:     'VARCHAR',
-                    weight:      'VARCHAR'
-                }}
-            )
-            WHERE support IN ('for', 'against', 'abstain')
+            SELECT voter, proposal_id, vote_choice, weight
+            FROM main_silver.clean_tally_votes
+            WHERE vote_choice IN ('for', 'against', 'abstain')
         ),
         proposal_vp AS (
             SELECT
