@@ -109,6 +109,20 @@ def collect_docs() -> list[tuple[str, Path]]:
             collected.append((vs_name, md))
             print(f"  Doc:  developer-docs/{md.name} → {vs_name}")
 
+    # Dashboard visual atlas (PDF) — screenshots + metadata for every chart
+    visual_atlas = EXPORT_DIR / f"{AUTO_TAG}dashboard_visual_atlas.pdf"
+    if visual_atlas.exists():
+        collected.append((visual_atlas.name, visual_atlas))
+        print(f"  PDF:  visual atlas → {visual_atlas.name}")
+
+    # Chart catalog — per-chart SQL + sample data + public image URLs.
+    # This is the richest per-chart context for the chat agent: it can cite
+    # the image URL inline and reproduce the chart's data via its DuckDB MCP tool.
+    chart_catalog = EXPORT_DIR / f"{AUTO_TAG}chart_catalog.md"
+    if chart_catalog.exists():
+        collected.append((chart_catalog.name, chart_catalog))
+        print(f"  MD:   chart catalog → {chart_catalog.name}")
+
     # Schema report
     schema_report = DOCS_DIR / "schema-report.md"
     if schema_report.exists():

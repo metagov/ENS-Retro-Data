@@ -36,6 +36,11 @@ ENV/
 
 bronze/governance/agora/fetch.sh
 
+# Vector store export intermediates
+docs/vector-store-exports/_screenshots_tmp/
+docs/vector-store-exports/_image_urls.json
+docs/vector-store-exports/.auto-file-ids
+
 # Agora CSVs — too large for git (178 MB Transfer.csv exceeds GitHub 100 MB limit).
 # Hosted on DO Spaces. Download with: python3 scripts/spaces_sync.py --download
 bronze/governance/agora/**/*.csv
