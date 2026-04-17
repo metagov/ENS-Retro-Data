@@ -291,25 +291,34 @@ challenges:
         short_title: "Compensation"
         verdict: "explorer"
         description: >
-          Contributor compensation records (salaries, streams, fellowships)
-          across all working groups from 2022 to 2025. Records include
-          recipient wallet, working group, role, payment category, token,
-          and USD value. Filter by working group, role, category, and year
-          to compare compensation patterns and identify concentration across
-          budget lines.
+          Compensation records for ENS working-group contributors (salaries,
+          fellowships, steward gas refunds) and, separately, vendor streams
+          from the Service Provider Program. Records span 2022–2025. Filter
+          by working group, role, payment category, provider team, and year
+          to compare compensation patterns across budget lines.
         visuals:
           - script: "c5_h3_compensation_explorer"
-            fn: "render_compensation_by_wg"
-            title: "Compensation by Working Group"
+            fn: "render_contributor_comp_by_wg"
+            title: "Contributor Compensation by Working Group"
             takeaway: >
-              Select payment categories and year to compare total compensation
-              across working groups, broken down by role. Stat cards show
-              total USD, unique recipients, and payment count for the selection.
+              Metagov, Ecosystem, and Public Goods only. Use the filters to
+              slice by payment category, working group, and year. Note that
+              Public Goods primarily disburses funds via grants (see H5.2),
+              so its contributor payroll line is thin by design.
+          - script: "c5_h3_compensation_explorer"
+            fn: "render_service_provider_streams"
+            title: "Service Provider Program Streams"
+            takeaway: >
+              Monthly USDC streams paid to external vendor teams under the
+              Service Provider Program. These are competitive vendor contracts,
+              not contributor payroll — shown here separately so they don't
+              distort the working-group comparison above.
           - script: "c5_h3_compensation_explorer"
             fn: "render_compensation_table"
             title: "Compensation Records"
             takeaway: >
               Browse individual compensation records with full filter controls.
+              Includes both contributor payroll and Service Provider streams.
               The running total above the table reflects the current selection.
 
 
