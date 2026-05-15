@@ -27,7 +27,7 @@ PAPER_BENCHMARK = 94.8
 # Data loading
 # ---------------------------------------------------------------------------
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_data() -> pd.DataFrame:
     """Load per-proposal outcome robustness metrics for Tally on-chain proposals."""
     con = get_connection()

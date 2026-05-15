@@ -20,7 +20,7 @@ SMALL_HOLDER_PERCENTILE = 0.80
 # Data loading
 # ---------------------------------------------------------------------------
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_data() -> tuple[pd.DataFrame, float]:
     con = get_connection()
 

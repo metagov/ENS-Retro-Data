@@ -21,7 +21,7 @@ MEDIUM_HOLDER_PERCENTILE = 0.95  # mirrors h2_3_supply_vs_voice.py
 # Data loading
 # ---------------------------------------------------------------------------
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_data() -> tuple[pd.DataFrame, float, float]:
     con = get_connection()
 

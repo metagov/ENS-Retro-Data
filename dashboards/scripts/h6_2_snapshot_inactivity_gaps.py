@@ -36,7 +36,7 @@ COL_NOPROP   = "#EEEEEE"   # light gray — no proposals that month
 # Data loading
 # ---------------------------------------------------------------------------
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_data() -> pd.DataFrame:
     con = get_connection()
     df = con.execute(f"""

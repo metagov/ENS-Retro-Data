@@ -74,7 +74,7 @@ _VOTE_ENCODE = {"for": 0, "against": 1, "abstain": 2}
 # Data loading
 # ---------------------------------------------------------------------------
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_proposals() -> pd.DataFrame:
     """Load all closed/executed proposals with body; classify via proposal_type."""
     con = get_connection()
@@ -140,7 +140,7 @@ def _load_proposals() -> pd.DataFrame:
     return df.sort_values("proposal_date").reset_index(drop=True)
 
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_delegate_votes() -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Top-30 delegate profiles + their Snapshot votes (Tally excluded:

@@ -46,7 +46,7 @@ _CARD_CSS = """
 """
 
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_treasury_summary() -> pd.DataFrame:
     con = get_connection()
     df = con.execute("""
@@ -226,7 +226,7 @@ _SANKEY_OTHER_COLOR = "rgba(160,174,192,0.4)"
 _SANKEY_TOP_N = 10
 
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_ledger_flows() -> pd.DataFrame:
     con = get_connection()
     df = con.execute("""

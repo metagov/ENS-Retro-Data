@@ -35,7 +35,7 @@ COLOR_MEDIAN  = "#27AE60"      # green median line
 # Data loading
 # ---------------------------------------------------------------------------
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=4)
 def _load_data() -> tuple[pd.DataFrame, float, float, float]:
     """
     Returns:
