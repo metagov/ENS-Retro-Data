@@ -23,9 +23,9 @@ This is the data infrastructure and public research frontend for the **ENS DAO R
 
 | Service | URL | Purpose |
 |---|---|---|
-| Dashboard | [ens-retro-dashboard.onrender.com](https://ens-retro-dashboard.onrender.com) | Interactive Streamlit app — 5 research challenges, 20+ visualizations |
+| Dashboard | [ensretro.metgov.org](https://ensretro.metagov.org) | Interactive Streamlit app — 5 research challenges, 20+ visualizations |
 | MCP API | [mcp.ensretro.metagov.org/mcp](https://mcp.ensretro.metagov.org/mcp) | Model Context Protocol endpoint for AI agents (Agent Builder-compatible) |
-| Dagster UI | [ens-retro-dagster.onrender.com](https://ens-retro-dagster.onrender.com) | Read-only pipeline view — asset graph, run history, lineage |
+| Dagster UI | [source.ensretro.metagov.org](https://source.ensretro.metagov.org) | Read-only pipeline view — asset graph, run history, lineage |
 
 > 📷 *Dashboard screenshots and walkthrough video coming soon — see [`docs/developer-docs/`](docs/developer-docs/) for architecture diagrams in the meantime.*
 

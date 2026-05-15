@@ -284,7 +284,7 @@ def render_complexity_vs_turnout() -> None:
                 with st_col:
                     render_chart(
                         _build_strip_median(sub, col, label, platform, color, fill_color),
-                        key=f"dl_complexity_{platform}",
+                        key=f"dl_complexity_{col}_{platform}",
                         filename=f"complexity_vs_turnout_{platform}",
                     )
 
