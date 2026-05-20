@@ -2,6 +2,12 @@
 headless = true
 enableStaticServing = true
 
+[browser]
+# Disable Streamlit's frontend usage telemetry. The React bundle otherwise
+# fires 3 blocking calls to webhooks.fivetran.com on every page load, which
+# Lighthouse measured as 5.5s of LCP-critical-path latency.
+gatherUsageStats = false
+
 [theme]
 base = "light"
 primaryColor = "#3B4EC8"
