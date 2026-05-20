@@ -23,6 +23,45 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# Override Streamlit's bundled @font-face rules to use font-display:swap so the
+# page paints text immediately with the system fallback instead of blocking on
+# the woff2 download (Lighthouse "font display" audit, ~930ms FCP savings).
+# Material Symbols Rounded ships as font-display:block specifically — that's
+# the 3s-of-invisible-icons offender.
+#
+# Brittle: the hashed filenames below mirror Streamlit's current build. On a
+# Streamlit upgrade the hashes change and this override silently no-ops (src
+# URL no longer matches). If FCP regresses after upgrading Streamlit, refresh
+# these URLs by checking the current /static/css/index.*.css.
+st.markdown(
+    """
+<style>
+@font-face {
+  font-family: "Source Sans";
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url("/static/media/SourceSansVF-Upright.ttf.BsWL4Kly.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Source Sans";
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  src: url("/static/media/SourceSansVF-Italic.ttf.Bt9VkdQ3.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Material Symbols Rounded";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/static/media/MaterialSymbols-Rounded.VqUtTjSV.woff2") format("woff2");
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
 config = load_config()
 
 _DB_PATH = Path(__file__).parent.parent / "warehouse" / "ens_retro.duckdb"
