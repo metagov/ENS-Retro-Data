@@ -55,6 +55,29 @@ def render_chat_widget() -> None:
     if not secret:
         return
 
+    # Pin the iframe to bottom-right via CSS *before* it mounts. Without this,
+    # chat.html's inline JS mutates window.frameElement.style after first paint,
+    # which the browser records as a 480x680 layout shift (CLS ~0.83 — "poor").
+    # Applying the same fixed positioning in the parent doc means the iframe
+    # is already out of flow when it appears — no shift.
+    st.markdown(
+        """
+        <style>
+        iframe[src*="/app/static/chat.html"] {
+            position: fixed !important;
+            bottom: 0 !important;
+            right: 0 !important;
+            width: 480px !important;
+            height: 680px !important;
+            border: none !important;
+            background: transparent !important;
+            z-index: 2147483647 !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     # Load the static HTML via URL (not srcdoc) — gives chatkit.js a real
     # window.location.href so its URL constructor doesn't crash.
     # Secret passed via fragment — never hits the server.
