@@ -89,7 +89,11 @@ def _render_takeaway(text: str) -> None:
 # ---------------------------------------------------------------------------
 
 st.markdown("# ENS DAO Governance Research")
-st.caption(f"Data as of {_data_as_of()}")
+st.markdown(
+    f'<p style="color:#4A5568; font-size:14px; margin-top:-8px;">'
+    f"Data as of {_data_as_of()}</p>",
+    unsafe_allow_html=True,
+)
 st.markdown(
     """
 This dashboard presents quantitative findings from the **ENS DAO Governance Research**,
@@ -160,7 +164,7 @@ st.divider()
 # ---------------------------------------------------------------------------
 
 if selected_view == _NAV_START:
-    st.markdown("### What this dashboard covers")
+    st.markdown("## What this dashboard covers")
     cols = st.columns(5)
     for col, challenge in zip(cols, config.challenges):
         summary = _CHALLENGE_SUMMARIES.get(challenge.id, challenge.description[:80] + "…")
